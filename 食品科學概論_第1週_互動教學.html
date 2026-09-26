@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>食品科學概論 第1週 · 互動教學</title>
+<style>
+  :root{
+    --primary:#2D2A6E; --secondary:#5B4FB8; --accent:#00B8B8; --warm:#F5A623;
+    --green:#2FA36B; --red:#D65B5B; --dark:#1A1A3E; --bg:#F4F5FA;
+    --text:#1F1F2E; --mid:#5A5A75; --muted:#9096ac; --border:#E2E2EC; --card:#fff;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:"Segoe UI","Noto Sans TC","Microsoft JhengHei",system-ui,sans-serif;
+    background:var(--bg);color:var(--text);line-height:1.7;font-size:17px}
+  header{background:linear-gradient(120deg,var(--dark),var(--primary));color:#fff;
+    padding:26px 22px 0;position:sticky;top:0;z-index:50;box-shadow:0 2px 14px rgba(0,0,0,.15)}
+  header h1{font-size:31px;font-weight:800;letter-spacing:.5px}
+  header .sub{color:#b9c7ff;font-size:16px;margin-top:5px}
+  nav{display:flex;gap:6px;margin-top:16px;flex-wrap:wrap}
+  nav button{background:rgba(255,255,255,.10);color:#dfe4ff;border:none;padding:12px 18px;
+    border-radius:10px 10px 0 0;font-size:16.5px;cursor:pointer;font-weight:600;transition:.15s}
+  nav button:hover{background:rgba(255,255,255,.2)}
+  nav button.active{background:var(--bg);color:var(--primary)}
+  main{max-width:1080px;margin:0 auto;padding:26px 18px 80px}
+  .module{display:none;animation:fade .35s}
+  .module.active{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .lead{background:var(--dark);color:#fff;border-radius:14px;padding:22px 24px;margin-bottom:22px}
+  .lead .kicker{color:var(--accent);font-weight:700;font-size:14px;letter-spacing:1px}
+  .lead h2{font-size:26px;margin:6px 0 8px}
+  .lead p{color:#cdd3ee;font-size:16.5px}
+  .sec-title{font-size:23px;font-weight:800;color:var(--primary);margin:30px 0 6px;
+    display:flex;align-items:center;gap:10px}
+  .sec-title .bar{width:6px;height:25px;background:var(--accent);border-radius:3px;display:inline-block}
+  .hint{color:var(--mid);font-size:15px;margin-bottom:14px}
+  .grid{display:grid;gap:14px}
+  .g2{grid-template-columns:repeat(2,1fr)} .g3{grid-template-columns:repeat(3,1fr)}
+  .g4{grid-template-columns:repeat(4,1fr)}
+  @media(max-width:820px){.g3,.g4{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:520px){.g2,.g3,.g4{grid-template-columns:1fr}}
+
+  /* flip cards */
+  .flip{perspective:1100px;height:200px;cursor:pointer}
+  .flip-in{position:relative;width:100%;height:100%;transition:transform .6s;transform-style:preserve-3d}
+  .flip.on .flip-in{transform:rotateY(180deg)}
+  .face{position:absolute;inset:0;backface-visibility:hidden;border-radius:14px;padding:18px;
+    display:flex;flex-direction:column;justify-content:center;box-shadow:0 3px 10px rgba(30,30,60,.08);border:1px solid var(--border)}
+  .front{background:var(--card)}
+  .front .t{font-size:21px;font-weight:800;color:var(--primary)}
+  .front .en{color:var(--muted);font-size:14px;margin-top:3px;font-style:italic}
+  .front .tap{margin-top:auto;color:var(--accent);font-size:14px;font-weight:700}
+  .back{background:linear-gradient(135deg,var(--primary),var(--secondary));color:#fff;transform:rotateY(180deg)}
+  .back p{font-size:16px}
+  .cbar{height:6px;border-radius:14px 14px 0 0;position:absolute;top:0;left:0;right:0}
+
+  /* expandable */
+  .exp{background:var(--card);border:1px solid var(--border);border-radius:12px;margin-bottom:10px;overflow:hidden}
+  .exp>button{width:100%;text-align:left;background:none;border:none;padding:16px 18px;cursor:pointer;
+    display:flex;align-items:center;gap:12px;font-size:18px;font-weight:700;color:var(--text)}
+  .exp .num{background:var(--primary);color:#fff;min-width:32px;height:32px;border-radius:8px;
+    display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800}
+  .exp .chev{margin-left:auto;color:var(--muted);transition:.25s;font-size:20px}
+  .exp.on .chev{transform:rotate(90deg);color:var(--accent)}
+  .exp .body{max-height:0;overflow:hidden;transition:max-height .3s ease;padding:0 18px}
+  .exp.on .body{max-height:360px;padding:0 18px 16px 62px}
+  .exp .body ul{margin-left:16px;color:var(--mid);font-size:16px}
+  .exp .tag{font-size:13.5px;color:var(--muted);font-weight:600;margin-left:8px}
+
+  /* info card */
+  .card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px;
+    box-shadow:0 3px 10px rgba(30,30,60,.06)}
+  .card .h{font-weight:800;color:var(--primary);font-size:18px;margin-bottom:6px}
+  .card .en{color:var(--muted);font-size:13px;font-style:italic}
+  .card ul{margin:8px 0 0 18px;font-size:15.5px;color:var(--mid)}
+
+  /* timeline */
+  .tl{display:flex;gap:0;flex-wrap:wrap;counter-reset:s}
+  .tl .step{flex:1;min-width:180px;background:var(--card);border:1px solid var(--border);border-radius:12px;
+    padding:16px 14px 14px;margin:8px;position:relative}
+  .tl .dot{width:34px;height:34px;border-radius:50%;color:#fff;display:flex;align-items:center;
+    justify-content:center;font-weight:800;margin-bottom:8px}
+  .tl .step h4{color:var(--primary);font-size:17.5px;margin-bottom:4px}
+  .tl .step p{font-size:15px;color:var(--mid)}
+
+  /* matching */
+  .match-wrap{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px}
+  .pool{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+  .chip{background:var(--secondary);color:#fff;padding:10px 17px;border-radius:22px;font-weight:700;
+    cursor:grab;user-select:none;font-size:16.5px;box-shadow:0 2px 6px rgba(0,0,0,.12)}
+  .chip.used{opacity:.35;pointer-events:none}
+  .chip.sel{outline:3px solid var(--warm);outline-offset:2px}
+  .targets{display:grid;gap:10px}
+  .slot{display:flex;align-items:center;gap:12px;border:2px dashed var(--border);border-radius:12px;padding:10px 14px;background:#fafbff}
+  .slot .desc{flex:1;font-size:16px;color:var(--text)}
+  .slot .drop{min-width:130px;min-height:44px;border-radius:8px;background:#eef0f8;display:flex;
+    align-items:center;justify-content:center;color:var(--muted);font-size:15px;padding:8px 12px}
+  .slot.ok{border-color:var(--green);background:#effaf3}
+  .slot.ok .drop{background:var(--green);color:#fff;font-weight:700}
+  .slot.bad{border-color:var(--red);animation:shake .3s}
+  @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+
+  /* quiz */
+  .quiz-head{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px;margin-bottom:16px}
+  .pbar{height:12px;background:#e7e9f4;border-radius:8px;overflow:hidden;margin-top:10px}
+  .pfill{height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--secondary));transition:width .4s}
+  .q{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:14px}
+  .q .qn{color:var(--accent);font-weight:800;font-size:14px}
+  .q .qt{font-size:19.5px;font-weight:700;margin:6px 0 14px}
+  .opt{display:block;width:100%;text-align:left;background:#fafbff;border:2px solid var(--border);
+    border-radius:10px;padding:13px 16px;margin-bottom:9px;cursor:pointer;font-size:16.5px;transition:.15s}
+  .opt:hover{border-color:var(--secondary)}
+  .opt.correct{border-color:var(--green);background:#effaf3;font-weight:700}
+  .opt.wrong{border-color:var(--red);background:#fdeeee}
+  .opt.dim{opacity:.6}
+  .fb{margin-top:8px;font-size:15.5px;padding:11px 14px;border-radius:9px;display:none}
+  .fb.show{display:block}
+  .fb.good{background:#effaf3;color:#1c7a4d} .fb.no{background:#fdeeee;color:#a83b3b}
+  .scorebox{background:linear-gradient(135deg,var(--primary),var(--secondary));color:#fff;border-radius:16px;
+    padding:26px;text-align:center;margin-top:10px;display:none}
+  .scorebox.show{display:block}
+  .scorebox .big{font-size:46px;font-weight:800}
+  .btn{background:var(--accent);color:#fff;border:none;padding:11px 22px;border-radius:10px;
+    font-weight:700;cursor:pointer;font-size:15px}
+  .btn.ghost{background:rgba(255,255,255,.18)}
+  .tagrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+  .pill{font-size:12px;background:#eef0fb;color:var(--secondary);padding:3px 10px;border-radius:20px;font-weight:700}
+  footer{text-align:center;color:var(--muted);font-size:12.5px;padding:24px}
+</style>
+</head>
+<body>
+<header>
+  <h1>食品科學概論 · 第 1 週 互動教學</h1>
+  <div class="sub">本質 · 核心能力 · 產業概況　＋　IFT 2025／2026 食品趨勢　＋　互動測驗</div>
+  <nav id="nav"></nav>
+</header>
+<main>
+  <!-- ================= MODULE: 主課程 ================= -->
+  <section class="module active" id="m-core">
+    <div class="lead">
+      <div class="kicker">MODULE 1 · 主課程</div>
+      <h2>食品科學概論</h2>
+      <p>點翻卡看定義、展開看細節、玩配對測驗。食品科學是整合化學、生物、物理與工程的應用科學，貫穿「從農場到餐桌」。</p>
+    </div>
+
+    <div class="sec-title"><span class="bar"></span>一、食品科學的本質（點卡片翻面）</div>
+    <div class="hint">四張核心概念卡 — 點一下看解釋。</div>
+    <div class="grid g4" id="coreFlips"></div>
+
+    <div class="sec-title"><span class="bar"></span>食品品質的四大要素 · 配對挑戰</div>
+    <div class="hint">把上方標籤拖到（或先點標籤再點空格）對應的描述。全部答對即通關。</div>
+    <div class="match-wrap" id="qualityMatch"></div>
+
+    <div class="sec-title"><span class="bar"></span>二、食品科學的核心能力（IFT 五大能力，點翻卡）</div>
+    <div class="grid g3" id="iftFlips"></div>
+
+    <div class="sec-title"><span class="bar"></span>三、台灣食品產業發展史</div>
+    <div class="tl" id="twTimeline"></div>
+
+    <div class="sec-title"><span class="bar"></span>畢業生的就業方向</div>
+    <div class="grid g4" id="careerCards"></div>
+  </section>
+
+  <!-- ================= MODULE: IFT 2025 ================= -->
+  <section class="module" id="m-2025">
+    <div class="lead">
+      <div class="kicker">MODULE 2 · IFT 2025</div>
+      <h2>2025 十大食品趨勢</h2>
+      <p>IFT 科學與政策專家預測；主軸為數位科技（尤其 AI）與「吃什麼」的健康訴求。點每一項展開重點。</p>
+    </div>
+    <div class="sec-title"><span class="bar"></span>十大趨勢（點擊展開）</div>
+    <div id="trends2025"></div>
+  </section>
+
+  <!-- ================= MODULE: IFT 2026 ================= -->
+  <section class="module" id="m-2026">
+    <div class="lead">
+      <div class="kicker">MODULE 3 · IFT 2026</div>
+      <h2>2026 五大食品趨勢</h2>
+      <p>IFT 科學與政策團隊預測；從技術擴張走向治理、永續與消費者信任。點每一項展開重點與 IFT 資源。</p>
+    </div>
+    <div class="sec-title"><span class="bar"></span>五大趨勢（點擊展開）</div>
+    <div id="trends2026"></div>
+  </section>
+
+  <!-- ================= MODULE: 測驗 ================= -->
+  <section class="module" id="m-quiz">
+    <div class="lead">
+      <div class="kicker">MODULE 4 · 綜合測驗</div>
+      <h2>小測驗：檢核學習成效</h2>
+      <p>共 10 題單選，涵蓋三個單元。作答後即時顯示正解與解析，最後計算分數。</p>
+    </div>
+    <div class="quiz-head">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+        <strong id="qProg">進度 0 / 10</strong>
+        <span id="qScore" style="color:var(--secondary);font-weight:800">得分 0</span>
+      </div>
+      <div class="pbar"><div class="pfill" id="pfill"></div></div>
+    </div>
+    <div id="quizBox"></div>
+    <div class="scorebox" id="scorebox">
+      <div>你的成績</div>
+      <div class="big"><span id="finalScore">0</span> / 10</div>
+      <div id="scoreMsg" style="margin:8px 0 16px"></div>
+      <button class="btn ghost" onclick="resetQuiz()">重新測驗</button>
+    </div>
+  </section>
+</main>
+<footer>互動教材 · 內容依 IFT 官方公告與台灣產業資料整理 · 供食品科學概論教學使用</footer>
+
+<script>
+/* ---------- data ---------- */
+const NAV=[["m-core","主課程"],["m-2025","IFT 2025 趨勢"],["m-2026","IFT 2026 趨勢"],["m-quiz","綜合測驗"]];
+const COLORS=["#2D2A6E","#2FA36B","#F5A623","#5B4FB8","#00B8B8","#D65B5B"];
+
+const coreFlips=[
+  {t:"跨領域整合",en:"Interdisciplinary",c:"#2D2A6E",b:"化學 × 生物 × 物理 × 工程，四大學科交會的綜合應用科學。"},
+  {t:"從農場到餐桌",en:"Farm to Table",c:"#2FA36B",b:"研究對象涵蓋原料生產、加工保存、物流通路到消費的整條食物鏈。"},
+  {t:"食品科學定義",en:"Definition",c:"#5B4FB8",b:"運用科學與工程原理，研究食品的組成、性質、加工、保存與安全。"},
+  {t:"四大品質要素",en:"Quality",c:"#F5A623",b:"安全、營養、感官、便利；其中以『安全』為最優先。"},
+];
+const iftFlips=[
+  {t:"化學與分析",en:"Chemistry & Analysis",c:"#2D2A6E",b:"成分結構與性質、加工中的化學變化、成分與品質分析。"},
+  {t:"安全與微生物",en:"Safety & Micro",c:"#2FA36B",b:"致病與腐敗菌、食品安全危害、衛生與品質管制。"},
+  {t:"加工與工程",en:"Processing",c:"#F5A623",b:"單元操作原理、保存與加工技術、包裝與製程。"},
+  {t:"應用食品科學",en:"Applied",c:"#5B4FB8",b:"產品開發設計、整合前述知識、解決實務問題。"},
+  {t:"成功技能 ★",en:"Success Skills",c:"#00B8B8",b:"溝通、批判思考、團隊與專業素養 — 雇主調查中最被看重(4.35/5)。"},
+];
+const quality=[
+  {label:"安全",desc:"無病原菌與毒素、無有害化學物質與異物（最優先）"},
+  {label:"營養",desc:"提供熱量與營養素，加工中盡量保留，可營養強化"},
+  {label:"感官",desc:"色、香、味、質地，影響消費接受度，以品評評估"},
+  {label:"便利",desc:"易保存、易調理，合適包裝與份量，符合生活型態"},
+];
+const timeline=[
+  {h:"奠基期",p:"日治～1950s：製糖、味精、醬油奠定食品工業基礎。",c:"#5B4FB8"},
+  {h:"罐頭外銷期",p:"1950s–70s：鳳梨、洋菇、蘆筍「三罐王」外銷賺外匯。",c:"#2D2A6E"},
+  {h:"加工升級期",p:"1980s–90s：冷凍食品、乳品、飲料與國產品牌興起。",c:"#2FA36B"},
+  {h:"多元機能期",p:"2000s至今：機能保健食品、智慧製造，產值破兆元。",c:"#F5A623"},
+];
+const careers=[
+  {h:"研發與開發",en:"R&D",c:"#2D2A6E",li:["新產品與配方","機能性食品","感官品評"]},
+  {h:"品保與品管",en:"QA/QC",c:"#2FA36B",li:["確保安全品質","製程稽核","檢驗分析"]},
+  {h:"食安與法規",en:"Regulatory",c:"#D65B5B",li:["標示與認證","HACCP、稽核","食藥署等"]},
+  {h:"生產與供應鏈",en:"Operations",c:"#F5A623",li:["智慧製造","物流冷鏈","採購供應鏈"]},
+];
+const t2025=[
+  ["GLP-1 減重藥加速產品創新","趨勢1","市場至2030年CAGR 29.6%；聚焦蛋白質、腸道健康與營養需求，帶動高階與新品開發。"],
+  ["減鹽、減糖成主流","趨勢2","前標示與政策推動；USDA 規定 2027 年校餐限添加糖 10%；膳食指南 2025-2030 更新。"],
+  ["食物即良藥 Food is Medicine","趨勢3","以飲食預防與改善慢性病；跨族群廣泛採納，政府與機構共同推動。"],
+  ["潔淨標示不會消失","趨勢4","消費者偏好易懂成分；超加工食品持續受檢視，自家料理被視為更健康。"],
+  ["化學添加物審查加強","趨勢5","GRAS 制度與上市後審查趨嚴；加州食安法帶動各州，人工色素受關注。"],
+  ["召回推動食安與可追溯投資","趨勢6","高調召回頻傳，源頭到餐桌快速追溯成優先；FSMA Rule 204 上路。"],
+  ["化學污染物受關注","趨勢7","FDA『Closer to Zero』聚焦砷、鉛、鎘、汞等重金屬，保護孩童與孕婦。"],
+  ["AI 接管食品實驗室","趨勢8","加速研發、擷取消費者洞察、提升效率與創新，應用案例爆發成長。"],
+  ["AI 也走入廚房","趨勢9","食譜與健康決策、烹調與食材替換，餐廳品管亦導入。"],
+  ["農食科技投資回升","趨勢10","創投與私募重新投入農食轉型，帶動新創與技術社群。"],
+];
+const t2026=[
+  ["AI 從試點走向落地","① AI · Pilot to Practice","從供應鏈優化到個人化營養；需跨團隊協作與資料治理（隱私與倫理），並以試點、訓練與領導支持嵌入工作流程。","IFT：AI and the Future of Food Innovation；CoDeveloper"],
+  ["永續解決方案規模化","② 永續 · Sustainability","氣候變遷威脅糧食生產與安全；以誘因、夥伴關係與基礎建設投資，擴大可規模化的永續方案並減少食品浪費。","IFT：Future-Proofing Supply Chains Against Climate Change"],
+  ["數位工具擴大食品安全","③ 食安 · Food Safety","可互通的追溯工具與標準走向一致化，快速檢測普及；FSMA 204 雖延至 2028，企業仍持續推進準備。","IFT：How Digital Transformation Enhances Food Safety；GFTC"],
+  ["法規壓力重塑創新","④ 法規 · Regulatory","對超加工食品、添加物與新興原料監管趨嚴；各轄區政策分歧使合規更複雜，FDA 提出上市後化學品評估架構。","IFT：Policy Changes Put Food Innovation Pipelines to the Test"],
+  ["透明度與消費者信任","⑤ 透明 · Transparency","錯誤資訊時代，有效溝通與透明度是重建信任的必要條件；消費者將在政策制定中扮演更大角色。","IFT：How Science Can Reclaim Public Trust"],
+];
+/* 正解分布 位置1=3 位置2=3 位置3=2 位置4=2；相鄰題不同位置。
+   第 5、10 題選項有自然順序（金額、年份），維持遞增不打散，正解位置照其原本落點。 */
+const QUIZ=[
+  {q:"食品科學主要整合哪四個學科領域？",o:["經濟、法律、行銷、管理","化學、生物、物理、工程","地質、天文、氣象、海洋","文學、歷史、哲學、藝術"],a:1,e:"食品科學是化學×生物×物理×工程的跨領域整合應用科學。"},
+  {q:"食品品質四大要素中，哪一項為『最優先』？",o:["安全","感官","便利","營養"],a:0,e:"安全（無病原菌、毒素、異物）是最優先的品質要素。"},
+  {q:"IFT 五大核心能力中，雇主調查最看重哪一類？",o:["食品化學與分析","食品加工與工程","食品安全與微生物","成功技能（溝通、批判思考、團隊）"],a:3,e:"成功技能重要性評分最高(4.35/5)，也是畢業生最常運用的能力。"},
+  {q:"台灣早期外銷的『三罐王』是指哪三種罐頭？",o:["鳳梨、洋菇、蘆筍","番茄、玉米、四季豆","竹筍、木耳、香菇","鮪魚、鯖魚、蛤蜊"],a:0,e:"1950–70年代台灣以鳳梨、洋菇、蘆筍罐頭外銷賺取大量外匯。"},
+  {q:"2024 年台灣食品及飲料工業總產值首度突破多少？",o:["一千億元","五千億元","一兆元","十兆元"],a:2,e:"2024 年首度突破兆元，達新台幣約 1兆44億元，創歷史新高。"},
+  {q:"IFT 2025 趨勢中，哪一類減重藥被指出將加速產品創新？",o:["抗生素","GLP-1","維生素D","益生菌"],a:1,e:"GLP-1 減重藥普及，帶動聚焦蛋白質與腸道健康的產品創新。"},
+  {q:"FDA 為降低食品中重金屬（砷、鉛、鎘、汞）暴露的計畫名稱是？",o:["Closer to Zero","Zero Hunger","Clean Label","Net Zero"],a:0,e:"『Closer to Zero』旨在減少污染物暴露，保護孩童與孕婦等脆弱族群。"},
+  {q:"IFT 2026 列為第一大的趨勢是？",o:["植物肉大爆發","罐頭復興","AI 從試點走向落地","減少包裝"],a:2,e:"2026 首要趨勢是『AI Moves From Pilot to Practice』——AI 全面落地。"},
+  {q:"『食物即良藥（Food is Medicine）』的核心概念是？",o:["以藥物取代食物","以飲食預防與改善疾病","只吃保健食品","完全生食"],a:1,e:"強調透過營養飲食來預防及改善健康問題。"},
+  {q:"美國 FSMA 204 食品可追溯規則的合規期限，在 2026 趨勢中被指出延至哪一年？",o:["2025","2026","2027","2028"],a:3,e:"2026 趨勢指出 FSMA 204 合規延至 2028，但企業仍持續推進準備。"},
+];
+
+/* ---------- render ---------- */
+const $=s=>document.querySelector(s);
+const nav=$("#nav");
+NAV.forEach((n,i)=>{const b=document.createElement("button");b.textContent=n[1];b.dataset.m=n[0];
+  if(i===0)b.classList.add("active");b.onclick=()=>switchMod(n[0],b);nav.appendChild(b);});
+function switchMod(id,btn){document.querySelectorAll(".module").forEach(m=>m.classList.remove("active"));
+  $("#"+id).classList.add("active");nav.querySelectorAll("button").forEach(x=>x.classList.remove("active"));
+  btn.classList.add("active");window.scrollTo({top:0,behavior:"smooth"});}
+
+function flipCard(d){
+  const el=document.createElement("div");el.className="flip";
+  el.innerHTML=`<div class="flip-in">
+    <div class="face front"><div class="cbar" style="background:${d.c}"></div>
+      <div class="t">${d.t}</div><div class="en">${d.en}</div><div class="tap">▸ 點我看解釋</div></div>
+    <div class="face back"><div class="cbar" style="background:${d.c}"></div><p>${d.b}</p></div></div>`;
+  el.onclick=()=>el.classList.toggle("on");return el;
+}
+coreFlips.forEach(d=>$("#coreFlips").appendChild(flipCard(d)));
+iftFlips.forEach(d=>$("#iftFlips").appendChild(flipCard(d)));
+
+careers.forEach(c=>{const el=document.createElement("div");el.className="card";
+  el.innerHTML=`<div class="h">${c.h}</div><div class="en">${c.en}</div><ul>${c.li.map(x=>`<li>${x}</li>`).join("")}</ul>`;
+  $("#careerCards").appendChild(el);});
+
+timeline.forEach((s,i)=>{const el=document.createElement("div");el.className="step";
+  el.innerHTML=`<div class="dot" style="background:${s.c}">${i+1}</div><h4>${s.h}</h4><p>${s.p}</p>`;
+  $("#twTimeline").appendChild(el);});
+
+function expandList(arr,host,withRes){
+  arr.forEach((t,i)=>{const el=document.createElement("div");el.className="exp";
+    const res=withRes&&t[3]?`<div style="margin-top:10px;font-size:13px;color:var(--secondary);font-weight:700">🔗 ${t[3]}</div>`:"";
+    el.innerHTML=`<button><span class="num">${i+1}</span><span>${t[0]}</span><span class="tag">${t[1]}</span><span class="chev">›</span></button>
+      <div class="body"><p style="color:var(--mid);font-size:14.5px">${t[2]}</p>${res}</div>`;
+    el.querySelector("button").onclick=()=>el.classList.toggle("on");
+    host.appendChild(el);});
+}
+expandList(t2025,$("#trends2025"),false);
+expandList(t2026,$("#trends2026"),true);
+
+/* ---------- matching ---------- */
+(function(){
+  const host=$("#qualityMatch");
+  const pool=document.createElement("div");pool.className="pool";
+  const targets=document.createElement("div");targets.className="targets";
+  const order=[...quality].sort(()=>Math.random()-.5);
+  let selected=null,solved=0;
+  order.forEach(q=>{const c=document.createElement("div");c.className="chip";c.textContent=q.label;
+    c.draggable=true;c.dataset.k=q.label;
+    c.addEventListener("dragstart",e=>e.dataTransfer.setData("k",q.label));
+    c.onclick=()=>{if(c.classList.contains("used"))return;
+      if(selected===c){c.classList.remove("sel");selected=null;return;}
+      pool.querySelectorAll(".chip").forEach(x=>x.classList.remove("sel"));c.classList.add("sel");selected=c;};
+    pool.appendChild(c);});
+  quality.forEach(q=>{const s=document.createElement("div");s.className="slot";s.dataset.k=q.label;
+    s.innerHTML=`<div class="drop">拖到這裡</div><div class="desc">${q.desc}</div>`;
+    const drop=s.querySelector(".drop");
+    s.addEventListener("dragover",e=>e.preventDefault());
+    s.addEventListener("drop",e=>{e.preventDefault();tryMatch(s,e.dataTransfer.getData("k"));});
+    s.onclick=()=>{if(selected)tryMatch(s,selected.dataset.k);};
+    targets.appendChild(s);});
+  const msg=document.createElement("div");msg.style.cssText="margin-top:14px;font-weight:700;color:var(--green)";
+  function tryMatch(slot,key){
+    if(slot.classList.contains("ok"))return;
+    if(slot.dataset.k===key){slot.classList.add("ok");slot.classList.remove("bad");
+      slot.querySelector(".drop").textContent=key;
+      const chip=pool.querySelector(`.chip[data-k="${key}"]`);chip.classList.add("used");chip.classList.remove("sel");
+      selected=null;solved++;
+      if(solved===quality.length)msg.textContent="✓ 全部答對！你已掌握食品品質四大要素。";
+    }else{slot.classList.add("bad");setTimeout(()=>slot.classList.remove("bad"),350);}
+  }
+  host.appendChild(pool);host.appendChild(targets);host.appendChild(msg);
+})();
+
+/* ---------- quiz ---------- */
+let answered=0,score=0;
+const quizBox=$("#quizBox");
+function buildQuiz(){
+  quizBox.innerHTML="";answered=0;score=0;updateProg();
+  $("#scorebox").classList.remove("show");
+  QUIZ.forEach((item,qi)=>{
+    const el=document.createElement("div");el.className="q";el.dataset.done="0";
+    el.innerHTML=`<div class="qn">第 ${qi+1} 題</div><div class="qt">${item.q}</div>`;
+    item.o.forEach((opt,oi)=>{const b=document.createElement("button");b.className="opt";b.textContent=opt;
+      b.onclick=()=>pick(el,item,oi);el.appendChild(b);});
+    const fb=document.createElement("div");fb.className="fb";el.appendChild(fb);
+    quizBox.appendChild(el);
+  });
+}
+function pick(el,item,oi){
+  if(el.dataset.done==="1")return;el.dataset.done="1";answered++;
+  const opts=el.querySelectorAll(".opt");
+  opts.forEach((b,i)=>{b.classList.add("dim");
+    if(i===item.a)b.classList.add("correct");
+    if(i===oi&&oi!==item.a)b.classList.add("wrong");});
+  const fb=el.querySelector(".fb");
+  if(oi===item.a){score++;fb.classList.add("good");fb.innerHTML="✓ 正確！"+item.e;}
+  else{fb.classList.add("no");fb.innerHTML="✗ 正解："+item.o[item.a]+"。"+item.e;}
+  fb.classList.add("show");updateProg();
+  if(answered===QUIZ.length)finish();
+}
+function updateProg(){
+  $("#qProg").textContent=`進度 ${answered} / ${QUIZ.length}`;
+  $("#qScore").textContent=`得分 ${score}`;
+  $("#pfill").style.width=(answered/QUIZ.length*100)+"%";
+}
+function finish(){
+  const sb=$("#scorebox");$("#finalScore").textContent=score;
+  let m;if(score===10)m="滿分！你完全掌握本週重點 🎉";
+  else if(score>=8)m="很棒！觀念相當扎實。";
+  else if(score>=6)m="不錯，再複習幾個弱點就更好。";
+  else m="建議回到前面單元再看一次翻卡與展開內容。";
+  $("#scoreMsg").textContent=m;sb.classList.add("show");
+  sb.scrollIntoView({behavior:"smooth"});
+}
+function resetQuiz(){buildQuiz();window.scrollTo({top:0,behavior:"smooth"});}
+buildQuiz();
+</script>

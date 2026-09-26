@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>食品科學概論 第7週 · 互動教學</title>
+<style>
+  :root{
+    --primary:#2D2A6E; --secondary:#5B4FB8; --accent:#00B8B8; --warm:#F5A623; --green:#2FA36B; --red:#D65B5B; --dark:#1A1A3E; --bg:#F4F5FA; --text:#1F1F2E; --mid:#5A5A75; --muted:#9096ac; --border:#E2E2EC; --card:#fff;
+  }
+/* 版型樣式 — 逐條取自「第1週_互動教學.html」，末段為新增區塊（cmp / tbl / note）。
+   這裡只用 var(--x)；色票由 tokens.js 產生 :root 注入。 */
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Segoe UI","Noto Sans TC","Microsoft JhengHei",system-ui,sans-serif;
+  background:var(--bg);color:var(--text);line-height:1.7;font-size:17px}
+header{background:linear-gradient(120deg,var(--dark),var(--primary));color:#fff;
+  padding:26px 22px 0;position:sticky;top:0;z-index:50;box-shadow:0 2px 14px rgba(0,0,0,.15)}
+header h1{font-size:31px;font-weight:800;letter-spacing:.5px}
+header .sub{color:#b9c7ff;font-size:16px;margin-top:5px}
+nav{display:flex;gap:6px;margin-top:16px;flex-wrap:wrap}
+nav button{background:rgba(255,255,255,.10);color:#dfe4ff;border:none;padding:12px 18px;
+  border-radius:10px 10px 0 0;font-size:16.5px;cursor:pointer;font-weight:600;transition:.15s}
+nav button:hover{background:rgba(255,255,255,.2)}
+nav button.active{background:var(--bg);color:var(--primary)}
+main{max-width:1080px;margin:0 auto;padding:26px 18px 80px}
+.module{display:none;animation:fade .35s}
+.module.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.lead{background:var(--dark);color:#fff;border-radius:14px;padding:22px 24px;margin-bottom:22px}
+.lead .kicker{color:var(--accent);font-weight:700;font-size:14px;letter-spacing:1px}
+.lead h2{font-size:26px;margin:6px 0 8px}
+.lead p{color:#cdd3ee;font-size:16.5px}
+.sec-title{font-size:23px;font-weight:800;color:var(--primary);margin:30px 0 6px;
+  display:flex;align-items:center;gap:10px}
+.sec-title .bar{width:6px;height:25px;background:var(--accent);border-radius:3px;display:inline-block}
+.hint{color:var(--mid);font-size:15px;margin-bottom:14px}
+.grid{display:grid;gap:14px}
+.g2{grid-template-columns:repeat(2,1fr)} .g3{grid-template-columns:repeat(3,1fr)}
+.g4{grid-template-columns:repeat(4,1fr)}
+@media(max-width:820px){.g3,.g4{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:520px){.g2,.g3,.g4{grid-template-columns:1fr}}
+
+/* flip cards */
+.flip{perspective:1100px;height:200px;cursor:pointer}
+.flip-in{position:relative;width:100%;height:100%;transition:transform .6s;transform-style:preserve-3d}
+.flip.on .flip-in{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;backface-visibility:hidden;border-radius:14px;padding:18px;
+  display:flex;flex-direction:column;justify-content:center;box-shadow:0 3px 10px rgba(30,30,60,.08);border:1px solid var(--border)}
+.front{background:var(--card)}
+.front .t{font-size:21px;font-weight:800;color:var(--primary)}
+.front .en{color:var(--muted);font-size:14px;margin-top:3px;font-style:italic}
+.front .tap{margin-top:auto;color:var(--accent);font-size:14px;font-weight:700}
+.back{background:linear-gradient(135deg,var(--primary),var(--secondary));color:#fff;transform:rotateY(180deg);overflow:auto}
+.back p{font-size:16px}
+.cbar{height:6px;border-radius:14px 14px 0 0;position:absolute;top:0;left:0;right:0}
+
+/* expandable */
+.exp{background:var(--card);border:1px solid var(--border);border-radius:12px;margin-bottom:10px;overflow:hidden}
+.exp>button{width:100%;text-align:left;background:none;border:none;padding:16px 18px;cursor:pointer;
+  display:flex;align-items:center;gap:12px;font-size:18px;font-weight:700;color:var(--text)}
+.exp .num{background:var(--primary);color:#fff;min-width:32px;height:32px;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800}
+.exp .chev{margin-left:auto;color:var(--muted);transition:.25s;font-size:20px}
+.exp.on .chev{transform:rotate(90deg);color:var(--accent)}
+.exp .body{max-height:0;overflow:hidden;transition:max-height .3s ease;padding:0 18px}
+.exp.on .body{padding:0 18px 16px 62px}
+.exp .body ul{margin-left:16px;color:var(--mid);font-size:16px}
+.exp .body p{color:var(--mid);font-size:15.5px}
+.exp .tag{font-size:13.5px;color:var(--muted);font-weight:600;margin-left:8px}
+
+/* info card */
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px;
+  box-shadow:0 3px 10px rgba(30,30,60,.06)}
+.card .h{font-weight:800;color:var(--primary);font-size:18px;margin-bottom:6px}
+.card .en{color:var(--muted);font-size:13px;font-style:italic}
+.card ul{margin:8px 0 0 18px;font-size:15.5px;color:var(--mid)}
+
+/* timeline */
+.tl{display:flex;gap:0;flex-wrap:wrap;counter-reset:s}
+.tl .step{flex:1;min-width:180px;background:var(--card);border:1px solid var(--border);border-radius:12px;
+  padding:16px 14px 14px;margin:8px;position:relative}
+.tl .dot{width:34px;height:34px;border-radius:50%;color:#fff;display:flex;align-items:center;
+  justify-content:center;font-weight:800;margin-bottom:8px}
+.tl .step h4{color:var(--primary);font-size:17.5px;margin-bottom:4px}
+.tl .step p{font-size:15px;color:var(--mid)}
+
+/* matching */
+.match-wrap{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px}
+.pool{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+.chip{background:var(--secondary);color:#fff;padding:10px 17px;border-radius:22px;font-weight:700;
+  cursor:grab;user-select:none;font-size:16.5px;box-shadow:0 2px 6px rgba(0,0,0,.12)}
+.chip.used{opacity:.35;pointer-events:none}
+.chip.sel{outline:3px solid var(--warm);outline-offset:2px}
+.targets{display:grid;gap:10px}
+.slot{display:flex;align-items:center;gap:12px;border:2px dashed var(--border);border-radius:12px;padding:10px 14px;background:#fafbff}
+.slot .desc{flex:1;font-size:16px;color:var(--text)}
+.slot .drop{min-width:130px;min-height:44px;border-radius:8px;background:#eef0f8;display:flex;
+  align-items:center;justify-content:center;color:var(--muted);font-size:15px;padding:8px 12px}
+.slot.ok{border-color:var(--green);background:#effaf3}
+.slot.ok .drop{background:var(--green);color:#fff;font-weight:700}
+.slot.bad{border-color:var(--red);animation:shake .3s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+
+/* quiz */
+.quiz-head{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px;margin-bottom:16px}
+.pbar{height:12px;background:#e7e9f4;border-radius:8px;overflow:hidden;margin-top:10px}
+.pfill{height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--secondary));transition:width .4s}
+.q{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:14px}
+.q .qn{color:var(--accent);font-weight:800;font-size:14px}
+.q .qt{font-size:19.5px;font-weight:700;margin:6px 0 14px}
+.opt{display:block;width:100%;text-align:left;background:#fafbff;border:2px solid var(--border);
+  border-radius:10px;padding:13px 16px;margin-bottom:9px;cursor:pointer;font-size:16.5px;transition:.15s}
+.opt:hover{border-color:var(--secondary)}
+.opt.correct{border-color:var(--green);background:#effaf3;font-weight:700}
+.opt.wrong{border-color:var(--red);background:#fdeeee}
+.opt.dim{opacity:.6}
+.fb{margin-top:8px;font-size:15.5px;padding:11px 14px;border-radius:9px;display:none}
+.fb.show{display:block}
+.fb.good{background:#effaf3;color:#1c7a4d} .fb.no{background:#fdeeee;color:#a83b3b}
+.scorebox{background:linear-gradient(135deg,var(--primary),var(--secondary));color:#fff;border-radius:16px;
+  padding:26px;text-align:center;margin-top:10px;display:none}
+.scorebox.show{display:block}
+.scorebox .big{font-size:46px;font-weight:800}
+.btn{background:var(--accent);color:#fff;border:none;padding:11px 22px;border-radius:10px;
+  font-weight:700;cursor:pointer;font-size:15px}
+.btn.ghost{background:rgba(255,255,255,.18)}
+.tagrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+.pill{font-size:12px;background:#eef0fb;color:var(--secondary);padding:3px 10px;border-radius:20px;font-weight:700}
+footer{text-align:center;color:var(--muted);font-size:12.5px;padding:24px}
+
+/* ===== 新增區塊 ===== */
+/* compare：兩欄對照（梅納 vs 焦糖化、冷藏 vs 冷凍…） */
+.cmp{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:stretch}
+@media(max-width:640px){.cmp{grid-template-columns:1fr}}
+.cmp .col{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:0 18px 18px;
+  box-shadow:0 3px 10px rgba(30,30,60,.06);position:relative;overflow:hidden}
+.cmp .col .cbar{position:static;height:6px;margin:0 -18px 14px;border-radius:0}
+.cmp .col h4{font-size:20px;font-weight:800;margin-bottom:2px}
+.cmp .col .en{color:var(--muted);font-size:13px;font-style:italic;margin-bottom:8px}
+.cmp .col ul{margin-left:18px;font-size:15.5px;color:var(--mid)}
+.cmp .col li{margin-bottom:5px}
+.cmp-note{margin-top:12px;background:#eef0fb;border-left:5px solid var(--secondary);
+  border-radius:0 10px 10px 0;padding:12px 16px;font-size:16px;color:var(--primary);font-weight:600}
+
+/* table：資料表（維生素、添加物分類…） */
+.tblwrap{overflow-x:auto;background:var(--card);border:1px solid var(--border);border-radius:14px;
+  box-shadow:0 3px 10px rgba(30,30,60,.06)}
+.tbl{border-collapse:collapse;width:100%;min-width:520px;font-size:15.5px}
+.tbl th{background:var(--primary);color:#fff;text-align:left;padding:12px 14px;font-weight:700;font-size:15px}
+.tbl td{padding:11px 14px;border-top:1px solid var(--border);color:var(--mid);vertical-align:top}
+.tbl tr:nth-child(even) td{background:#fafbff}
+.tbl td:first-child{color:var(--text);font-weight:700}
+
+/* note：重點提示條 */
+.note{background:#fff8e9;border-left:5px solid var(--warm);border-radius:0 12px 12px 0;
+  padding:14px 18px;margin:14px 0;font-size:16px;color:var(--text)}
+.note b{color:var(--primary)}
+.note.key{background:#effaf3;border-left-color:var(--green)}
+.note.warn{background:#fdeeee;border-left-color:var(--red)}
+</style>
+</head>
+<body>
+<header>
+  <h1>食品科學概論 · 第 7 週 互動教學</h1>
+  <div class="sub">四大天然色素　·　味覺與嗅覺　·　食品中的重要酵素　·　酵素性褐變與控制　＋　互動測驗</div>
+  <nav id="nav"></nav>
+</header>
+<main id="main"></main>
+<footer>互動教材 · 依課程大綱與指定教科書整理 · 供食品科學概論教學使用</footer>
+<script>window.__LESSON__={"week":7,"series":["#2D2A6E","#2FA36B","#F5A623","#5B4FB8","#00B8B8","#D65B5B"],"modules":[{"id":"m-pig","nav":"天然色素","kicker":"MODULE 1 · 色素","h2":"顏色會說話：四大天然色素","lead":"為什麼燙青菜久了會變黃褐、紫甘藍加醋會變鮮紅、牛肉放久會變褐？四種色素、四種不同的化學脾氣。","blocks":[{"type":"table","title":"一、四大色素對照表","hint":"這張表把整個模組濃縮成一頁，考前只看它也行。","head":["色素","顏色","溶解性","遇酸","遇鹼","遇熱／氧"],"rows":[["葉綠素 chlorophyll","綠","脂溶性","\u003cb>變橄欖褐\u003c/b>（脫鎂）","保持鮮綠但組織軟爛","久煮變褐"],["類胡蘿蔔素 carotenoids","黃、橙、紅","脂溶性","相當安定","相當安定","\u003cb>怕氧化與光照\u003c/b>，耐熱"],["花青素 anthocyanins","紅、紫、藍","水溶性","\u003cb>鮮紅\u003c/b>","\u003cb>偏藍綠\u003c/b>","易溶出流失，遇金屬變色"],["肌紅蛋白 myoglobin","紫紅 → 鮮紅 → 褐","水溶性","—","—","見下方三態變化"]]},{"type":"exp","title":"二、每一種色素的關鍵機制（點擊展開）","items":[{"h":"葉綠素：怕酸，因為中心有鎂","tag":"綠色蔬菜","body":["葉綠素分子中心有一個 \u003cb>Mg²⁺\u003c/b>。加熱時蔬菜細胞破裂釋出有機酸，酸性環境下鎂被氫取代 → 形成\u003cb>脫鎂葉綠素（pheophytin）\u003c/b>，顏色轉為橄欖褐。","保綠的正確做法：\u003cb>大量沸水、短時間、不加蓋\u003c/b>，讓揮發性酸逸散並縮短接觸時間，燙完立即冰鎮。","\u003cb>不要加小蘇打\u003c/b>：鹼確實能保住鮮綠，但會嚴重破壞維生素 B1 與 C，且使組織軟爛。"]},{"h":"類胡蘿蔔素：最耐煮，但怕氧與光","tag":"黃橙紅","body":"包含 β-胡蘿蔔素（胡蘿蔔）、茄紅素（番茄）、葉黃素（玉米、蛋黃）、蝦紅素（蝦蟹）。\u003cb>耐熱、耐酸鹼\u003c/b>，一般烹調幾乎不變色；但多雙鍵結構使它\u003cb>容易被氧化\u003c/b>，乾燥食品長期儲存會褪色。脂溶性 → 加油烹調可提高吸收率（番茄炒蛋、胡蘿蔔用油炒）。"},{"h":"花青素：天然的酸鹼指示劑","tag":"紅紫藍","body":"紫甘藍、藍莓、紫地瓜、桑椹。\u003cb>酸性呈紅、中性呈紫、鹼性呈藍綠\u003c/b>，是課堂上最好用的示範。水溶性強，水煮時大量溶出（煮紫米飯的水會變紫）。遇鐵、鋁等金屬離子會形成錯合物而變成灰藍色 —— 這是紫色蔬果不宜用鐵鍋長時間烹煮的原因。"},{"h":"肌紅蛋白：肉色的三態變化","tag":"肉品","body":["\u003cb>去氧肌紅蛋白\u003c/b>（暗紫紅）：真空包裝或剛切開內部的顏色。","\u003cb>氧合肌紅蛋白\u003c/b>（鮮紅）：接觸空氣後與氧結合，這是消費者認定「新鮮」的顏色。","\u003cb>變性肌紅蛋白\u003c/b>（褐色）：鐵被氧化成三價，放久或受光照後出現，代表新鮮度下降。","\u003cb>亞硝基肌紅蛋白\u003c/b>（粉紅）：亞硝酸鹽作用的結果，加熱後仍不變色 —— 火腿、香腸的固定色澤即來自於此。"]}]},{"type":"note","kind":"warn","text":"\u003cb>亞硝酸鹽的兩面性：\u003c/b>它固定肉色、賦予醃肉風味，更重要的是能有效抑制\u003cb>肉毒桿菌\u003c/b>。但在高溫或胃中可能與胺類形成致癌的亞硝胺，因此各國都訂有嚴格的殘留限量。第 15 週談添加物時會再回來。"}]},{"id":"m-flavor","nav":"風味","kicker":"MODULE 2 · 風味","h2":"風味 ＝ 味覺 ＋ 嗅覺 ＋ 口腔觸感","lead":"我們說「好吃」時，舌頭只貢獻了一小部分。感冒鼻塞時食物索然無味，正說明嗅覺才是主角。","blocks":[{"type":"cards","title":"一、味覺的五種基本味","cols":3,"items":[{"h":"甜 Sweet","c":"#F5A623","li":["糖類、糖醇、高甜度甜味劑","代表能量來源","果糖 > 蔗糖 > 葡萄糖 > 乳糖"]},{"h":"酸 Sour","c":"#2FA36B","li":["有機酸解離的氫離子","檸檬酸、醋酸、乳酸","與腐敗或未成熟的警示有關"]},{"h":"鹹 Salty","c":"#5B4FB8","li":["主要來自 Na⁺","與體液平衡需求相連","減鹽是全球性課題"]},{"h":"苦 Bitter","c":"#D65B5B","li":["生物鹼、多酚、部分胜肽","閾值最低 —— 極微量即可察覺","演化上是毒物的警訊"]},{"h":"鮮 Umami","c":"#2D2A6E","li":["\u003cb>麩胺酸\u003c/b>與核苷酸（IMP、GMP）","昆布、柴魚、番茄、乳酪","兩者併用有\u003cb>相乘效果\u003c/b>"]},{"h":"（非味覺）","c":"#00B8B8","li":["辣：辣椒素刺激三叉神經的痛覺","涼：薄荷醇作用於冷覺受器","澀：單寧與唾液蛋白結合"],"p":"這三者不是味覺，而是化學性的觸感刺激。"}]},{"type":"compare","title":"二、味覺 vs 嗅覺","left":{"h":"味覺 Taste","en":"舌頭上的味蕾","c":"#F5A623","li":["只有五種基本味","需\u003cb>溶於唾液\u003c/b>才能被感知","受體數量有限","對整體風味的貢獻相對小"]},"right":{"h":"嗅覺 Smell","en":"鼻腔的嗅覺受器","c":"#5B4FB8","li":["可分辨\u003cb>上萬種\u003c/b>揮發性分子","需\u003cb>揮發成氣態\u003c/b>才能被感知","分鼻前嗅覺與\u003cb>鼻後嗅覺\u003c/b>（食物在口中時）","決定了「這是草莓還是芒果」"]},"note":"所以熱食比冷食香（分子揮發快）、油脂能延長風味（溶解並緩慢釋放香氣分子）、鼻塞時吃什麼都只剩甜鹹酸苦。"},{"type":"note","text":"\u003cb>閾值（threshold）\u003c/b>：能被察覺的最低濃度。不同呈味物質差距極大 —— 苦味物質的閾值可低到 ppb 等級，而甜味通常要到百分之幾。這也是為什麼一點點苦味缺陷就足以毀掉整個產品，而甜味必須加到相當量才嚐得出來。"}]},{"id":"m-enz","nav":"酵素","kicker":"MODULE 3 · 酵素","h2":"酵素：食品裡最有用、也最麻煩的蛋白質","lead":"酵素本身是蛋白質（第 4 週學過），所以會被熱與極端 pH 變性失活。食品科學一半的工作是「利用它」，另一半是「阻止它」。","blocks":[{"type":"table","title":"一、食品中重要的酵素","head":["酵素","作用","食品中的角色"],"rows":[["澱粉酶 amylase","分解澱粉成糊精與糖","\u003cb>利用\u003c/b>：麥芽糖製造、麵包發酵供糖、果汁澄清"],["蛋白酶 protease","分解蛋白質","\u003cb>利用\u003c/b>：木瓜酵素／鳳梨酵素嫩化肉品、凝乳酶製乳酪、醬油釀造"],["果膠酶 pectinase","分解果膠","\u003cb>利用\u003c/b>：果汁澄清、提高榨汁率\u003cbr>\u003cb>阻止\u003c/b>：番茄醬需先鈍化以維持稠度"],["脂解酶 lipase","水解三酸甘油酯","\u003cb>利用\u003c/b>：乳酪熟成風味\u003cbr>\u003cb>阻止\u003c/b>：造成水解酸敗（第 5 週）"],["脂氧合酶 lipoxygenase","催化不飽和脂肪酸氧化","\u003cb>阻止\u003c/b>：豆漿的豆腥味、冷凍蔬菜的異味來源"],["多酚氧化酶 PPO","催化酚類氧化成醌","\u003cb>阻止\u003c/b>：切面褐變\u003cbr>\u003cb>利用\u003c/b>：紅茶發酵、可可發酵"]]},{"type":"timeline","title":"二、酵素性褐變的三步驟","hint":"蘋果、香蕉、馬鈴薯、酪梨切開後變色，走的都是這條路。","steps":[{"h":"細胞被破壞","p":"切割、碰撞或去皮使細胞結構破裂，原本分隔的酚類基質與 PPO 得以接觸。","c":"#F5A623"},{"h":"PPO ＋ 酚類 ＋ 氧 → 醌","p":"多酚氧化酶在有氧條件下把酚類氧化成醌類。這一步是\u003cb>唯一需要酵素\u003c/b>的步驟。","c":"#D65B5B"},{"h":"醌聚合成黑色素","p":"醌類自行聚合成褐色至黑色的色素（melanin），此步驟不需酵素，一旦生成便無法逆轉。","c":"#2D2A6E"}]},{"type":"cards","title":"三、控制酵素性褐變的五條路","hint":"反應需要「酵素 ＋ 基質 ＋ 氧」三者，拿掉任何一個都能阻斷。","cols":3,"items":[{"h":"去除酵素活性","c":"#D65B5B","li":["\u003cb>殺菁\u003c/b>：熱使 PPO 變性","冷凍蔬菜的標準前處理","缺點：有溶出損失與質地改變"]},{"h":"調整 pH","c":"#2FA36B","li":["PPO 最適 pH 約 6–7","泡檸檬水、加檸檬酸降到 pH 4 以下","同時維生素 C 也有還原作用"]},{"h":"隔絕氧氣","c":"#00B8B8","li":["泡水、泡糖水或鹽水","真空／充氮包裝","塗覆可食性膜"]},{"h":"還原劑","c":"#5B4FB8","li":["抗壞血酸把醌還原回酚類","亞硫酸鹽效果強但受法規限制","須注意過敏族群"]},{"h":"螯合金屬","c":"#F5A623","li":["PPO 活性中心含銅","檸檬酸、EDTA 可螯合","同時兼具降 pH 效果"]},{"h":"低溫","c":"#2D2A6E","li":["降低酵素反應速率","只能延緩，不能阻止","常與上述方法併用"]}]},{"type":"match","title":"酵素應用配對挑戰","hint":"把上方標籤拖到（或先點標籤再點空格）對應的描述。全部答對即通關。","done":"✓ 全部答對！酵素的利用與抑制都掌握了。","pairs":[{"label":"多酚氧化酶","desc":"催化切面褐變；同時也是紅茶發酵所需"},{"label":"果膠酶","desc":"分解果膠以澄清果汁、提高榨汁率"},{"label":"鳳梨酵素","desc":"蛋白酶，可嫩化肉品，也會讓明膠果凍凝固不了"},{"label":"凝乳酶","desc":"使酪蛋白凝結，製作乳酪的關鍵"},{"label":"脂氧合酶","desc":"催化不飽和脂肪酸氧化，造成豆腥味"}]},{"type":"note","kind":"key","text":"\u003cb>殺菁（blanching）的主要目的是鈍化酵素，不是殺菌。\u003c/b>冷凍雖能停止微生物生長，卻擋不住酵素 —— 未殺菁的冷凍蔬菜在 −18°C 下仍會慢慢褐變、產生異味、流失顏色。這個觀念在第 12 週冷凍保存會再出現。"}]},{"id":"m-quiz","nav":"綜合測驗","kicker":"MODULE 4 · 綜合測驗","h2":"小測驗：檢核學習成效","lead":"共 10 題單選，涵蓋三個模組。作答後即時顯示正解與解析，最後計算分數。","blocks":[{"type":"quiz","items":[{"q":"綠色蔬菜久煮後變成橄欖褐色，是因為葉綠素發生了什麼變化？","o":["被氧化成過氧化物","與蛋白質結合而沉澱","中心的鎂離子被氫取代，形成脫鎂葉綠素","分解成類胡蘿蔔素"],"a":2,"e":"加熱釋出的有機酸使葉綠素中心的 Mg²⁺ 被 H⁺ 取代，形成橄欖褐色的 pheophytin。大水快燙、不加蓋可減少此現象。"},{"q":"下列何種色素對 pH 最敏感，酸性呈紅色、鹼性偏藍綠？","o":["花青素","類胡蘿蔔素","葉綠素","肌紅蛋白"],"a":0,"e":"花青素是天然的酸鹼指示劑，紫甘藍加醋變紅、加鹼變藍綠即為此故。"},{"q":"番茄的紅色主要來自下列哪一種色素？","o":["花青素","甜菜色素","葉綠素","茄紅素"],"a":3,"e":"茄紅素屬類胡蘿蔔素，脂溶性且耐熱，因此番茄用油烹煮反而更容易被人體吸收。"},{"q":"真空包裝的牛肉打開後，由暗紫紅轉為鮮紅色，是因為肌紅蛋白？","o":["被氧化成變性肌紅蛋白","與氧結合成氧合肌紅蛋白","與亞硝酸鹽結合","被蛋白酶分解"],"a":1,"e":"去氧肌紅蛋白（暗紫紅）接觸空氣後形成氧合肌紅蛋白（鮮紅）；若進一步氧化成變性肌紅蛋白則轉為褐色。"},{"q":"火腿、香腸呈現的粉紅色，是肌紅蛋白與下列何者作用的結果？","o":["維生素 C","食鹽","磷酸鹽","亞硝酸鹽"],"a":3,"e":"亞硝酸鹽形成亞硝基肌紅蛋白，加熱後仍維持粉紅色；它同時能有效抑制肉毒桿菌。"},{"q":"蘋果、酪梨切開後產生褐變，主要負責的酵素是？","o":["多酚氧化酶（PPO）","澱粉酶","脂解酶","蛋白酶"],"a":0,"e":"PPO 在有氧下把酚類氧化成醌，醌再聚合成褐色素。此為酵素性褐變，與梅納反應（非酵素性）不同。"},{"q":"下列哪一項「無法」有效抑制酵素性褐變？","o":["泡在檸檬水或鹽水中","加熱殺菁使酵素失活","切好後放在室溫通風處","真空或充氮包裝"],"a":2,"e":"通風等於提供更多氧氣，反而加速褐變。抑制的三條路是：去除酵素、降 pH、隔絕氧氣。"},{"q":"蔬菜在冷凍前先進行「殺菁（blanching）」，最主要的目的是？","o":["殺死所有微生物","鈍化酵素","增加甜度","使顏色變得更深"],"a":1,"e":"冷凍能停止微生物生長卻擋不住酵素。未殺菁的冷凍蔬菜仍會緩慢褐變、產生異味。"},{"q":"新鮮鳳梨會讓明膠果凍凝固不起來，是因為鳳梨含有？","o":["蛋白酶（鳳梨酵素）","果膠酶","澱粉酶","脂解酶"],"a":0,"e":"明膠是蛋白質，被鳳梨酵素分解後就無法形成凝膠網狀。改用罐頭鳳梨（已加熱失活）即可解決。"},{"q":"「鮮味（umami）」的主要呈味物質是？","o":["葡萄糖","檸檬酸","麩胺酸與核苷酸","單寧"],"a":2,"e":"麩胺酸（昆布、番茄、乳酪）與核苷酸 IMP／GMP（柴魚、香菇）併用時具有明顯的相乘效果。"}]}]}]};</script>
+<script>
+/*
+ * runtime.client.js — 跑在瀏覽器裡的渲染器（17 週共用，逐字內嵌進每份 HTML）
+ * 讀 window.__LESSON__ 的資料，把 modules / blocks 畫出來。
+ * 互動行為（翻卡、展開、配對、測驗）沿用週1 手寫版的做法，不要另創一套。
+ */
+(function () {
+  var D = window.__LESSON__;
+  var SERIES = D.series;
+  var $ = function (s) { return document.querySelector(s); };
+
+  function el(tag, cls, html) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (html != null) e.innerHTML = html;
+    return e;
+  }
+  function colorAt(given, i) { return given || SERIES[i % SERIES.length]; }
+  function gridCls(n) { return "grid g" + (n === 2 || n === 3 || n === 4 ? n : 3); }
+  function listHtml(v) {
+    // body 可以是字串或字串陣列；陣列渲染成 <ul>
+    if (v == null) return "";
+    if (typeof v === "string") return '<p>' + v + '</p>';
+    return '<ul>' + v.map(function (x) { return '<li>' + x + '</li>'; }).join("") + '</ul>';
+  }
+
+  /* ---------- 區塊標題 ---------- */
+  function heading(frag, b) {
+    if (b.title) frag.appendChild(el("div", "sec-title", '<span class="bar"></span>' + b.title));
+    if (b.hint) frag.appendChild(el("div", "hint", b.hint));
+  }
+
+  /* ---------- 各區塊 ---------- */
+  var BLOCKS = {};
+
+  BLOCKS.flips = function (b) {
+    var f = document.createDocumentFragment(); heading(f, b);
+    var g = el("div", gridCls(b.cols || 4));
+    b.items.forEach(function (d, i) {
+      var c = colorAt(d.c, i);
+      var card = el("div", "flip");
+      if (b.h) card.style.height = b.h + "px";
+      card.innerHTML =
+        '<div class="flip-in">' +
+        '<div class="face front"><div class="cbar" style="background:' + c + '"></div>' +
+        '<div class="t">' + d.t + '</div><div class="en">' + (d.en || "") + '</div>' +
+        '<div class="tap">▸ 點我看解釋</div></div>' +
+        '<div class="face back"><div class="cbar" style="background:' + c + '"></div>' +
+        '<p>' + d.b + '</p></div></div>';
+      card.onclick = function () { card.classList.toggle("on"); };
+      g.appendChild(card);
+    });
+    f.appendChild(g); return f;
+  };
+
+  BLOCKS.exp = function (b) {
+    var f = document.createDocumentFragment(); heading(f, b);
+    var host = el("div");
+    b.items.forEach(function (t, i) {
+      var box = el("div", "exp");
+      var res = t.res ? '<div style="margin-top:10px;font-size:13px;color:var(--secondary);font-weight:700">🔗 ' + t.res + '</div>' : "";
+      box.innerHTML =
+        '<button><span class="num">' + (i + 1) + '</span><span>' + t.h + '</span>' +
+        '<span class="tag">' + (t.tag || "") + '</span><span class="chev">›</span></button>' +
+        '<div class="body">' + listHtml(t.body) + res + '</div>';
+      var body = box.querySelector(".body");
+      box.querySelector("button").onclick = function () {
+        var on = box.classList.toggle("on");
+        if (!on) { body.style.maxHeight = "0px"; return; }
+        // 用實際內容高度展開，避免長段落被固定 max-height 截掉。
+        // 必須先解除 max-height 再量：在 max-height:0 的狀態下量 scrollHeight 會得到 0，
+        // 面板就只會開一條縫（實測過）。量完歸零並強制重排，transition 才有起點。
+        body.style.maxHeight = "none";
+        var h = body.scrollHeight;
+        body.style.maxHeight = "0px";
+        void body.offsetHeight;
+        body.style.maxHeight = h + "px";
+      };
+      host.appendChild(box);
+    });
+    f.appendChild(host); return f;
+  };
+
+  BLOCKS.cards = function (b) {
+    var f = document.createDocumentFragment(); heading(f, b);
+    var g = el("div", gridCls(b.cols || 4));
+    b.items.forEach(function (c, i) {
+      var accent = colorAt(c.c, i);
+      var box = el("div", "card");
+      box.style.borderTop = "4px solid " + accent;
+      box.innerHTML = '<div class="h">' + c.h + '</div>' +
+        (c.en ? '<div class="en">' + c.en + '</div>' : "") +
+        (c.li ? '<ul>' + c.li.map(function (x) { return '<li>' + x + '</li>'; }).join("") + '</ul>' : "") +
+        (c.p ? '<p style="margin-top:8px;font-size:15.5px;color:var(--mid)">' + c.p + '</p>' : "");
+      g.appendChild(box);
+    });
+    f.appendChild(g); return f;
+  };
+
+  BLOCKS.timeline = function (b) {
+    var f = document.createDocumentFragment(); heading(f, b);
+    var host = el("div", "tl");
+    b.steps.forEach(function (s, i) {
+      var st = el("div", "step");
+      st.innerHTML = '<div class="dot" style="background:' + colorAt(s.c, i) + '">' + (i + 1) + '</div>' +
+        '<h4>' + s.h + '</h4><p>' + s.p + '</p>';
+      host.appendChild(st);
+    });
+    f.appendChild(host); return f;
+  };
+
+  BLOCKS.compare = function (b) {
+    var f = document.createDocumentFragment(); heading(f, b);
+    var wrap = el("div", "cmp");
+    [b.left, b.right].forEach(function (c, i) {
+      var accent = colorAt(c.c, i);
+      var col = el("div", "col");
+      col.innerHTML = '<div class="cbar" style="background:' + accent + '"></div>' +
+        '<h4 style="color:' + accent + '">' + c.h + '</h4>' +
+        (c.en ? '<div class="en">' + c.en + '</div>' : "") +
+        '<ul>' + c.li.map(function (x) { return '<li>' + x + '</li>'; }).join("") + '</ul>';
+      wrap.appendChild(col);
+    });
+    f.appendChild(wrap);
+    if (b.note) f.appendChild(el("div", "cmp-note", b.note));
+    return f;
+  };
+
+  BLOCKS.table = function (b) {
+    var f = document.createDocumentFragment(); heading(f, b);
+    var wrap = el("div", "tblwrap");
+    var html = '<table class="tbl"><thead><tr>' +
+      b.head.map(function (h) { return '<th>' + h + '</th>'; }).join("") + '</tr></thead><tbody>' +
+      b.rows.map(function (r) {
+        return '<tr>' + r.map(function (c) { return '<td>' + c + '</td>'; }).join("") + '</tr>';
+      }).join("") + '</tbody></table>';
+    wrap.innerHTML = html;
+    f.appendChild(wrap); return f;
+  };
+
+  BLOCKS.note = function (b) {
+    var f = document.createDocumentFragment(); heading(f, b);
+    f.appendChild(el("div", "note" + (b.kind ? " " + b.kind : ""), b.text));
+    return f;
+  };
+
+  BLOCKS.match = function (b) {
+    var f = document.createDocumentFragment(); heading(f, b);
+    var host = el("div", "match-wrap");
+    var pool = el("div", "pool"), targets = el("div", "targets");
+    var pairs = b.pairs;
+    var order = pairs.slice().sort(function () { return Math.random() - 0.5; });
+    var selected = null, solved = 0;
+    var msg = el("div");
+    msg.style.cssText = "margin-top:14px;font-weight:700;color:var(--green)";
+
+    function tryMatch(slot, key) {
+      if (slot.classList.contains("ok")) return;
+      if (slot.dataset.k === key) {
+        slot.classList.add("ok"); slot.classList.remove("bad");
+        slot.querySelector(".drop").textContent = key;
+        var chip = pool.querySelector('.chip[data-k="' + key + '"]');
+        chip.classList.add("used"); chip.classList.remove("sel");
+        selected = null; solved++;
+        if (solved === pairs.length) msg.textContent = b.done || "✓ 全部答對！";
+      } else {
+        slot.classList.add("bad");
+        setTimeout(function () { slot.classList.remove("bad"); }, 350);
+      }
+    }
+    order.forEach(function (q) {
+      var c = el("div", "chip"); c.textContent = q.label; c.draggable = true; c.dataset.k = q.label;
+      c.addEventListener("dragstart", function (e) { e.dataTransfer.setData("k", q.label); });
+      c.onclick = function () {
+        if (c.classList.contains("used")) return;
+        if (selected === c) { c.classList.remove("sel"); selected = null; return; }
+        pool.querySelectorAll(".chip").forEach(function (x) { x.classList.remove("sel"); });
+        c.classList.add("sel"); selected = c;
+      };
+      pool.appendChild(c);
+    });
+    pairs.forEach(function (q) {
+      var s = el("div", "slot"); s.dataset.k = q.label;
+      s.innerHTML = '<div class="drop">拖到這裡</div><div class="desc">' + q.desc + '</div>';
+      s.addEventListener("dragover", function (e) { e.preventDefault(); });
+      s.addEventListener("drop", function (e) { e.preventDefault(); tryMatch(s, e.dataTransfer.getData("k")); });
+      s.onclick = function () { if (selected) tryMatch(s, selected.dataset.k); };
+      targets.appendChild(s);
+    });
+    host.appendChild(pool); host.appendChild(targets); host.appendChild(msg);
+    f.appendChild(host); return f;
+  };
+
+  /* 結果代碼：把作答結果編成一串可貼給老師的代碼（FSQ1.<base64>.<檢查碼>）。
+     解碼與彙整用專案根目錄的「食品科學概論_測驗成績解碼器.html」。 */
+  function b64utf8(s) { return btoa(unescape(encodeURIComponent(s))); }
+  function checksum(s) {
+    var h = 0;
+    for (var i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) % 1679616; // 36^4
+    return h.toString(36);
+  }
+
+  BLOCKS.quiz = function (b) {
+    var f = document.createDocumentFragment(); heading(f, b);
+    var items = b.items, n = items.length;
+    var head = el("div", "quiz-head");
+    head.innerHTML =
+      '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">' +
+      '<input class="qid" placeholder="學號（交成績必填）" style="flex:1;min-width:130px;padding:8px 10px;border:1.5px solid var(--line,#ccc);border-radius:8px;font-size:15px">' +
+      '<input class="qname" placeholder="姓名" style="flex:1;min-width:100px;padding:8px 10px;border:1.5px solid var(--line,#ccc);border-radius:8px;font-size:15px"></div>' +
+      '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">' +
+      '<strong class="qprog">進度 0 / ' + n + '</strong>' +
+      '<span class="qscore" style="color:var(--secondary);font-weight:800">得分 0</span></div>' +
+      '<div class="pbar"><div class="pfill"></div></div>';
+    var box = el("div");
+    var sb = el("div", "scorebox");
+    sb.innerHTML = '<div>你的成績</div><div class="big"><span class="fscore">0</span> / ' + n + '</div>' +
+      '<div class="smsg" style="margin:8px 0 16px"></div>' +
+      '<div class="rcwrap" style="margin:0 auto 16px;max-width:560px;text-align:left">' +
+      '<div style="font-weight:700;margin-bottom:6px">結果代碼（請複製後，貼到老師指定的表單或訊息）</div>' +
+      '<textarea class="rcode" readonly rows="3" style="width:100%;box-sizing:border-box;font-family:monospace;font-size:12px;padding:8px;border:1.5px solid var(--line,#ccc);border-radius:8px;resize:none"></textarea>' +
+      '<div class="rmsg" style="font-size:13px;color:#B34700;margin-top:4px"></div>' +
+      '<button class="btn copyrc" style="margin-top:8px">📋 複製結果代碼</button></div>' +
+      '<button class="btn ghost">重新測驗</button>';
+
+    var answered = 0, score = 0, picks = [];
+    function updateProg() {
+      head.querySelector(".qprog").textContent = "進度 " + answered + " / " + n;
+      head.querySelector(".qscore").textContent = "得分 " + score;
+      head.querySelector(".pfill").style.width = (answered / n * 100) + "%";
+    }
+    function finish() {
+      sb.querySelector(".fscore").textContent = score;
+      var pct = score / n, m;
+      if (score === n) m = "滿分！你完全掌握本週重點 🎉";
+      else if (pct >= 0.8) m = "很棒！觀念相當扎實。";
+      else if (pct >= 0.6) m = "不錯，再複習幾個弱點就更好。";
+      else m = "建議回到前面單元再看一次翻卡與展開內容。";
+      sb.querySelector(".smsg").textContent = m;
+
+      var sid = head.querySelector(".qid").value.trim();
+      var sname = head.querySelector(".qname").value.trim();
+      var korr = items.map(function (item, i) { return picks[i] === item.a ? 1 : 0; }).join("");
+      var payload = JSON.stringify({
+        w: D.week || 0, id: sid, nm: sname, s: score, n: n,
+        a: picks, k: korr, t: new Date().toISOString().slice(0, 16),
+      });
+      var body = b64utf8(payload);
+      var code = "FSQ1." + body + "." + checksum(body);
+      sb.querySelector(".rcode").value = code;
+      sb.querySelector(".rmsg").textContent = sid ? "" : "⚠ 尚未填學號 —— 請回到測驗上方填入學號後重新測驗，否則老師無法登記成績。";
+
+      sb.classList.add("show");
+      sb.scrollIntoView({ behavior: "smooth" });
+    }
+    function pick(qel, item, oi) {
+      if (qel.dataset.done === "1") return;
+      qel.dataset.done = "1"; answered++;
+      picks[parseInt(qel.dataset.qi, 10)] = oi;
+      qel.querySelectorAll(".opt").forEach(function (btn, i) {
+        btn.classList.add("dim");
+        if (i === item.a) btn.classList.add("correct");
+        if (i === oi && oi !== item.a) btn.classList.add("wrong");
+      });
+      var fb = qel.querySelector(".fb");
+      if (oi === item.a) { score++; fb.classList.add("good"); fb.innerHTML = "✓ 正確！" + item.e; }
+      else { fb.classList.add("no"); fb.innerHTML = "✗ 正解：" + item.o[item.a] + "。" + item.e; }
+      fb.classList.add("show"); updateProg();
+      if (answered === n) finish();
+    }
+    function build() {
+      box.innerHTML = ""; answered = 0; score = 0; picks = []; updateProg();
+      sb.classList.remove("show");
+      items.forEach(function (item, qi) {
+        var qel = el("div", "q"); qel.dataset.done = "0"; qel.dataset.qi = qi;
+        qel.innerHTML = '<div class="qn">第 ' + (qi + 1) + ' 題</div><div class="qt">' + item.q + '</div>';
+        item.o.forEach(function (opt, oi) {
+          var btn = el("button", "opt"); btn.textContent = opt;
+          btn.onclick = function () { pick(qel, item, oi); };
+          qel.appendChild(btn);
+        });
+        qel.appendChild(el("div", "fb"));
+        box.appendChild(qel);
+      });
+    }
+    sb.querySelector(".copyrc").onclick = function () {
+      var ta = sb.querySelector(".rcode");
+      ta.select(); ta.setSelectionRange(0, 99999);
+      var btn = this;
+      function ok() { btn.textContent = "✓ 已複製，請貼給老師"; setTimeout(function () { btn.textContent = "📋 複製結果代碼"; }, 2000); }
+      if (navigator.clipboard && navigator.clipboard.writeText)
+        navigator.clipboard.writeText(ta.value).then(ok, function () { document.execCommand("copy"); ok(); });
+      else { document.execCommand("copy"); ok(); }
+    };
+    sb.querySelector(".ghost").onclick = function () {
+      build(); window.scrollTo({ top: 0, behavior: "smooth" });
+    };
+    build();
+    f.appendChild(head); f.appendChild(box); f.appendChild(sb);
+    return f;
+  };
+
+  /* ---------- 組裝 ---------- */
+  var nav = $("#nav"), main = $("#main");
+  function switchMod(id, btn) {
+    document.querySelectorAll(".module").forEach(function (m) { m.classList.remove("active"); });
+    document.getElementById(id).classList.add("active");
+    nav.querySelectorAll("button").forEach(function (x) { x.classList.remove("active"); });
+    btn.classList.add("active");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+  D.modules.forEach(function (m, i) {
+    var btn = el("button", i === 0 ? "active" : "", m.nav);
+    btn.onclick = function () { switchMod(m.id, btn); };
+    nav.appendChild(btn);
+
+    var sec = el("section", "module" + (i === 0 ? " active" : ""));
+    sec.id = m.id;
+    sec.appendChild(el("div", "lead",
+      '<div class="kicker">' + m.kicker + '</div><h2>' + m.h2 + '</h2><p>' + m.lead + '</p>'));
+    m.blocks.forEach(function (b) {
+      var render = BLOCKS[b.type];
+      if (!render) { console.error("未知區塊型別:", b.type); return; }
+      sec.appendChild(render(b));
+    });
+    main.appendChild(sec);
+  });
+})();
+</script>
+</body>
+</html>

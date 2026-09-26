@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>食品科學概論 第17週 · 互動教學</title>
+<style>
+  :root{
+    --primary:#2D2A6E; --secondary:#5B4FB8; --accent:#00B8B8; --warm:#F5A623; --green:#2FA36B; --red:#D65B5B; --dark:#1A1A3E; --bg:#F4F5FA; --text:#1F1F2E; --mid:#5A5A75; --muted:#9096ac; --border:#E2E2EC; --card:#fff;
+  }
+/* 版型樣式 — 逐條取自「第1週_互動教學.html」，末段為新增區塊（cmp / tbl / note）。
+   這裡只用 var(--x)；色票由 tokens.js 產生 :root 注入。 */
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Segoe UI","Noto Sans TC","Microsoft JhengHei",system-ui,sans-serif;
+  background:var(--bg);color:var(--text);line-height:1.7;font-size:17px}
+header{background:linear-gradient(120deg,var(--dark),var(--primary));color:#fff;
+  padding:26px 22px 0;position:sticky;top:0;z-index:50;box-shadow:0 2px 14px rgba(0,0,0,.15)}
+header h1{font-size:31px;font-weight:800;letter-spacing:.5px}
+header .sub{color:#b9c7ff;font-size:16px;margin-top:5px}
+nav{display:flex;gap:6px;margin-top:16px;flex-wrap:wrap}
+nav button{background:rgba(255,255,255,.10);color:#dfe4ff;border:none;padding:12px 18px;
+  border-radius:10px 10px 0 0;font-size:16.5px;cursor:pointer;font-weight:600;transition:.15s}
+nav button:hover{background:rgba(255,255,255,.2)}
+nav button.active{background:var(--bg);color:var(--primary)}
+main{max-width:1080px;margin:0 auto;padding:26px 18px 80px}
+.module{display:none;animation:fade .35s}
+.module.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.lead{background:var(--dark);color:#fff;border-radius:14px;padding:22px 24px;margin-bottom:22px}
+.lead .kicker{color:var(--accent);font-weight:700;font-size:14px;letter-spacing:1px}
+.lead h2{font-size:26px;margin:6px 0 8px}
+.lead p{color:#cdd3ee;font-size:16.5px}
+.sec-title{font-size:23px;font-weight:800;color:var(--primary);margin:30px 0 6px;
+  display:flex;align-items:center;gap:10px}
+.sec-title .bar{width:6px;height:25px;background:var(--accent);border-radius:3px;display:inline-block}
+.hint{color:var(--mid);font-size:15px;margin-bottom:14px}
+.grid{display:grid;gap:14px}
+.g2{grid-template-columns:repeat(2,1fr)} .g3{grid-template-columns:repeat(3,1fr)}
+.g4{grid-template-columns:repeat(4,1fr)}
+@media(max-width:820px){.g3,.g4{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:520px){.g2,.g3,.g4{grid-template-columns:1fr}}
+
+/* flip cards */
+.flip{perspective:1100px;height:200px;cursor:pointer}
+.flip-in{position:relative;width:100%;height:100%;transition:transform .6s;transform-style:preserve-3d}
+.flip.on .flip-in{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;backface-visibility:hidden;border-radius:14px;padding:18px;
+  display:flex;flex-direction:column;justify-content:center;box-shadow:0 3px 10px rgba(30,30,60,.08);border:1px solid var(--border)}
+.front{background:var(--card)}
+.front .t{font-size:21px;font-weight:800;color:var(--primary)}
+.front .en{color:var(--muted);font-size:14px;margin-top:3px;font-style:italic}
+.front .tap{margin-top:auto;color:var(--accent);font-size:14px;font-weight:700}
+.back{background:linear-gradient(135deg,var(--primary),var(--secondary));color:#fff;transform:rotateY(180deg);overflow:auto}
+.back p{font-size:16px}
+.cbar{height:6px;border-radius:14px 14px 0 0;position:absolute;top:0;left:0;right:0}
+
+/* expandable */
+.exp{background:var(--card);border:1px solid var(--border);border-radius:12px;margin-bottom:10px;overflow:hidden}
+.exp>button{width:100%;text-align:left;background:none;border:none;padding:16px 18px;cursor:pointer;
+  display:flex;align-items:center;gap:12px;font-size:18px;font-weight:700;color:var(--text)}
+.exp .num{background:var(--primary);color:#fff;min-width:32px;height:32px;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800}
+.exp .chev{margin-left:auto;color:var(--muted);transition:.25s;font-size:20px}
+.exp.on .chev{transform:rotate(90deg);color:var(--accent)}
+.exp .body{max-height:0;overflow:hidden;transition:max-height .3s ease;padding:0 18px}
+.exp.on .body{padding:0 18px 16px 62px}
+.exp .body ul{margin-left:16px;color:var(--mid);font-size:16px}
+.exp .body p{color:var(--mid);font-size:15.5px}
+.exp .tag{font-size:13.5px;color:var(--muted);font-weight:600;margin-left:8px}
+
+/* info card */
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px;
+  box-shadow:0 3px 10px rgba(30,30,60,.06)}
+.card .h{font-weight:800;color:var(--primary);font-size:18px;margin-bottom:6px}
+.card .en{color:var(--muted);font-size:13px;font-style:italic}
+.card ul{margin:8px 0 0 18px;font-size:15.5px;color:var(--mid)}
+
+/* timeline */
+.tl{display:flex;gap:0;flex-wrap:wrap;counter-reset:s}
+.tl .step{flex:1;min-width:180px;background:var(--card);border:1px solid var(--border);border-radius:12px;
+  padding:16px 14px 14px;margin:8px;position:relative}
+.tl .dot{width:34px;height:34px;border-radius:50%;color:#fff;display:flex;align-items:center;
+  justify-content:center;font-weight:800;margin-bottom:8px}
+.tl .step h4{color:var(--primary);font-size:17.5px;margin-bottom:4px}
+.tl .step p{font-size:15px;color:var(--mid)}
+
+/* matching */
+.match-wrap{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px}
+.pool{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+.chip{background:var(--secondary);color:#fff;padding:10px 17px;border-radius:22px;font-weight:700;
+  cursor:grab;user-select:none;font-size:16.5px;box-shadow:0 2px 6px rgba(0,0,0,.12)}
+.chip.used{opacity:.35;pointer-events:none}
+.chip.sel{outline:3px solid var(--warm);outline-offset:2px}
+.targets{display:grid;gap:10px}
+.slot{display:flex;align-items:center;gap:12px;border:2px dashed var(--border);border-radius:12px;padding:10px 14px;background:#fafbff}
+.slot .desc{flex:1;font-size:16px;color:var(--text)}
+.slot .drop{min-width:130px;min-height:44px;border-radius:8px;background:#eef0f8;display:flex;
+  align-items:center;justify-content:center;color:var(--muted);font-size:15px;padding:8px 12px}
+.slot.ok{border-color:var(--green);background:#effaf3}
+.slot.ok .drop{background:var(--green);color:#fff;font-weight:700}
+.slot.bad{border-color:var(--red);animation:shake .3s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+
+/* quiz */
+.quiz-head{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px;margin-bottom:16px}
+.pbar{height:12px;background:#e7e9f4;border-radius:8px;overflow:hidden;margin-top:10px}
+.pfill{height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--secondary));transition:width .4s}
+.q{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:14px}
+.q .qn{color:var(--accent);font-weight:800;font-size:14px}
+.q .qt{font-size:19.5px;font-weight:700;margin:6px 0 14px}
+.opt{display:block;width:100%;text-align:left;background:#fafbff;border:2px solid var(--border);
+  border-radius:10px;padding:13px 16px;margin-bottom:9px;cursor:pointer;font-size:16.5px;transition:.15s}
+.opt:hover{border-color:var(--secondary)}
+.opt.correct{border-color:var(--green);background:#effaf3;font-weight:700}
+.opt.wrong{border-color:var(--red);background:#fdeeee}
+.opt.dim{opacity:.6}
+.fb{margin-top:8px;font-size:15.5px;padding:11px 14px;border-radius:9px;display:none}
+.fb.show{display:block}
+.fb.good{background:#effaf3;color:#1c7a4d} .fb.no{background:#fdeeee;color:#a83b3b}
+.scorebox{background:linear-gradient(135deg,var(--primary),var(--secondary));color:#fff;border-radius:16px;
+  padding:26px;text-align:center;margin-top:10px;display:none}
+.scorebox.show{display:block}
+.scorebox .big{font-size:46px;font-weight:800}
+.btn{background:var(--accent);color:#fff;border:none;padding:11px 22px;border-radius:10px;
+  font-weight:700;cursor:pointer;font-size:15px}
+.btn.ghost{background:rgba(255,255,255,.18)}
+.tagrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+.pill{font-size:12px;background:#eef0fb;color:var(--secondary);padding:3px 10px;border-radius:20px;font-weight:700}
+footer{text-align:center;color:var(--muted);font-size:12.5px;padding:24px}
+
+/* ===== 新增區塊 ===== */
+/* compare：兩欄對照（梅納 vs 焦糖化、冷藏 vs 冷凍…） */
+.cmp{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:stretch}
+@media(max-width:640px){.cmp{grid-template-columns:1fr}}
+.cmp .col{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:0 18px 18px;
+  box-shadow:0 3px 10px rgba(30,30,60,.06);position:relative;overflow:hidden}
+.cmp .col .cbar{position:static;height:6px;margin:0 -18px 14px;border-radius:0}
+.cmp .col h4{font-size:20px;font-weight:800;margin-bottom:2px}
+.cmp .col .en{color:var(--muted);font-size:13px;font-style:italic;margin-bottom:8px}
+.cmp .col ul{margin-left:18px;font-size:15.5px;color:var(--mid)}
+.cmp .col li{margin-bottom:5px}
+.cmp-note{margin-top:12px;background:#eef0fb;border-left:5px solid var(--secondary);
+  border-radius:0 10px 10px 0;padding:12px 16px;font-size:16px;color:var(--primary);font-weight:600}
+
+/* table：資料表（維生素、添加物分類…） */
+.tblwrap{overflow-x:auto;background:var(--card);border:1px solid var(--border);border-radius:14px;
+  box-shadow:0 3px 10px rgba(30,30,60,.06)}
+.tbl{border-collapse:collapse;width:100%;min-width:520px;font-size:15.5px}
+.tbl th{background:var(--primary);color:#fff;text-align:left;padding:12px 14px;font-weight:700;font-size:15px}
+.tbl td{padding:11px 14px;border-top:1px solid var(--border);color:var(--mid);vertical-align:top}
+.tbl tr:nth-child(even) td{background:#fafbff}
+.tbl td:first-child{color:var(--text);font-weight:700}
+
+/* note：重點提示條 */
+.note{background:#fff8e9;border-left:5px solid var(--warm);border-radius:0 12px 12px 0;
+  padding:14px 18px;margin:14px 0;font-size:16px;color:var(--text)}
+.note b{color:var(--primary)}
+.note.key{background:#effaf3;border-left-color:var(--green)}
+.note.warn{background:#fdeeee;border-left-color:var(--red)}
+</style>
+</head>
+<body>
+<header>
+  <h1>食品科學概論 · 第 17 週 互動教學</h1>
+  <div class="sub">三大危害　·　GHP 與 HACCP 七大原則　·　台灣食安法與標示　·　感官評定與品管　＋　互動測驗</div>
+  <nav id="nav"></nav>
+</header>
+<main id="main"></main>
+<footer>互動教材 · 依課程大綱與指定教科書整理 · 供食品科學概論教學使用</footer>
+<script>window.__LESSON__={"week":17,"series":["#2D2A6E","#2FA36B","#F5A623","#5B4FB8","#00B8B8","#D65B5B"],"modules":[{"id":"m-hazard","nav":"三大危害","kicker":"MODULE 1 · 危害","h2":"食品危害只有三類，但每一類都有很多張臉","lead":"危害分析是所有食品安全管理的起點。分類看起來簡單，難的是在自己的產線上把它們一一指認出來。","blocks":[{"type":"cards","title":"一、生物性、化學性、物理性","cols":3,"items":[{"h":"生物性危害","en":"Biological","c":"#D65B5B","li":["病原細菌（沙門氏菌、李斯特菌…）","病毒（諾羅、A 型肝炎）","寄生蟲（旋毛蟲、中華肝吸蟲）","\u003cb>黴菌毒素\u003c/b>（黃麴毒素、赭麴毒素）"],"p":"\u003cb>發生頻率最高\u003c/b>，也是 HACCP 最主要的管制對象。"},{"h":"化學性危害","en":"Chemical","c":"#F5A623","li":["農藥殘留、動物用藥殘留","重金屬（鉛、鎘、汞、砷）","\u003cb>違法添加物\u003c/b>（三聚氰胺、塑化劑）","\u003cb>過敏原\u003c/b>（法規上列為化學性危害）","加工產生物：丙烯醯胺、PAH、亞硝胺"],"p":"多為長期低劑量暴露，不會立刻發病但影響深遠。"},{"h":"物理性危害","en":"Physical","c":"#5B4FB8","li":["金屬碎片、螺絲、釘子","玻璃、硬塑膠碎片","骨頭、果核、砂石","毛髮、飾品（作業人員帶入）"],"p":"最容易被消費者\u003cb>直接發現並申訴\u003c/b>；金屬檢測器與 X 光檢測是常見的管制手段。"}]},{"type":"note","kind":"warn","text":"\u003cb>過敏原被歸在化學性危害。\u003c/b>對一般人無害的花生、牛奶、甲殼類，對特定族群可能致命，而且\u003cb>加熱、殺菌都無法消除\u003c/b>。因此管制方式不是「殺掉它」，而是\u003cb>防止交叉接觸\u003c/b>與\u003cb>正確標示\u003c/b>。台灣現行公告應標示的過敏原包括甲殼類、芒果、花生、牛奶、蛋、堅果、芝麻、含麩質之穀物、大豆、魚類及亞硫酸鹽等。"}]},{"id":"m-haccp","nav":"GHP 與 HACCP","kicker":"MODULE 2 · 管理系統","h2":"從「事後檢驗」到「事前預防」","lead":"傳統做法是成品抽驗 —— 但抽驗只能發現問題，不能防止問題，而且抽不到的那些照樣出貨。HACCP 的核心思想是：\u003cb>在製程中就把危害控制住\u003c/b>。","blocks":[{"type":"compare","title":"一、GHP 與 HACCP 的關係","hint":"兩者不是二選一，而是地基與建築的關係。","left":{"h":"GHP 食品良好衛生規範","en":"前提方案 · 法定強制","c":"#2FA36B","li":["建築與設施、設備器具的衛生要求","從業人員健康與衛生管理","清潔消毒、蟲鼠防治、廢棄物處理","倉儲與運輸管制、供應商管理","\u003cb>所有食品業者都必須符合\u003c/b>"]},"right":{"h":"HACCP 危害分析重要管制點","en":"建立在 GHP 之上","c":"#D65B5B","li":["針對\u003cb>特定產品與製程\u003c/b>做危害分析","找出少數幾個關鍵管制點加以嚴管","以科學數據訂定管制界限","台灣對特定業別（水產、肉類、餐盒等）\u003cb>強制實施\u003c/b>","\u003cb>沒有 GHP 為基礎，HACCP 蓋不起來\u003c/b>"]},"note":"常見誤解：以為導入 HACCP 就萬事俱備。實際上若基本衛生（GHP）沒做好，HACCP 的管制點再嚴格也守不住。"},{"type":"timeline","title":"二、HACCP 七大原則","hint":"順序有邏輯，不能跳。前三項是「設計」，後四項是「運作」。","steps":[{"h":"1. 危害分析（HA）","p":"列出每個製程步驟可能的生物性、化學性、物理性危害，評估其\u003cb>嚴重性與發生可能性\u003c/b>，並訂出預防措施。","c":"#2D2A6E"},{"h":"2. 決定重要管制點（CCP）","p":"找出「\u003cb>若不控制，危害就無法在後續步驟被消除或降低到可接受程度\u003c/b>」的步驟。CCP 應\u003cb>越少越好\u003c/b>—— 太多代表沒抓到重點。","c":"#D65B5B"},{"h":"3. 建立管制界限（CL）","p":"為每個 CCP 訂出可量測的界限，例如「中心溫度 ≥ 75°C 且持續 ≥ 1 分鐘」。必須是\u003cb>能立即判讀\u003c/b>的參數，微生物檢驗結果來不及，不能當 CL。","c":"#F5A623"},{"h":"4. 建立監測方法","p":"規定由誰、多久、用什麼方法量測 CCP，確保它持續落在管制界限內，並留下紀錄。","c":"#2FA36B"},{"h":"5. 建立矯正措施","p":"萬一超出界限時要怎麼做：偏差產品如何處置、製程如何調整、原因如何排除。\u003cb>必須事先寫好\u003c/b>，不能臨場決定。","c":"#00B8B8"},{"h":"6. 建立確認程序","p":"定期驗證整套系統是否真的有效：內部稽核、校正儀器、成品檢驗、重新審視危害分析。","c":"#5B4FB8"},{"h":"7. 建立文件與紀錄","p":"所有計畫、監測、矯正、確認都要留下紀錄。\u003cb>沒有紀錄，等於沒有做\u003c/b>—— 稽查時只認得紀錄。","c":"#2D2A6E"}]},{"type":"note","kind":"key","text":"\u003cb>CCP 與一般管制點的區別：\u003c/b>洗手很重要，但它屬於 GHP 的一般衛生管理，不是 CCP；而「加熱殺菌的中心溫度」是 CCP，因為\u003cb>這一步失守，後面沒有任何步驟能補救\u003c/b>。判斷準則就是這句話。"},{"type":"cards","title":"三、台灣的三級品管架構","cols":3,"items":[{"h":"第一級：業者自主管理","c":"#2FA36B","li":["自主檢驗與紀錄","GHP／HACCP 落實","產品追溯追蹤系統"],"p":"食品安全的\u003cb>第一責任人是業者\u003c/b>。"},{"h":"第二級：第三方驗證","c":"#F5A623","li":["TQF（台灣優良食品）","ISO 22000／FSSC 22000","各類產品驗證標章"],"p":"由獨立機構稽核，提高可信度。"},{"h":"第三級：政府稽查","c":"#D65B5B","li":["食藥署與地方衛生局","抽驗、稽查、邊境查驗","違規處分與資訊公開"],"p":"最後一道防線與嚇阻力量。"}]}]},{"id":"m-sensory","nav":"感官評定","kicker":"MODULE 3 · 品質管制","h2":"感官評定：把「好不好吃」變成可分析的數據","lead":"儀器可以量硬度、色差與含糖量，但只有人能回答「消費者會不會喜歡」。感官評定就是把人當成量測工具，並用統計方法確保結果可靠。","blocks":[{"type":"table","title":"一、三大類感官試驗","hint":"先問「我想知道什麼」，再選方法。用錯方法，數據再多也沒意義。","head":["類型","回答的問題","常見方法","品評員"],"rows":[["差異試驗","兩者\u003cb>有沒有\u003c/b>差別？","\u003cb>三角測試\u003c/b>、二點法、對照差異法","訓練過的品評員，20–40 人"],["描述分析","差在\u003cb>哪裡\u003c/b>？差多少？","定量描述分析（QDA）、風味剖析","\u003cb>高度訓練\u003c/b>的小組，8–12 人"],["嗜好性試驗","消費者\u003cb>喜不喜歡\u003c/b>？","\u003cb>九分制喜好度量表\u003c/b>、偏好排序","\u003cb>未受訓練\u003c/b>的目標消費者，至少 100 人"]]},{"type":"note","text":"\u003cb>最常見的錯誤：拿訓練過的品評員去回答「好不好吃」。\u003c/b>受訓者被教會辨識細微差異，但他們的喜好無法代表市場；反過來，拿一般消費者做差異試驗，靈敏度又不足。\u003cb>方法必須配合問題與人選\u003c/b>，三者要一致。"},{"type":"exp","title":"二、怎麼讓感官數據可信（點擊展開）","hint":"感官評定最大的敵人是「偏誤」。以下都是為了排除它。","items":[{"h":"三位亂數編碼","tag":"排除期待","body":"樣品一律以\u003cb>三位隨機數字\u003c/b>標示，不用 A／B／1／2 —— 因為人會預設「A 是原本的、B 是新的」。編碼也要每位品評員都不同。"},{"h":"隨機化呈送順序","tag":"排除順序效應","body":"第一個吃到的樣品通常評分偏高（\u003cb>首位效應\u003c/b>）。因此每位品評員拿到的順序都要隨機化並平衡，讓順序效應在統計上互相抵銷。"},{"h":"獨立隔間與光源控制","tag":"排除干擾","body":"品評室需獨立隔間，避免互相影響與交談。若\u003cb>顏色差異會干擾判斷\u003c/b>（例如只想比較風味），則使用\u003cb>紅光\u003c/b>把顏色差異遮蔽掉。"},{"h":"無異味、恆溫、口腔清潔","tag":"排除背景","body":"場地不得有異味（含品評員的香水），樣品溫度一致，兩樣品之間以清水或無鹽餅乾清口，並設定間隔時間以避免感官疲勞。"},{"h":"三角測試怎麼判讀","tag":"統計","body":"給三個樣品，其中兩個相同、一個不同，請品評員找出不同的那個。\u003cb>純猜測的答對率是 1/3\u003c/b>，因此必須用統計檢定判斷答對人數是否顯著高於 1/3，才能說「兩者確實有差異」。"}]},{"type":"match","title":"品管名詞配對挑戰","hint":"把上方標籤拖到（或先點標籤再點空格）對應的描述。全部答對即通關。","done":"✓ 全部答對！品管與法規名詞都掌握了。","pairs":[{"label":"GHP","desc":"食品良好衛生規範，所有業者都必須符合的基礎前提方案"},{"label":"CCP","desc":"若不控制，危害就無法在後續步驟被消除的關鍵步驟"},{"label":"管制界限","desc":"CCP 上可即時量測判讀的參數界限，如中心溫度 ≥ 75°C"},{"label":"三角測試","desc":"差異試驗；三取一找出不同者，純猜測答對率為 1/3"},{"label":"九分制喜好度量表","desc":"嗜好性試驗；由未受訓練的目標消費者評分"}]}]},{"id":"m-quiz","nav":"綜合測驗","kicker":"MODULE 4 · 綜合測驗","h2":"小測驗：檢核學習成效","lead":"共 10 題單選，涵蓋三個模組。作答後即時顯示正解與解析，最後計算分數。","blocks":[{"type":"quiz","items":[{"q":"食品的三大危害類別是？","o":["生物性、化學性、物理性","細菌性、病毒性、寄生蟲性","原料性、製程性、包裝性","急性、慢性、致癌性"],"a":0,"e":"生物性（病原菌、病毒、寄生蟲、黴菌毒素）、化學性（農藥、重金屬、過敏原、違法添加物）、物理性（異物）。"},{"q":"「過敏原」在食品危害分類中屬於？","o":["生物性危害","物理性危害","化學性危害","不屬於任何一類"],"a":2,"e":"過敏原歸為化學性危害。它無法藉加熱消除，管制方式是防止交叉接觸與正確標示。"},{"q":"GHP 與 HACCP 的關係是？","o":["兩者擇一實施即可","GHP 是前提方案，HACCP 建立在其基礎之上","HACCP 先做，GHP 後補","兩者完全相同，只是名稱不同"],"a":1,"e":"GHP 是所有業者都必須符合的基本衛生要求；沒有 GHP 這個地基，HACCP 的管制點也守不住。"},{"q":"判斷某個製程步驟是否為「重要管制點（CCP）」的關鍵準則是？","o":["這個步驟是否需要人工操作","這個步驟的成本是否最高","這個步驟是否位於製程末端","若不控制，危害是否無法在後續步驟被消除或降低"],"a":3,"e":"洗手雖重要但屬 GHP；「加熱殺菌的中心溫度」則是 CCP，因為這一步失守後面無法補救。CCP 應越少越好。"},{"q":"下列何者最適合作為 CCP 的「管制界限（CL）」？","o":["中心溫度 ≥ 75°C 且維持 ≥ 1 分鐘","成品的生菌數檢驗結果","作業員的教育訓練時數","供應商的評鑑等級"],"a":0,"e":"CL 必須能\u003cb>即時量測判讀\u003c/b>，才來得及在偏差發生當下矯正。微生物檢驗需要數天，無法作為 CL。"},{"q":"HACCP 七大原則中，「建立文件與紀錄」的重要性在於？","o":["方便計算成本","沒有紀錄等於沒有做，稽查與追溯都以紀錄為憑","可以取代實際監測","只是形式上的要求"],"a":1,"e":"紀錄是證明系統確實運作的唯一憑據，也是事故發生時追溯與釐清責任的基礎。"},{"q":"感官評定中，若要判斷「兩個配方有沒有差別」，應採用？","o":["九分制喜好度量表","偏好排序試驗","三角測試","定量描述分析"],"a":2,"e":"差異試驗回答「有沒有差別」；描述分析回答「差在哪裡」；嗜好性試驗回答「喜不喜歡」。三者不能互相取代。"},{"q":"三角測試中，純憑猜測的答對率是多少？","o":["1/4","1/3","1/2","2/3"],"a":1,"ordered":true,"e":"三個樣品中選一個，猜對機率為 1/3。因此必須以統計檢定判斷答對人數是否顯著高於此值。"},{"q":"感官品評時若只想比較「風味」而不希望顏色差異干擾判斷，常見做法是？","o":["把樣品加熱到相同溫度","讓品評員互相討論後取共識","在明亮的白光下進行","使用紅光遮蔽顏色差異"],"a":3,"e":"紅光可讓不同顏色的樣品看起來相近，排除視覺對風味判斷的影響。品評員之間也不得互相討論。"},{"q":"「嗜好性試驗（如九分制喜好度量表）」應該找哪一種人來做？","o":["公司內部的研發人員","未受訓練的目標消費者，且人數至少約 100 人","高度訓練的品評小組 8–12 人","任何方便找到的 10 人即可"],"a":1,"e":"受訓者的喜好無法代表市場，且樣本數太少無法反映消費族群的分布。差異試驗才用訓練過的品評員。"}]}]}]};</script>
+<script>
+/*
+ * runtime.client.js — 跑在瀏覽器裡的渲染器（17 週共用，逐字內嵌進每份 HTML）
+ * 讀 window.__LESSON__ 的資料，把 modules / blocks 畫出來。
+ * 互動行為（翻卡、展開、配對、測驗）沿用週1 手寫版的做法，不要另創一套。
+ */
+(function () {
+  var D = window.__LESSON__;
+  var SERIES = D.series;
+  var $ = function (s) { return document.querySelector(s); };
+
+  function el(tag, cls, html) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (html != null) e.innerHTML = html;
+    return e;
+  }
+  function colorAt(given, i) { return given || SERIES[i % SERIES.length]; }
+  function gridCls(n) { return "grid g" + (n === 2 || n === 3 || n === 4 ? n : 3); }
+  function listHtml(v) {
+    // body 可以是字串或字串陣列；陣列渲染成 <ul>
+    if (v == null) return "";
+    if (typeof v === "string") return '<p>' + v + '</p>';
+    return '<ul>' + v.map(function (x) { return '<li>' + x + '</li>'; }).join("") + '</ul>';
+  }
+
+  /* ---------- 區塊標題 ---------- */
+  function heading(frag, b) {
+    if (b.title) frag.appendChild(el("div", "sec-title", '<span class="bar"></span>' + b.title));
+    if (b.hint) frag.appendChild(el("div", "hint", b.hint));
+  }
+
+  /* ---------- 各區塊 ---------- */
+  var BLOCKS = {};
+
+  BLOCKS.flips = function (b) {
+    var f = document.createDocumentFragment(); heading(f, b);
+    var g = el("div", gridCls(b.cols || 4));
+    b.items.forEach(function (d, i) {
+      var c = colorAt(d.c, i);
+      var card = el("div", "flip");
+      if (b.h) card.style.height = b.h + "px";
+      card.innerHTML =
+        '<div class="flip-in">' +
+        '<div class="face front"><div class="cbar" style="background:' + c + '"></div>' +
+        '<div class="t">' + d.t + '</div><div class="en">' + (d.en || "") + '</div>' +
+        '<div class="tap">▸ 點我看解釋</div></div>' +
+        '<div class="face back"><div class="cbar" style="background:' + c + '"></div>' +
+        '<p>' + d.b + '</p></div></div>';
+      card.onclick = function () { card.classList.toggle("on"); };
+      g.appendChild(card);
+    });
+    f.appendChild(g); return f;
+  };
+
+  BLOCKS.exp = function (b) {
+    var f = document.createDocumentFragment(); heading(f, b);
+    var host = el("div");
+    b.items.forEach(function (t, i) {
+      var box = el("div", "exp");
+      var res = t.res ? '<div style="margin-top:10px;font-size:13px;color:var(--secondary);font-weight:700">🔗 ' + t.res + '</div>' : "";
+      box.innerHTML =
+        '<button><span class="num">' + (i + 1) + '</span><span>' + t.h + '</span>' +
+        '<span class="tag">' + (t.tag || "") + '</span><span class="chev">›</span></button>' +
+        '<div class="body">' + listHtml(t.body) + res + '</div>';
+      var body = box.querySelector(".body");
+      box.querySelector("button").onclick = function () {
+        var on = box.classList.toggle("on");
+        if (!on) { body.style.maxHeight = "0px"; return; }
+        // 用實際內容高度展開，避免長段落被固定 max-height 截掉。
+        // 必須先解除 max-height 再量：在 max-height:0 的狀態下量 scrollHeight 會得到 0，
+        // 面板就只會開一條縫（實測過）。量完歸零並強制重排，transition 才有起點。
+        body.style.maxHeight = "none";
+        var h = body.scrollHeight;
+        body.style.maxHeight = "0px";
+        void body.offsetHeight;
+        body.style.maxHeight = h + "px";
+      };
+      host.appendChild(box);
+    });
+    f.appendChild(host); return f;
+  };
+
+  BLOCKS.cards = function (b) {
+    var f = document.createDocumentFragment(); heading(f, b);
+    var g = el("div", gridCls(b.cols || 4));
+    b.items.forEach(function (c, i) {
+      var accent = colorAt(c.c, i);
+      var box = el("div", "card");
+      box.style.borderTop = "4px solid " + accent;
+      box.innerHTML = '<div class="h">' + c.h + '</div>' +
+        (c.en ? '<div class="en">' + c.en + '</div>' : "") +
+        (c.li ? '<ul>' + c.li.map(function (x) { return '<li>' + x + '</li>'; }).join("") + '</ul>' : "") +
+        (c.p ? '<p style="margin-top:8px;font-size:15.5px;color:var(--mid)">' + c.p + '</p>' : "");
+      g.appendChild(box);
+    });
+    f.appendChild(g); return f;
+  };
+
+  BLOCKS.timeline = function (b) {
+    var f = document.createDocumentFragment(); heading(f, b);
+    var host = el("div", "tl");
+    b.steps.forEach(function (s, i) {
+      var st = el("div", "step");
+      st.innerHTML = '<div class="dot" style="background:' + colorAt(s.c, i) + '">' + (i + 1) + '</div>' +
+        '<h4>' + s.h + '</h4><p>' + s.p + '</p>';
+      host.appendChild(st);
+    });
+    f.appendChild(host); return f;
+  };
+
+  BLOCKS.compare = function (b) {
+    var f = document.createDocumentFragment(); heading(f, b);
+    var wrap = el("div", "cmp");
+    [b.left, b.right].forEach(function (c, i) {
+      var accent = colorAt(c.c, i);
+      var col = el("div", "col");
+      col.innerHTML = '<div class="cbar" style="background:' + accent + '"></div>' +
+        '<h4 style="color:' + accent + '">' + c.h + '</h4>' +
+        (c.en ? '<div class="en">' + c.en + '</div>' : "") +
+        '<ul>' + c.li.map(function (x) { return '<li>' + x + '</li>'; }).join("") + '</ul>';
+      wrap.appendChild(col);
+    });
+    f.appendChild(wrap);
+    if (b.note) f.appendChild(el("div", "cmp-note", b.note));
+    return f;
+  };
+
+  BLOCKS.table = function (b) {
+    var f = document.createDocumentFragment(); heading(f, b);
+    var wrap = el("div", "tblwrap");
+    var html = '<table class="tbl"><thead><tr>' +
+      b.head.map(function (h) { return '<th>' + h + '</th>'; }).join("") + '</tr></thead><tbody>' +
+      b.rows.map(function (r) {
+        return '<tr>' + r.map(function (c) { return '<td>' + c + '</td>'; }).join("") + '</tr>';
+      }).join("") + '</tbody></table>';
+    wrap.innerHTML = html;
+    f.appendChild(wrap); return f;
+  };
+
+  BLOCKS.note = function (b) {
+    var f = document.createDocumentFragment(); heading(f, b);
+    f.appendChild(el("div", "note" + (b.kind ? " " + b.kind : ""), b.text));
+    return f;
+  };
+
+  BLOCKS.match = function (b) {
+    var f = document.createDocumentFragment(); heading(f, b);
+    var host = el("div", "match-wrap");
+    var pool = el("div", "pool"), targets = el("div", "targets");
+    var pairs = b.pairs;
+    var order = pairs.slice().sort(function () { return Math.random() - 0.5; });
+    var selected = null, solved = 0;
+    var msg = el("div");
+    msg.style.cssText = "margin-top:14px;font-weight:700;color:var(--green)";
+
+    function tryMatch(slot, key) {
+      if (slot.classList.contains("ok")) return;
+      if (slot.dataset.k === key) {
+        slot.classList.add("ok"); slot.classList.remove("bad");
+        slot.querySelector(".drop").textContent = key;
+        var chip = pool.querySelector('.chip[data-k="' + key + '"]');
+        chip.classList.add("used"); chip.classList.remove("sel");
+        selected = null; solved++;
+        if (solved === pairs.length) msg.textContent = b.done || "✓ 全部答對！";
+      } else {
+        slot.classList.add("bad");
+        setTimeout(function () { slot.classList.remove("bad"); }, 350);
+      }
+    }
+    order.forEach(function (q) {
+      var c = el("div", "chip"); c.textContent = q.label; c.draggable = true; c.dataset.k = q.label;
+      c.addEventListener("dragstart", function (e) { e.dataTransfer.setData("k", q.label); });
+      c.onclick = function () {
+        if (c.classList.contains("used")) return;
+        if (selected === c) { c.classList.remove("sel"); selected = null; return; }
+        pool.querySelectorAll(".chip").forEach(function (x) { x.classList.remove("sel"); });
+        c.classList.add("sel"); selected = c;
+      };
+      pool.appendChild(c);
+    });
+    pairs.forEach(function (q) {
+      var s = el("div", "slot"); s.dataset.k = q.label;
+      s.innerHTML = '<div class="drop">拖到這裡</div><div class="desc">' + q.desc + '</div>';
+      s.addEventListener("dragover", function (e) { e.preventDefault(); });
+      s.addEventListener("drop", function (e) { e.preventDefault(); tryMatch(s, e.dataTransfer.getData("k")); });
+      s.onclick = function () { if (selected) tryMatch(s, selected.dataset.k); };
+      targets.appendChild(s);
+    });
+    host.appendChild(pool); host.appendChild(targets); host.appendChild(msg);
+    f.appendChild(host); return f;
+  };
+
+  /* 結果代碼：把作答結果編成一串可貼給老師的代碼（FSQ1.<base64>.<檢查碼>）。
+     解碼與彙整用專案根目錄的「食品科學概論_測驗成績解碼器.html」。 */
+  function b64utf8(s) { return btoa(unescape(encodeURIComponent(s))); }
+  function checksum(s) {
+    var h = 0;
+    for (var i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) % 1679616; // 36^4
+    return h.toString(36);
+  }
+
+  BLOCKS.quiz = function (b) {
+    var f = document.createDocumentFragment(); heading(f, b);
+    var items = b.items, n = items.length;
+    var head = el("div", "quiz-head");
+    head.innerHTML =
+      '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">' +
+      '<input class="qid" placeholder="學號（交成績必填）" style="flex:1;min-width:130px;padding:8px 10px;border:1.5px solid var(--line,#ccc);border-radius:8px;font-size:15px">' +
+      '<input class="qname" placeholder="姓名" style="flex:1;min-width:100px;padding:8px 10px;border:1.5px solid var(--line,#ccc);border-radius:8px;font-size:15px"></div>' +
+      '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">' +
+      '<strong class="qprog">進度 0 / ' + n + '</strong>' +
+      '<span class="qscore" style="color:var(--secondary);font-weight:800">得分 0</span></div>' +
+      '<div class="pbar"><div class="pfill"></div></div>';
+    var box = el("div");
+    var sb = el("div", "scorebox");
+    sb.innerHTML = '<div>你的成績</div><div class="big"><span class="fscore">0</span> / ' + n + '</div>' +
+      '<div class="smsg" style="margin:8px 0 16px"></div>' +
+      '<div class="rcwrap" style="margin:0 auto 16px;max-width:560px;text-align:left">' +
+      '<div style="font-weight:700;margin-bottom:6px">結果代碼（請複製後，貼到老師指定的表單或訊息）</div>' +
+      '<textarea class="rcode" readonly rows="3" style="width:100%;box-sizing:border-box;font-family:monospace;font-size:12px;padding:8px;border:1.5px solid var(--line,#ccc);border-radius:8px;resize:none"></textarea>' +
+      '<div class="rmsg" style="font-size:13px;color:#B34700;margin-top:4px"></div>' +
+      '<button class="btn copyrc" style="margin-top:8px">📋 複製結果代碼</button></div>' +
+      '<button class="btn ghost">重新測驗</button>';
+
+    var answered = 0, score = 0, picks = [];
+    function updateProg() {
+      head.querySelector(".qprog").textContent = "進度 " + answered + " / " + n;
+      head.querySelector(".qscore").textContent = "得分 " + score;
+      head.querySelector(".pfill").style.width = (answered / n * 100) + "%";
+    }
+    function finish() {
+      sb.querySelector(".fscore").textContent = score;
+      var pct = score / n, m;
+      if (score === n) m = "滿分！你完全掌握本週重點 🎉";
+      else if (pct >= 0.8) m = "很棒！觀念相當扎實。";
+      else if (pct >= 0.6) m = "不錯，再複習幾個弱點就更好。";
+      else m = "建議回到前面單元再看一次翻卡與展開內容。";
+      sb.querySelector(".smsg").textContent = m;
+
+      var sid = head.querySelector(".qid").value.trim();
+      var sname = head.querySelector(".qname").value.trim();
+      var korr = items.map(function (item, i) { return picks[i] === item.a ? 1 : 0; }).join("");
+      var payload = JSON.stringify({
+        w: D.week || 0, id: sid, nm: sname, s: score, n: n,
+        a: picks, k: korr, t: new Date().toISOString().slice(0, 16),
+      });
+      var body = b64utf8(payload);
+      var code = "FSQ1." + body + "." + checksum(body);
+      sb.querySelector(".rcode").value = code;
+      sb.querySelector(".rmsg").textContent = sid ? "" : "⚠ 尚未填學號 —— 請回到測驗上方填入學號後重新測驗，否則老師無法登記成績。";
+
+      sb.classList.add("show");
+      sb.scrollIntoView({ behavior: "smooth" });
+    }
+    function pick(qel, item, oi) {
+      if (qel.dataset.done === "1") return;
+      qel.dataset.done = "1"; answered++;
+      picks[parseInt(qel.dataset.qi, 10)] = oi;
+      qel.querySelectorAll(".opt").forEach(function (btn, i) {
+        btn.classList.add("dim");
+        if (i === item.a) btn.classList.add("correct");
+        if (i === oi && oi !== item.a) btn.classList.add("wrong");
+      });
+      var fb = qel.querySelector(".fb");
+      if (oi === item.a) { score++; fb.classList.add("good"); fb.innerHTML = "✓ 正確！" + item.e; }
+      else { fb.classList.add("no"); fb.innerHTML = "✗ 正解：" + item.o[item.a] + "。" + item.e; }
+      fb.classList.add("show"); updateProg();
+      if (answered === n) finish();
+    }
+    function build() {
+      box.innerHTML = ""; answered = 0; score = 0; picks = []; updateProg();
+      sb.classList.remove("show");
+      items.forEach(function (item, qi) {
+        var qel = el("div", "q"); qel.dataset.done = "0"; qel.dataset.qi = qi;
+        qel.innerHTML = '<div class="qn">第 ' + (qi + 1) + ' 題</div><div class="qt">' + item.q + '</div>';
+        item.o.forEach(function (opt, oi) {
+          var btn = el("button", "opt"); btn.textContent = opt;
+          btn.onclick = function () { pick(qel, item, oi); };
+          qel.appendChild(btn);
+        });
+        qel.appendChild(el("div", "fb"));
+        box.appendChild(qel);
+      });
+    }
+    sb.querySelector(".copyrc").onclick = function () {
+      var ta = sb.querySelector(".rcode");
+      ta.select(); ta.setSelectionRange(0, 99999);
+      var btn = this;
+      function ok() { btn.textContent = "✓ 已複製，請貼給老師"; setTimeout(function () { btn.textContent = "📋 複製結果代碼"; }, 2000); }
+      if (navigator.clipboard && navigator.clipboard.writeText)
+        navigator.clipboard.writeText(ta.value).then(ok, function () { document.execCommand("copy"); ok(); });
+      else { document.execCommand("copy"); ok(); }
+    };
+    sb.querySelector(".ghost").onclick = function () {
+      build(); window.scrollTo({ top: 0, behavior: "smooth" });
+    };
+    build();
+    f.appendChild(head); f.appendChild(box); f.appendChild(sb);
+    return f;
+  };
+
+  /* ---------- 組裝 ---------- */
+  var nav = $("#nav"), main = $("#main");
+  function switchMod(id, btn) {
+    document.querySelectorAll(".module").forEach(function (m) { m.classList.remove("active"); });
+    document.getElementById(id).classList.add("active");
+    nav.querySelectorAll("button").forEach(function (x) { x.classList.remove("active"); });
+    btn.classList.add("active");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+  D.modules.forEach(function (m, i) {
+    var btn = el("button", i === 0 ? "active" : "", m.nav);
+    btn.onclick = function () { switchMod(m.id, btn); };
+    nav.appendChild(btn);
+
+    var sec = el("section", "module" + (i === 0 ? " active" : ""));
+    sec.id = m.id;
+    sec.appendChild(el("div", "lead",
+      '<div class="kicker">' + m.kicker + '</div><h2>' + m.h2 + '</h2><p>' + m.lead + '</p>'));
+    m.blocks.forEach(function (b) {
+      var render = BLOCKS[b.type];
+      if (!render) { console.error("未知區塊型別:", b.type); return; }
+      sec.appendChild(render(b));
+    });
+    main.appendChild(sec);
+  });
+})();
+</script>
+</body>
+</html>

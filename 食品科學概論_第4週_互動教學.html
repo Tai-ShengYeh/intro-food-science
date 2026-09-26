@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>食品科學概論 第4週 · 互動教學</title>
+<style>
+  :root{
+    --primary:#2D2A6E; --secondary:#5B4FB8; --accent:#00B8B8; --warm:#F5A623; --green:#2FA36B; --red:#D65B5B; --dark:#1A1A3E; --bg:#F4F5FA; --text:#1F1F2E; --mid:#5A5A75; --muted:#9096ac; --border:#E2E2EC; --card:#fff;
+  }
+/* 版型樣式 — 逐條取自「第1週_互動教學.html」，末段為新增區塊（cmp / tbl / note）。
+   這裡只用 var(--x)；色票由 tokens.js 產生 :root 注入。 */
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Segoe UI","Noto Sans TC","Microsoft JhengHei",system-ui,sans-serif;
+  background:var(--bg);color:var(--text);line-height:1.7;font-size:17px}
+header{background:linear-gradient(120deg,var(--dark),var(--primary));color:#fff;
+  padding:26px 22px 0;position:sticky;top:0;z-index:50;box-shadow:0 2px 14px rgba(0,0,0,.15)}
+header h1{font-size:31px;font-weight:800;letter-spacing:.5px}
+header .sub{color:#b9c7ff;font-size:16px;margin-top:5px}
+nav{display:flex;gap:6px;margin-top:16px;flex-wrap:wrap}
+nav button{background:rgba(255,255,255,.10);color:#dfe4ff;border:none;padding:12px 18px;
+  border-radius:10px 10px 0 0;font-size:16.5px;cursor:pointer;font-weight:600;transition:.15s}
+nav button:hover{background:rgba(255,255,255,.2)}
+nav button.active{background:var(--bg);color:var(--primary)}
+main{max-width:1080px;margin:0 auto;padding:26px 18px 80px}
+.module{display:none;animation:fade .35s}
+.module.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.lead{background:var(--dark);color:#fff;border-radius:14px;padding:22px 24px;margin-bottom:22px}
+.lead .kicker{color:var(--accent);font-weight:700;font-size:14px;letter-spacing:1px}
+.lead h2{font-size:26px;margin:6px 0 8px}
+.lead p{color:#cdd3ee;font-size:16.5px}
+.sec-title{font-size:23px;font-weight:800;color:var(--primary);margin:30px 0 6px;
+  display:flex;align-items:center;gap:10px}
+.sec-title .bar{width:6px;height:25px;background:var(--accent);border-radius:3px;display:inline-block}
+.hint{color:var(--mid);font-size:15px;margin-bottom:14px}
+.grid{display:grid;gap:14px}
+.g2{grid-template-columns:repeat(2,1fr)} .g3{grid-template-columns:repeat(3,1fr)}
+.g4{grid-template-columns:repeat(4,1fr)}
+@media(max-width:820px){.g3,.g4{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:520px){.g2,.g3,.g4{grid-template-columns:1fr}}
+
+/* flip cards */
+.flip{perspective:1100px;height:200px;cursor:pointer}
+.flip-in{position:relative;width:100%;height:100%;transition:transform .6s;transform-style:preserve-3d}
+.flip.on .flip-in{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;backface-visibility:hidden;border-radius:14px;padding:18px;
+  display:flex;flex-direction:column;justify-content:center;box-shadow:0 3px 10px rgba(30,30,60,.08);border:1px solid var(--border)}
+.front{background:var(--card)}
+.front .t{font-size:21px;font-weight:800;color:var(--primary)}
+.front .en{color:var(--muted);font-size:14px;margin-top:3px;font-style:italic}
+.front .tap{margin-top:auto;color:var(--accent);font-size:14px;font-weight:700}
+.back{background:linear-gradient(135deg,var(--primary),var(--secondary));color:#fff;transform:rotateY(180deg);overflow:auto}
+.back p{font-size:16px}
+.cbar{height:6px;border-radius:14px 14px 0 0;position:absolute;top:0;left:0;right:0}
+
+/* expandable */
+.exp{background:var(--card);border:1px solid var(--border);border-radius:12px;margin-bottom:10px;overflow:hidden}
+.exp>button{width:100%;text-align:left;background:none;border:none;padding:16px 18px;cursor:pointer;
+  display:flex;align-items:center;gap:12px;font-size:18px;font-weight:700;color:var(--text)}
+.exp .num{background:var(--primary);color:#fff;min-width:32px;height:32px;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800}
+.exp .chev{margin-left:auto;color:var(--muted);transition:.25s;font-size:20px}
+.exp.on .chev{transform:rotate(90deg);color:var(--accent)}
+.exp .body{max-height:0;overflow:hidden;transition:max-height .3s ease;padding:0 18px}
+.exp.on .body{padding:0 18px 16px 62px}
+.exp .body ul{margin-left:16px;color:var(--mid);font-size:16px}
+.exp .body p{color:var(--mid);font-size:15.5px}
+.exp .tag{font-size:13.5px;color:var(--muted);font-weight:600;margin-left:8px}
+
+/* info card */
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px;
+  box-shadow:0 3px 10px rgba(30,30,60,.06)}
+.card .h{font-weight:800;color:var(--primary);font-size:18px;margin-bottom:6px}
+.card .en{color:var(--muted);font-size:13px;font-style:italic}
+.card ul{margin:8px 0 0 18px;font-size:15.5px;color:var(--mid)}
+
+/* timeline */
+.tl{display:flex;gap:0;flex-wrap:wrap;counter-reset:s}
+.tl .step{flex:1;min-width:180px;background:var(--card);border:1px solid var(--border);border-radius:12px;
+  padding:16px 14px 14px;margin:8px;position:relative}
+.tl .dot{width:34px;height:34px;border-radius:50%;color:#fff;display:flex;align-items:center;
+  justify-content:center;font-weight:800;margin-bottom:8px}
+.tl .step h4{color:var(--primary);font-size:17.5px;margin-bottom:4px}
+.tl .step p{font-size:15px;color:var(--mid)}
+
+/* matching */
+.match-wrap{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px}
+.pool{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+.chip{background:var(--secondary);color:#fff;padding:10px 17px;border-radius:22px;font-weight:700;
+  cursor:grab;user-select:none;font-size:16.5px;box-shadow:0 2px 6px rgba(0,0,0,.12)}
+.chip.used{opacity:.35;pointer-events:none}
+.chip.sel{outline:3px solid var(--warm);outline-offset:2px}
+.targets{display:grid;gap:10px}
+.slot{display:flex;align-items:center;gap:12px;border:2px dashed var(--border);border-radius:12px;padding:10px 14px;background:#fafbff}
+.slot .desc{flex:1;font-size:16px;color:var(--text)}
+.slot .drop{min-width:130px;min-height:44px;border-radius:8px;background:#eef0f8;display:flex;
+  align-items:center;justify-content:center;color:var(--muted);font-size:15px;padding:8px 12px}
+.slot.ok{border-color:var(--green);background:#effaf3}
+.slot.ok .drop{background:var(--green);color:#fff;font-weight:700}
+.slot.bad{border-color:var(--red);animation:shake .3s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+
+/* quiz */
+.quiz-head{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px;margin-bottom:16px}
+.pbar{height:12px;background:#e7e9f4;border-radius:8px;overflow:hidden;margin-top:10px}
+.pfill{height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--secondary));transition:width .4s}
+.q{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:14px}
+.q .qn{color:var(--accent);font-weight:800;font-size:14px}
+.q .qt{font-size:19.5px;font-weight:700;margin:6px 0 14px}
+.opt{display:block;width:100%;text-align:left;background:#fafbff;border:2px solid var(--border);
+  border-radius:10px;padding:13px 16px;margin-bottom:9px;cursor:pointer;font-size:16.5px;transition:.15s}
+.opt:hover{border-color:var(--secondary)}
+.opt.correct{border-color:var(--green);background:#effaf3;font-weight:700}
+.opt.wrong{border-color:var(--red);background:#fdeeee}
+.opt.dim{opacity:.6}
+.fb{margin-top:8px;font-size:15.5px;padding:11px 14px;border-radius:9px;display:none}
+.fb.show{display:block}
+.fb.good{background:#effaf3;color:#1c7a4d} .fb.no{background:#fdeeee;color:#a83b3b}
+.scorebox{background:linear-gradient(135deg,var(--primary),var(--secondary));color:#fff;border-radius:16px;
+  padding:26px;text-align:center;margin-top:10px;display:none}
+.scorebox.show{display:block}
+.scorebox .big{font-size:46px;font-weight:800}
+.btn{background:var(--accent);color:#fff;border:none;padding:11px 22px;border-radius:10px;
+  font-weight:700;cursor:pointer;font-size:15px}
+.btn.ghost{background:rgba(255,255,255,.18)}
+.tagrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+.pill{font-size:12px;background:#eef0fb;color:var(--secondary);padding:3px 10px;border-radius:20px;font-weight:700}
+footer{text-align:center;color:var(--muted);font-size:12.5px;padding:24px}
+
+/* ===== 新增區塊 ===== */
+/* compare：兩欄對照（梅納 vs 焦糖化、冷藏 vs 冷凍…） */
+.cmp{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:stretch}
+@media(max-width:640px){.cmp{grid-template-columns:1fr}}
+.cmp .col{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:0 18px 18px;
+  box-shadow:0 3px 10px rgba(30,30,60,.06);position:relative;overflow:hidden}
+.cmp .col .cbar{position:static;height:6px;margin:0 -18px 14px;border-radius:0}
+.cmp .col h4{font-size:20px;font-weight:800;margin-bottom:2px}
+.cmp .col .en{color:var(--muted);font-size:13px;font-style:italic;margin-bottom:8px}
+.cmp .col ul{margin-left:18px;font-size:15.5px;color:var(--mid)}
+.cmp .col li{margin-bottom:5px}
+.cmp-note{margin-top:12px;background:#eef0fb;border-left:5px solid var(--secondary);
+  border-radius:0 10px 10px 0;padding:12px 16px;font-size:16px;color:var(--primary);font-weight:600}
+
+/* table：資料表（維生素、添加物分類…） */
+.tblwrap{overflow-x:auto;background:var(--card);border:1px solid var(--border);border-radius:14px;
+  box-shadow:0 3px 10px rgba(30,30,60,.06)}
+.tbl{border-collapse:collapse;width:100%;min-width:520px;font-size:15.5px}
+.tbl th{background:var(--primary);color:#fff;text-align:left;padding:12px 14px;font-weight:700;font-size:15px}
+.tbl td{padding:11px 14px;border-top:1px solid var(--border);color:var(--mid);vertical-align:top}
+.tbl tr:nth-child(even) td{background:#fafbff}
+.tbl td:first-child{color:var(--text);font-weight:700}
+
+/* note：重點提示條 */
+.note{background:#fff8e9;border-left:5px solid var(--warm);border-radius:0 12px 12px 0;
+  padding:14px 18px;margin:14px 0;font-size:16px;color:var(--text)}
+.note b{color:var(--primary)}
+.note.key{background:#effaf3;border-left-color:var(--green)}
+.note.warn{background:#fdeeee;border-left-color:var(--red)}
+</style>
+</head>
+<body>
+<header>
+  <h1>食品科學概論 · 第 4 週 互動教學</h1>
+  <div class="sub">四級結構　·　變性與凝固　·　溶解／起泡／乳化／凝膠　·　乳蛋肉豆四大食品蛋白　＋　互動測驗</div>
+  <nav id="nav"></nav>
+</header>
+<main id="main"></main>
+<footer>互動教材 · 依課程大綱與指定教科書整理 · 供食品科學概論教學使用</footer>
+<script>window.__LESSON__={"week":4,"series":["#2D2A6E","#2FA36B","#F5A623","#5B4FB8","#00B8B8","#D65B5B"],"modules":[{"id":"m-struct","nav":"結構","kicker":"MODULE 1 · 結構","h2":"從一個胺基酸到一顆蛋白質","lead":"為什麼煎蛋會從透明變白、牛奶加醋會結塊、肉煮熟會變硬？三個現象背後是同一件事，而要看懂它，得先知道蛋白質的立體結構是怎麼疊起來的。","blocks":[{"type":"flips","title":"一、蛋白質的四級結構（點卡片翻面）","hint":"重點在：哪些鍵維持哪一層結構。變性只破壞其中三層。","cols":4,"items":[{"t":"一級結構","en":"Primary","c":"#2D2A6E","b":"胺基酸的\u003cb>排列順序\u003c/b>，由\u003cb>胜肽鍵\u003c/b>連接。這是蛋白質的身分證，一般加熱與酸鹼都不會改變它。"},{"t":"二級結構","en":"Secondary","c":"#2FA36B","b":"主鏈局部規則摺疊成 \u003cb>α-螺旋\u003c/b>或 \u003cb>β-摺板\u003c/b>，由主鏈之間的\u003cb>氫鍵\u003c/b>維持。"},{"t":"三級結構","en":"Tertiary","c":"#F5A623","b":"整條胜肽鏈摺成特定的三維形狀，靠\u003cb>疏水作用、離子鍵、氫鍵與雙硫鍵\u003c/b>共同維持。功能就在這個形狀上。"},{"t":"四級結構","en":"Quaternary","c":"#5B4FB8","b":"兩條以上的胜肽鏈組合成一個功能單位，如血紅素（4 條）、肌凝蛋白。並非所有蛋白質都有這一層。"}]},{"type":"cards","title":"二、胺基酸：20 種，其中 9 種必需","hint":"「必需」的意思是人體無法自行合成，必須從飲食取得。","cols":3,"items":[{"h":"共同結構","en":"Common backbone","c":"#2D2A6E","li":["α-碳上接：胺基（−NH₂）","羧基（−COOH）","氫原子","側鏈 R —— 20 種胺基酸的差別全在這裡"],"p":"側鏈決定親水或疏水、帶正電或負電，也決定蛋白質怎麼摺疊。"},{"h":"必需胺基酸（9 種）","en":"Essential","c":"#D65B5B","li":["白胺酸、異白胺酸、纈胺酸","離胺酸、甲硫胺酸、苯丙胺酸","蘇胺酸、色胺酸、組胺酸"],"p":"少了任何一種，蛋白質合成就會受限 —— 這是「限制胺基酸」概念的由來。"},{"h":"胜肽鍵","en":"Peptide bond","c":"#2FA36B","li":["前一個的羧基 ＋ 後一個的胺基","脫去一分子水縮合而成","二胜肽 → 寡胜肽 → 多胜肽","一般烹調條件不會斷裂"],"p":"消化道中由蛋白酶專門負責切斷它。"}]},{"type":"note","kind":"key","text":"\u003cb>等電點（pI, isoelectric point）\u003c/b>：蛋白質淨電荷為零的 pH 值。此時分子之間互斥力最小，最容易聚集沉澱，\u003cb>溶解度最低\u003c/b>。酪蛋白 pI ≈ 4.6，所以牛奶加酸到 pH 4.6 就會凝結 —— 優格與新鮮乳酪就是這樣做出來的。"}]},{"id":"m-denat","nav":"變性與凝固","kicker":"MODULE 2 · 變性","h2":"變性：形狀壞了，鏈子還在","lead":"煎蛋從透明變白、牛奶加醋結塊、肉煮熟變硬 —— 都是同一件事：高階結構被破壞，但胜肽鍵完好無損。這是食品加工中最常被利用的蛋白質性質。","blocks":[{"type":"compare","title":"一、變性到底改變了什麼？","hint":"這是最容易被誤答的觀念題。","left":{"h":"被破壞的","en":"二、三、四級結構","c":"#D65B5B","li":["氫鍵、離子鍵、疏水作用力斷開","α-螺旋與 β-摺板鬆開","立體構形攤開、內部疏水區暴露","生物活性（如酵素功能）喪失"]},"right":{"h":"保持不變的","en":"一級結構","c":"#2FA36B","li":["\u003cb>胜肽鍵完全不受影響\u003c/b>","胺基酸的排列順序不變","營養價值大致保留","消化率反而\u003cb>提高\u003c/b>（酵素更容易接觸）"]},"note":"所以「蛋白質煮熟就沒營養了」是錯的 —— 變性不但沒破壞胺基酸，還讓它更好消化。生蛋白中的抗營養因子也因加熱而失活。"},{"type":"table","title":"二、造成變性的六個因素","head":["因素","機制","食品實例"],"rows":[["熱","分子動能增加，弱鍵斷裂","煎蛋、烤肉、乳清蛋白加熱沉澱"],["酸／鹼","改變帶電狀態，接近 pI 時聚集沉澱","優格、酸奶酪、檸檬醃生魚（ceviche）"],["機械攪打","在氣液界面攤開形成膜","打發蛋白、鮮奶油打發"],["鹽類","高濃度鹽改變水合狀態（鹽析）","鹽漬蛋白、豆腐用鹽滷（MgCl₂）凝固"],["有機溶劑／重金屬","破壞疏水作用與形成不溶鹽","酒精殺菌、重金屬中毒使酵素失活"],["酵素","專一性作用切斷或修飾","凝乳酶（rennet）使酪蛋白凝結製乳酪"]]},{"type":"timeline","title":"三、蛋為什麼會凝固？溫度是關鍵","hint":"蛋白與蛋黃的凝固溫度不同 —— 這正是溏心蛋能做出來的原因。","steps":[{"h":"60–65°C：蛋白開始凝固","p":"卵白蛋白等開始變性、互相纏繞成網，蛋白由透明轉為白色不透明。","c":"#00B8B8"},{"h":"65–70°C：蛋黃開始凝固","p":"蛋黃蛋白質變性、質地變濃稠。溫泉蛋就停在蛋白半凝、蛋黃濃稠的這一段。","c":"#F5A623"},{"h":"約 70°C 以上：全蛋完全凝固","p":"網狀結構收緊，水分被鎖在其中，形成完整凝膠。","c":"#2D2A6E"},{"h":"過度加熱：網狀過度收縮","p":"蛋白質繼續收緊並擠出水分，出現離水、質地變韌變老 —— 蒸蛋出水、水煮蛋外圈變綠灰。","c":"#D65B5B"}]},{"type":"note","text":"\u003cb>加糖與加鹽會拉高凝固溫度：\u003c/b>糖與鹽干擾蛋白質分子聚集，因此布丁（蛋＋糖＋奶）比純蛋液需要更高的溫度、更長的時間才凝固，也因此比較不容易一下子過熟。"}]},{"id":"m-func","nav":"功能性質","kicker":"MODULE 3 · 功能性質","h2":"蛋白質在配方裡負責的四件事","lead":"食品配方選用哪一種蛋白質，看的不是營養，而是「它能做什麼」。溶解、起泡、乳化、凝膠 —— 這四個功能性質決定了它適合放進哪種產品。","blocks":[{"type":"cards","title":"一、四大功能性質","cols":4,"items":[{"h":"溶解性","en":"Solubility","c":"#2D2A6E","li":["受 pH、鹽濃度、溫度影響","在等電點時最低","溶解度決定其他功能能不能發揮"],"p":"應用：飲料用乳清蛋白必須在中性 pH 保持澄清不沉澱。"},{"h":"起泡性","en":"Foaming","c":"#00B8B8","li":["攪打時蛋白質在氣液界面攤開成膜","包住空氣形成泡沫","蛋白（卵白蛋白）是最典型的例子"],"p":"應用：蛋白霜、戚風蛋糕、慕斯。"},{"h":"乳化性","en":"Emulsification","c":"#F5A623","li":["分子同時具親水與親油區段","吸附在油水界面降低界面張力","酪蛋白、蛋黃蛋白質最常用"],"p":"應用：美乃滋、乳化香腸、奶精。"},{"h":"膠凝性","en":"Gelation","c":"#5B4FB8","li":["變性後的分子彼此交聯成三維網狀","把水鎖在網目中","熱可逆（明膠）或不可逆（蛋）"],"p":"應用：果凍、火腿、豆腐、魚漿製品。"}]},{"type":"exp","title":"二、打發蛋白：一個把四個因素都串起來的例子（點擊展開）","hint":"廚房裡的每一條「規矩」，背後都有蛋白質化學。","items":[{"h":"為什麼碗和打蛋器一定要無油？","tag":"油脂","body":"油脂會搶先占據氣液界面，阻止蛋白質在該處攤開成膜，泡沫因此無法形成或很快塌陷。\u003cb>沾到一點蛋黃（含脂質）就打不發\u003c/b>，原因就在這裡。"},{"h":"為什麼糖要分次加、而且不能太早加？","tag":"糖","body":"糖會延緩蛋白質變性、\u003cb>延長打發所需時間\u003c/b>；但糖能提高泡沫黏度、讓泡沫\u003cb>更穩定不易塌\u003c/b>。所以做法是先打到粗泡再分次加糖，兼顧打發速度與穩定度。"},{"h":"塔塔粉（酸）在做什麼？","tag":"pH","body":"加酸使 pH 接近蛋白的等電點附近，蛋白質更容易在界面聚集成膜，泡沫更細緻穩定，也不易打過頭而變得粗糙結塊。傳統用銅碗也有類似的穩定效果。"},{"h":"打過頭會怎樣？","tag":"過度攪打","body":"蛋白質過度變性、彼此交聯成塊，膜失去彈性而破裂，泡沫出水、質地變粗糙結顆粒。\u003cb>打發是有終點的\u003c/b> —— 到硬性發泡就該停。"}]},{"type":"match","title":"功能性質配對挑戰","hint":"把上方標籤拖到（或先點標籤再點空格）對應的描述。全部答對即通關。","done":"✓ 全部答對！四大功能性質已經掌握。","pairs":[{"label":"起泡性","desc":"攪打時在氣液界面攤開成膜、包住空氣 —— 蛋白霜、戚風蛋糕"},{"label":"乳化性","desc":"同時具親水與親油區段，吸附在油水界面 —— 美乃滋、乳化香腸"},{"label":"膠凝性","desc":"變性後交聯成三維網狀並鎖住水分 —— 果凍、豆腐、魚漿"},{"label":"溶解性","desc":"受 pH 與鹽濃度影響，在等電點時最低"},{"label":"黏彈性","desc":"麥穀蛋白與醇溶蛋白吸水形成的網絡 —— 麵團能拉能撐"}]},{"type":"note","kind":"key","text":"\u003cb>麵筋（gluten）\u003c/b>是最特別的一個：小麥的\u003cb>麥穀蛋白（glutenin，提供彈性）\u003c/b>與\u003cb>醇溶蛋白（gliadin，提供延展性）\u003c/b>吸水並經揉打後形成的網絡。它同時具備彈性與延展性，能包住發酵產生的二氧化碳 —— 麵包能膨脹全靠它。"}]},{"id":"m-source","nav":"四大食品蛋白","kicker":"MODULE 4 · 來源與品質","h2":"乳、蛋、肉、豆：四類最重要的食品蛋白","lead":"同樣叫蛋白質，來源不同、行為完全不同。最後再談怎麼評估「蛋白質品質」—— 這是營養標示與產品訴求的科學依據。","blocks":[{"type":"table","title":"一、四大來源的代表蛋白與加工特性","head":["來源","主要蛋白質","加工上的關鍵行為"],"rows":[["乳","酪蛋白 casein（約 80%）\u003cbr>乳清蛋白 whey（約 20%）","酪蛋白\u003cb>耐熱\u003c/b>但怕酸（pI 4.6）與凝乳酶 → 優格、乳酪；乳清蛋白\u003cb>不耐熱\u003c/b>，加熱即變性沉澱 → 加熱乳的鍋底沉澱"],["蛋","蛋白：卵白蛋白、溶菌酶\u003cbr>蛋黃：卵黃磷蛋白、低密度脂蛋白","蛋白負責\u003cb>起泡與凝膠\u003c/b>；蛋黃負責\u003cb>乳化\u003c/b>，主要靠其中的卵磷脂（磷脂質，非蛋白質）與脂蛋白共同作用。兩者凝固溫度不同，可分別控制"],["肉","肌原纖維蛋白：肌凝蛋白、肌動蛋白\u003cbr>基質蛋白：膠原蛋白","鹽溶性的肌凝蛋白是\u003cb>香腸黏結\u003c/b>的關鍵；膠原蛋白經\u003cb>長時間濕熱\u003c/b>水解成明膠 → 燉肉軟嫩、湯汁凝凍"],["大豆","球蛋白 glycinin\u003cbr>β-conglycinin","加鹽類（鹽滷 MgCl₂、石膏 CaSO₄）或 GDL 使其凝聚成\u003cb>豆腐\u003c/b>；分離大豆蛋白是植物肉的主原料"]]},{"type":"flips","title":"二、蛋白質品質怎麼評估（點卡片翻面）","cols":4,"items":[{"t":"限制胺基酸","en":"Limiting AA","c":"#D65B5B","b":"含量相對最不足、因而限制整體利用率的必需胺基酸。\u003cb>穀類缺離胺酸，豆類缺甲硫胺酸\u003c/b>。"},{"t":"互補作用","en":"Complementation","c":"#2FA36B","b":"把限制胺基酸不同的食物一起吃，彼此補足。\u003cb>米飯 ＋ 豆類\u003c/b>、吐司 ＋ 豆漿就是典型組合。"},{"t":"生物價 BV","en":"Biological Value","c":"#F5A623","b":"吸收的氮中被身體保留的比例。全蛋接近 100，是傳統的參考基準。"},{"t":"PDCAAS","en":"消化率校正胺基酸分數","c":"#2D2A6E","b":"把胺基酸組成與消化率一起考慮，滿分 1.00。\u003cb>雞蛋、乳品、分離大豆蛋白都達 1.00\u003c/b>；新法 DIAAS 正逐步取代它。"}]},{"type":"compare","title":"三、動物性 vs 植物性蛋白","hint":"這是近年新型蛋白（植物肉、細胞培養肉）討論的起點，第 18 週會再回來談。","left":{"h":"動物性蛋白","en":"乳、蛋、肉、魚","c":"#D65B5B","li":["必需胺基酸\u003cb>齊全且比例接近人體需求\u003c/b>","消化吸收率高（PDCAAS 多為 1.00）","常伴隨飽和脂肪與膽固醇","生產的碳足跡與水足跡較高"]},"right":{"h":"植物性蛋白","en":"豆、穀、堅果","c":"#2FA36B","li":["多有\u003cb>限制胺基酸\u003c/b>，需互相搭配","大豆是例外，PDCAAS 可達 1.00","含膳食纖維，不含膽固醇","環境負擔顯著較低"]},"note":"結論不是「哪個比較好」，而是：植物性蛋白只要\u003cb>做好互補搭配\u003c/b>，同樣能滿足需求。這正是植物肉配方設計時要處理的第一個問題。"}]},{"id":"m-quiz","nav":"綜合測驗","kicker":"MODULE 5 · 綜合測驗","h2":"小測驗：檢核學習成效","lead":"共 10 題單選，涵蓋四個模組。作答後即時顯示正解與解析，最後計算分數。","blocks":[{"type":"quiz","items":[{"q":"連接胺基酸、構成蛋白質主鏈的化學鍵是？","o":["胜肽鍵","雙硫鍵","氫鍵","離子鍵"],"a":0,"e":"胜肽鍵由前一個胺基酸的羧基與後一個的胺基脫水縮合而成，是一級結構的骨架。其他三種鍵維持的是二～四級結構。"},{"q":"蛋白質的「一級結構」指的是什麼？","o":["α-螺旋與 β-摺板","多條胜肽鏈組合成的功能單位","胺基酸的排列順序","整條鏈摺疊成的立體形狀"],"a":2,"e":"一級＝胺基酸序列；二級＝α-螺旋／β-摺板；三級＝立體摺疊；四級＝多鏈組合。"},{"q":"蛋白質發生「變性」時，下列何者「不會」被破壞？","o":["維持二級結構的氫鍵","維持三級結構的疏水作用力","整體的立體構形","一級結構的胜肽鍵"],"a":3,"e":"變性只破壞二、三、四級結構，胜肽鍵完好，所以胺基酸序列與營養價值保留，消化率甚至提高。"},{"q":"蛋白（蛋清）大約從幾 °C 開始凝固？","o":["50–55°C","60–65°C","75–80°C","90–95°C"],"a":1,"ordered":true,"e":"蛋白約 60–65°C 開始凝固、蛋黃約 65–70°C。兩者溫度差正是溏心蛋與溫泉蛋能做出來的原因。"},{"q":"打發蛋白時，下列哪一項最會破壞泡沫？","o":["容器或蛋白中混入油脂（如蛋黃）","加入少許塔塔粉","使用室溫的蛋白","打到粗泡後分次加糖"],"a":0,"e":"油脂會搶占氣液界面，阻止蛋白質攤開成膜，泡沫因此打不起來。加酸與分次加糖反而有助於泡沫穩定。"},{"q":"麵筋（gluten）是由哪兩種小麥蛋白質吸水後形成的？","o":["酪蛋白與乳清蛋白","肌凝蛋白與肌動蛋白","麥穀蛋白（glutenin）與醇溶蛋白（gliadin）","球蛋白與白蛋白"],"a":2,"e":"麥穀蛋白提供彈性、醇溶蛋白提供延展性，兩者形成的網絡能包住二氧化碳，麵包才膨得起來。"},{"q":"膠原蛋白經長時間濕熱加熱後，會水解成下列何者？","o":["酪蛋白","角蛋白","肌紅蛋白","明膠（gelatin）"],"a":3,"e":"膠原蛋白水解成明膠，這是燉煮的肉會變軟嫩、湯汁冷卻後會凝凍的原因，也是明膠的工業來源。"},{"q":"酪蛋白的等電點（pI）大約在 pH 多少？此時最容易沉澱。","o":["pH 3.6","pH 4.6","pH 5.6","pH 6.6"],"a":1,"ordered":true,"e":"酪蛋白 pI ≈ 4.6，淨電荷為零時分子互斥力最小、溶解度最低而聚集沉澱 —— 優格與新鮮乳酪即利用此原理。"},{"q":"穀類（如米、小麥）蛋白質的「限制胺基酸」通常是？","o":["離胺酸","甲硫胺酸","白胺酸","色胺酸"],"a":0,"e":"穀類缺離胺酸、豆類缺甲硫胺酸，因此「米飯 ＋ 豆類」能互補，這就是蛋白質互補作用。"},{"q":"下列何者的 PDCAAS（蛋白質消化率校正胺基酸分數）可達滿分 1.00？","o":["小麥麵筋","玉米","雞蛋蛋白","白米"],"a":2,"e":"雞蛋、乳品與分離大豆蛋白的 PDCAAS 都可達 1.00；穀類因限制胺基酸不足而較低。"}]}]}]};</script>
+<script>
+/*
+ * runtime.client.js — 跑在瀏覽器裡的渲染器（17 週共用，逐字內嵌進每份 HTML）
+ * 讀 window.__LESSON__ 的資料，把 modules / blocks 畫出來。
+ * 互動行為（翻卡、展開、配對、測驗）沿用週1 手寫版的做法，不要另創一套。
+ */
+(function () {
+  var D = window.__LESSON__;
+  var SERIES = D.series;
+  var $ = function (s) { return document.querySelector(s); };
+
+  function el(tag, cls, html) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (html != null) e.innerHTML = html;
+    return e;
+  }
+  function colorAt(given, i) { return given || SERIES[i % SERIES.length]; }
+  function gridCls(n) { return "grid g" + (n === 2 || n === 3 || n === 4 ? n : 3); }
+  function listHtml(v) {
+    // body 可以是字串或字串陣列；陣列渲染成 <ul>
+    if (v == null) return "";
+    if (typeof v === "string") return '<p>' + v + '</p>';
+    return '<ul>' + v.map(function (x) { return '<li>' + x + '</li>'; }).join("") + '</ul>';
+  }
+
+  /* ---------- 區塊標題 ---------- */
+  function heading(frag, b) {
+    if (b.title) frag.appendChild(el("div", "sec-title", '<span class="bar"></span>' + b.title));
+    if (b.hint) frag.appendChild(el("div", "hint", b.hint));
+  }
+
+  /* ---------- 各區塊 ---------- */
+  var BLOCKS = {};
+
+  BLOCKS.flips = function (b) {
+    var f = document.createDocumentFragment(); heading(f, b);
+    var g = el("div", gridCls(b.cols || 4));
+    b.items.forEach(function (d, i) {
+      var c = colorAt(d.c, i);
+      var card = el("div", "flip");
+      if (b.h) card.style.height = b.h + "px";
+      card.innerHTML =
+        '<div class="flip-in">' +
+        '<div class="face front"><div class="cbar" style="background:' + c + '"></div>' +
+        '<div class="t">' + d.t + '</div><div class="en">' + (d.en || "") + '</div>' +
+        '<div class="tap">▸ 點我看解釋</div></div>' +
+        '<div class="face back"><div class="cbar" style="background:' + c + '"></div>' +
+        '<p>' + d.b + '</p></div></div>';
+      card.onclick = function () { card.classList.toggle("on"); };
+      g.appendChild(card);
+    });
+    f.appendChild(g); return f;
+  };
+
+  BLOCKS.exp = function (b) {
+    var f = document.createDocumentFragment(); heading(f, b);
+    var host = el("div");
+    b.items.forEach(function (t, i) {
+      var box = el("div", "exp");
+      var res = t.res ? '<div style="margin-top:10px;font-size:13px;color:var(--secondary);font-weight:700">🔗 ' + t.res + '</div>' : "";
+      box.innerHTML =
+        '<button><span class="num">' + (i + 1) + '</span><span>' + t.h + '</span>' +
+        '<span class="tag">' + (t.tag || "") + '</span><span class="chev">›</span></button>' +
+        '<div class="body">' + listHtml(t.body) + res + '</div>';
+      var body = box.querySelector(".body");
+      box.querySelector("button").onclick = function () {
+        var on = box.classList.toggle("on");
+        if (!on) { body.style.maxHeight = "0px"; return; }
+        // 用實際內容高度展開，避免長段落被固定 max-height 截掉。
+        // 必須先解除 max-height 再量：在 max-height:0 的狀態下量 scrollHeight 會得到 0，
+        // 面板就只會開一條縫（實測過）。量完歸零並強制重排，transition 才有起點。
+        body.style.maxHeight = "none";
+        var h = body.scrollHeight;
+        body.style.maxHeight = "0px";
+        void body.offsetHeight;
+        body.style.maxHeight = h + "px";
+      };
+      host.appendChild(box);
+    });
+    f.appendChild(host); return f;
+  };
+
+  BLOCKS.cards = function (b) {
+    var f = document.createDocumentFragment(); heading(f, b);
+    var g = el("div", gridCls(b.cols || 4));
+    b.items.forEach(function (c, i) {
+      var accent = colorAt(c.c, i);
+      var box = el("div", "card");
+      box.style.borderTop = "4px solid " + accent;
+      box.innerHTML = '<div class="h">' + c.h + '</div>' +
+        (c.en ? '<div class="en">' + c.en + '</div>' : "") +
+        (c.li ? '<ul>' + c.li.map(function (x) { return '<li>' + x + '</li>'; }).join("") + '</ul>' : "") +
+        (c.p ? '<p style="margin-top:8px;font-size:15.5px;color:var(--mid)">' + c.p + '</p>' : "");
+      g.appendChild(box);
+    });
+    f.appendChild(g); return f;
+  };
+
+  BLOCKS.timeline = function (b) {
+    var f = document.createDocumentFragment(); heading(f, b);
+    var host = el("div", "tl");
+    b.steps.forEach(function (s, i) {
+      var st = el("div", "step");
+      st.innerHTML = '<div class="dot" style="background:' + colorAt(s.c, i) + '">' + (i + 1) + '</div>' +
+        '<h4>' + s.h + '</h4><p>' + s.p + '</p>';
+      host.appendChild(st);
+    });
+    f.appendChild(host); return f;
+  };
+
+  BLOCKS.compare = function (b) {
+    var f = document.createDocumentFragment(); heading(f, b);
+    var wrap = el("div", "cmp");
+    [b.left, b.right].forEach(function (c, i) {
+      var accent = colorAt(c.c, i);
+      var col = el("div", "col");
+      col.innerHTML = '<div class="cbar" style="background:' + accent + '"></div>' +
+        '<h4 style="color:' + accent + '">' + c.h + '</h4>' +
+        (c.en ? '<div class="en">' + c.en + '</div>' : "") +
+        '<ul>' + c.li.map(function (x) { return '<li>' + x + '</li>'; }).join("") + '</ul>';
+      wrap.appendChild(col);
+    });
+    f.appendChild(wrap);
+    if (b.note) f.appendChild(el("div", "cmp-note", b.note));
+    return f;
+  };
+
+  BLOCKS.table = function (b) {
+    var f = document.createDocumentFragment(); heading(f, b);
+    var wrap = el("div", "tblwrap");
+    var html = '<table class="tbl"><thead><tr>' +
+      b.head.map(function (h) { return '<th>' + h + '</th>'; }).join("") + '</tr></thead><tbody>' +
+      b.rows.map(function (r) {
+        return '<tr>' + r.map(function (c) { return '<td>' + c + '</td>'; }).join("") + '</tr>';
+      }).join("") + '</tbody></table>';
+    wrap.innerHTML = html;
+    f.appendChild(wrap); return f;
+  };
+
+  BLOCKS.note = function (b) {
+    var f = document.createDocumentFragment(); heading(f, b);
+    f.appendChild(el("div", "note" + (b.kind ? " " + b.kind : ""), b.text));
+    return f;
+  };
+
+  BLOCKS.match = function (b) {
+    var f = document.createDocumentFragment(); heading(f, b);
+    var host = el("div", "match-wrap");
+    var pool = el("div", "pool"), targets = el("div", "targets");
+    var pairs = b.pairs;
+    var order = pairs.slice().sort(function () { return Math.random() - 0.5; });
+    var selected = null, solved = 0;
+    var msg = el("div");
+    msg.style.cssText = "margin-top:14px;font-weight:700;color:var(--green)";
+
+    function tryMatch(slot, key) {
+      if (slot.classList.contains("ok")) return;
+      if (slot.dataset.k === key) {
+        slot.classList.add("ok"); slot.classList.remove("bad");
+        slot.querySelector(".drop").textContent = key;
+        var chip = pool.querySelector('.chip[data-k="' + key + '"]');
+        chip.classList.add("used"); chip.classList.remove("sel");
+        selected = null; solved++;
+        if (solved === pairs.length) msg.textContent = b.done || "✓ 全部答對！";
+      } else {
+        slot.classList.add("bad");
+        setTimeout(function () { slot.classList.remove("bad"); }, 350);
+      }
+    }
+    order.forEach(function (q) {
+      var c = el("div", "chip"); c.textContent = q.label; c.draggable = true; c.dataset.k = q.label;
+      c.addEventListener("dragstart", function (e) { e.dataTransfer.setData("k", q.label); });
+      c.onclick = function () {
+        if (c.classList.contains("used")) return;
+        if (selected === c) { c.classList.remove("sel"); selected = null; return; }
+        pool.querySelectorAll(".chip").forEach(function (x) { x.classList.remove("sel"); });
+        c.classList.add("sel"); selected = c;
+      };
+      pool.appendChild(c);
+    });
+    pairs.forEach(function (q) {
+      var s = el("div", "slot"); s.dataset.k = q.label;
+      s.innerHTML = '<div class="drop">拖到這裡</div><div class="desc">' + q.desc + '</div>';
+      s.addEventListener("dragover", function (e) { e.preventDefault(); });
+      s.addEventListener("drop", function (e) { e.preventDefault(); tryMatch(s, e.dataTransfer.getData("k")); });
+      s.onclick = function () { if (selected) tryMatch(s, selected.dataset.k); };
+      targets.appendChild(s);
+    });
+    host.appendChild(pool); host.appendChild(targets); host.appendChild(msg);
+    f.appendChild(host); return f;
+  };
+
+  /* 結果代碼：把作答結果編成一串可貼給老師的代碼（FSQ1.<base64>.<檢查碼>）。
+     解碼與彙整用專案根目錄的「食品科學概論_測驗成績解碼器.html」。 */
+  function b64utf8(s) { return btoa(unescape(encodeURIComponent(s))); }
+  function checksum(s) {
+    var h = 0;
+    for (var i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) % 1679616; // 36^4
+    return h.toString(36);
+  }
+
+  BLOCKS.quiz = function (b) {
+    var f = document.createDocumentFragment(); heading(f, b);
+    var items = b.items, n = items.length;
+    var head = el("div", "quiz-head");
+    head.innerHTML =
+      '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">' +
+      '<input class="qid" placeholder="學號（交成績必填）" style="flex:1;min-width:130px;padding:8px 10px;border:1.5px solid var(--line,#ccc);border-radius:8px;font-size:15px">' +
+      '<input class="qname" placeholder="姓名" style="flex:1;min-width:100px;padding:8px 10px;border:1.5px solid var(--line,#ccc);border-radius:8px;font-size:15px"></div>' +
+      '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">' +
+      '<strong class="qprog">進度 0 / ' + n + '</strong>' +
+      '<span class="qscore" style="color:var(--secondary);font-weight:800">得分 0</span></div>' +
+      '<div class="pbar"><div class="pfill"></div></div>';
+    var box = el("div");
+    var sb = el("div", "scorebox");
+    sb.innerHTML = '<div>你的成績</div><div class="big"><span class="fscore">0</span> / ' + n + '</div>' +
+      '<div class="smsg" style="margin:8px 0 16px"></div>' +
+      '<div class="rcwrap" style="margin:0 auto 16px;max-width:560px;text-align:left">' +
+      '<div style="font-weight:700;margin-bottom:6px">結果代碼（請複製後，貼到老師指定的表單或訊息）</div>' +
+      '<textarea class="rcode" readonly rows="3" style="width:100%;box-sizing:border-box;font-family:monospace;font-size:12px;padding:8px;border:1.5px solid var(--line,#ccc);border-radius:8px;resize:none"></textarea>' +
+      '<div class="rmsg" style="font-size:13px;color:#B34700;margin-top:4px"></div>' +
+      '<button class="btn copyrc" style="margin-top:8px">📋 複製結果代碼</button></div>' +
+      '<button class="btn ghost">重新測驗</button>';
+
+    var answered = 0, score = 0, picks = [];
+    function updateProg() {
+      head.querySelector(".qprog").textContent = "進度 " + answered + " / " + n;
+      head.querySelector(".qscore").textContent = "得分 " + score;
+      head.querySelector(".pfill").style.width = (answered / n * 100) + "%";
+    }
+    function finish() {
+      sb.querySelector(".fscore").textContent = score;
+      var pct = score / n, m;
+      if (score === n) m = "滿分！你完全掌握本週重點 🎉";
+      else if (pct >= 0.8) m = "很棒！觀念相當扎實。";
+      else if (pct >= 0.6) m = "不錯，再複習幾個弱點就更好。";
+      else m = "建議回到前面單元再看一次翻卡與展開內容。";
+      sb.querySelector(".smsg").textContent = m;
+
+      var sid = head.querySelector(".qid").value.trim();
+      var sname = head.querySelector(".qname").value.trim();
+      var korr = items.map(function (item, i) { return picks[i] === item.a ? 1 : 0; }).join("");
+      var payload = JSON.stringify({
+        w: D.week || 0, id: sid, nm: sname, s: score, n: n,
+        a: picks, k: korr, t: new Date().toISOString().slice(0, 16),
+      });
+      var body = b64utf8(payload);
+      var code = "FSQ1." + body + "." + checksum(body);
+      sb.querySelector(".rcode").value = code;
+      sb.querySelector(".rmsg").textContent = sid ? "" : "⚠ 尚未填學號 —— 請回到測驗上方填入學號後重新測驗，否則老師無法登記成績。";
+
+      sb.classList.add("show");
+      sb.scrollIntoView({ behavior: "smooth" });
+    }
+    function pick(qel, item, oi) {
+      if (qel.dataset.done === "1") return;
+      qel.dataset.done = "1"; answered++;
+      picks[parseInt(qel.dataset.qi, 10)] = oi;
+      qel.querySelectorAll(".opt").forEach(function (btn, i) {
+        btn.classList.add("dim");
+        if (i === item.a) btn.classList.add("correct");
+        if (i === oi && oi !== item.a) btn.classList.add("wrong");
+      });
+      var fb = qel.querySelector(".fb");
+      if (oi === item.a) { score++; fb.classList.add("good"); fb.innerHTML = "✓ 正確！" + item.e; }
+      else { fb.classList.add("no"); fb.innerHTML = "✗ 正解：" + item.o[item.a] + "。" + item.e; }
+      fb.classList.add("show"); updateProg();
+      if (answered === n) finish();
+    }
+    function build() {
+      box.innerHTML = ""; answered = 0; score = 0; picks = []; updateProg();
+      sb.classList.remove("show");
+      items.forEach(function (item, qi) {
+        var qel = el("div", "q"); qel.dataset.done = "0"; qel.dataset.qi = qi;
+        qel.innerHTML = '<div class="qn">第 ' + (qi + 1) + ' 題</div><div class="qt">' + item.q + '</div>';
+        item.o.forEach(function (opt, oi) {
+          var btn = el("button", "opt"); btn.textContent = opt;
+          btn.onclick = function () { pick(qel, item, oi); };
+          qel.appendChild(btn);
+        });
+        qel.appendChild(el("div", "fb"));
+        box.appendChild(qel);
+      });
+    }
+    sb.querySelector(".copyrc").onclick = function () {
+      var ta = sb.querySelector(".rcode");
+      ta.select(); ta.setSelectionRange(0, 99999);
+      var btn = this;
+      function ok() { btn.textContent = "✓ 已複製，請貼給老師"; setTimeout(function () { btn.textContent = "📋 複製結果代碼"; }, 2000); }
+      if (navigator.clipboard && navigator.clipboard.writeText)
+        navigator.clipboard.writeText(ta.value).then(ok, function () { document.execCommand("copy"); ok(); });
+      else { document.execCommand("copy"); ok(); }
+    };
+    sb.querySelector(".ghost").onclick = function () {
+      build(); window.scrollTo({ top: 0, behavior: "smooth" });
+    };
+    build();
+    f.appendChild(head); f.appendChild(box); f.appendChild(sb);
+    return f;
+  };
+
+  /* ---------- 組裝 ---------- */
+  var nav = $("#nav"), main = $("#main");
+  function switchMod(id, btn) {
+    document.querySelectorAll(".module").forEach(function (m) { m.classList.remove("active"); });
+    document.getElementById(id).classList.add("active");
+    nav.querySelectorAll("button").forEach(function (x) { x.classList.remove("active"); });
+    btn.classList.add("active");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+  D.modules.forEach(function (m, i) {
+    var btn = el("button", i === 0 ? "active" : "", m.nav);
+    btn.onclick = function () { switchMod(m.id, btn); };
+    nav.appendChild(btn);
+
+    var sec = el("section", "module" + (i === 0 ? " active" : ""));
+    sec.id = m.id;
+    sec.appendChild(el("div", "lead",
+      '<div class="kicker">' + m.kicker + '</div><h2>' + m.h2 + '</h2><p>' + m.lead + '</p>'));
+    m.blocks.forEach(function (b) {
+      var render = BLOCKS[b.type];
+      if (!render) { console.error("未知區塊型別:", b.type); return; }
+      sec.appendChild(render(b));
+    });
+    main.appendChild(sec);
+  });
+})();
+</script>
+</body>
+</html>

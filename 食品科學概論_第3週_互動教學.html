@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>食品科學概論 第3週 · 互動教學</title>
+<style>
+  :root{
+    --primary:#2D2A6E; --secondary:#5B4FB8; --accent:#00B8B8; --warm:#F5A623; --green:#2FA36B; --red:#D65B5B; --dark:#1A1A3E; --bg:#F4F5FA; --text:#1F1F2E; --mid:#5A5A75; --muted:#9096ac; --border:#E2E2EC; --card:#fff;
+  }
+/* 版型樣式 — 逐條取自「第1週_互動教學.html」，末段為新增區塊（cmp / tbl / note）。
+   這裡只用 var(--x)；色票由 tokens.js 產生 :root 注入。 */
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Segoe UI","Noto Sans TC","Microsoft JhengHei",system-ui,sans-serif;
+  background:var(--bg);color:var(--text);line-height:1.7;font-size:17px}
+header{background:linear-gradient(120deg,var(--dark),var(--primary));color:#fff;
+  padding:26px 22px 0;position:sticky;top:0;z-index:50;box-shadow:0 2px 14px rgba(0,0,0,.15)}
+header h1{font-size:31px;font-weight:800;letter-spacing:.5px}
+header .sub{color:#b9c7ff;font-size:16px;margin-top:5px}
+nav{display:flex;gap:6px;margin-top:16px;flex-wrap:wrap}
+nav button{background:rgba(255,255,255,.10);color:#dfe4ff;border:none;padding:12px 18px;
+  border-radius:10px 10px 0 0;font-size:16.5px;cursor:pointer;font-weight:600;transition:.15s}
+nav button:hover{background:rgba(255,255,255,.2)}
+nav button.active{background:var(--bg);color:var(--primary)}
+main{max-width:1080px;margin:0 auto;padding:26px 18px 80px}
+.module{display:none;animation:fade .35s}
+.module.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.lead{background:var(--dark);color:#fff;border-radius:14px;padding:22px 24px;margin-bottom:22px}
+.lead .kicker{color:var(--accent);font-weight:700;font-size:14px;letter-spacing:1px}
+.lead h2{font-size:26px;margin:6px 0 8px}
+.lead p{color:#cdd3ee;font-size:16.5px}
+.sec-title{font-size:23px;font-weight:800;color:var(--primary);margin:30px 0 6px;
+  display:flex;align-items:center;gap:10px}
+.sec-title .bar{width:6px;height:25px;background:var(--accent);border-radius:3px;display:inline-block}
+.hint{color:var(--mid);font-size:15px;margin-bottom:14px}
+.grid{display:grid;gap:14px}
+.g2{grid-template-columns:repeat(2,1fr)} .g3{grid-template-columns:repeat(3,1fr)}
+.g4{grid-template-columns:repeat(4,1fr)}
+@media(max-width:820px){.g3,.g4{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:520px){.g2,.g3,.g4{grid-template-columns:1fr}}
+
+/* flip cards */
+.flip{perspective:1100px;height:200px;cursor:pointer}
+.flip-in{position:relative;width:100%;height:100%;transition:transform .6s;transform-style:preserve-3d}
+.flip.on .flip-in{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;backface-visibility:hidden;border-radius:14px;padding:18px;
+  display:flex;flex-direction:column;justify-content:center;box-shadow:0 3px 10px rgba(30,30,60,.08);border:1px solid var(--border)}
+.front{background:var(--card)}
+.front .t{font-size:21px;font-weight:800;color:var(--primary)}
+.front .en{color:var(--muted);font-size:14px;margin-top:3px;font-style:italic}
+.front .tap{margin-top:auto;color:var(--accent);font-size:14px;font-weight:700}
+.back{background:linear-gradient(135deg,var(--primary),var(--secondary));color:#fff;transform:rotateY(180deg);overflow:auto}
+.back p{font-size:16px}
+.cbar{height:6px;border-radius:14px 14px 0 0;position:absolute;top:0;left:0;right:0}
+
+/* expandable */
+.exp{background:var(--card);border:1px solid var(--border);border-radius:12px;margin-bottom:10px;overflow:hidden}
+.exp>button{width:100%;text-align:left;background:none;border:none;padding:16px 18px;cursor:pointer;
+  display:flex;align-items:center;gap:12px;font-size:18px;font-weight:700;color:var(--text)}
+.exp .num{background:var(--primary);color:#fff;min-width:32px;height:32px;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800}
+.exp .chev{margin-left:auto;color:var(--muted);transition:.25s;font-size:20px}
+.exp.on .chev{transform:rotate(90deg);color:var(--accent)}
+.exp .body{max-height:0;overflow:hidden;transition:max-height .3s ease;padding:0 18px}
+.exp.on .body{padding:0 18px 16px 62px}
+.exp .body ul{margin-left:16px;color:var(--mid);font-size:16px}
+.exp .body p{color:var(--mid);font-size:15.5px}
+.exp .tag{font-size:13.5px;color:var(--muted);font-weight:600;margin-left:8px}
+
+/* info card */
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px;
+  box-shadow:0 3px 10px rgba(30,30,60,.06)}
+.card .h{font-weight:800;color:var(--primary);font-size:18px;margin-bottom:6px}
+.card .en{color:var(--muted);font-size:13px;font-style:italic}
+.card ul{margin:8px 0 0 18px;font-size:15.5px;color:var(--mid)}
+
+/* timeline */
+.tl{display:flex;gap:0;flex-wrap:wrap;counter-reset:s}
+.tl .step{flex:1;min-width:180px;background:var(--card);border:1px solid var(--border);border-radius:12px;
+  padding:16px 14px 14px;margin:8px;position:relative}
+.tl .dot{width:34px;height:34px;border-radius:50%;color:#fff;display:flex;align-items:center;
+  justify-content:center;font-weight:800;margin-bottom:8px}
+.tl .step h4{color:var(--primary);font-size:17.5px;margin-bottom:4px}
+.tl .step p{font-size:15px;color:var(--mid)}
+
+/* matching */
+.match-wrap{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px}
+.pool{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+.chip{background:var(--secondary);color:#fff;padding:10px 17px;border-radius:22px;font-weight:700;
+  cursor:grab;user-select:none;font-size:16.5px;box-shadow:0 2px 6px rgba(0,0,0,.12)}
+.chip.used{opacity:.35;pointer-events:none}
+.chip.sel{outline:3px solid var(--warm);outline-offset:2px}
+.targets{display:grid;gap:10px}
+.slot{display:flex;align-items:center;gap:12px;border:2px dashed var(--border);border-radius:12px;padding:10px 14px;background:#fafbff}
+.slot .desc{flex:1;font-size:16px;color:var(--text)}
+.slot .drop{min-width:130px;min-height:44px;border-radius:8px;background:#eef0f8;display:flex;
+  align-items:center;justify-content:center;color:var(--muted);font-size:15px;padding:8px 12px}
+.slot.ok{border-color:var(--green);background:#effaf3}
+.slot.ok .drop{background:var(--green);color:#fff;font-weight:700}
+.slot.bad{border-color:var(--red);animation:shake .3s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+
+/* quiz */
+.quiz-head{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px;margin-bottom:16px}
+.pbar{height:12px;background:#e7e9f4;border-radius:8px;overflow:hidden;margin-top:10px}
+.pfill{height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--secondary));transition:width .4s}
+.q{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:14px}
+.q .qn{color:var(--accent);font-weight:800;font-size:14px}
+.q .qt{font-size:19.5px;font-weight:700;margin:6px 0 14px}
+.opt{display:block;width:100%;text-align:left;background:#fafbff;border:2px solid var(--border);
+  border-radius:10px;padding:13px 16px;margin-bottom:9px;cursor:pointer;font-size:16.5px;transition:.15s}
+.opt:hover{border-color:var(--secondary)}
+.opt.correct{border-color:var(--green);background:#effaf3;font-weight:700}
+.opt.wrong{border-color:var(--red);background:#fdeeee}
+.opt.dim{opacity:.6}
+.fb{margin-top:8px;font-size:15.5px;padding:11px 14px;border-radius:9px;display:none}
+.fb.show{display:block}
+.fb.good{background:#effaf3;color:#1c7a4d} .fb.no{background:#fdeeee;color:#a83b3b}
+.scorebox{background:linear-gradient(135deg,var(--primary),var(--secondary));color:#fff;border-radius:16px;
+  padding:26px;text-align:center;margin-top:10px;display:none}
+.scorebox.show{display:block}
+.scorebox .big{font-size:46px;font-weight:800}
+.btn{background:var(--accent);color:#fff;border:none;padding:11px 22px;border-radius:10px;
+  font-weight:700;cursor:pointer;font-size:15px}
+.btn.ghost{background:rgba(255,255,255,.18)}
+.tagrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+.pill{font-size:12px;background:#eef0fb;color:var(--secondary);padding:3px 10px;border-radius:20px;font-weight:700}
+footer{text-align:center;color:var(--muted);font-size:12.5px;padding:24px}
+
+/* ===== 新增區塊 ===== */
+/* compare：兩欄對照（梅納 vs 焦糖化、冷藏 vs 冷凍…） */
+.cmp{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:stretch}
+@media(max-width:640px){.cmp{grid-template-columns:1fr}}
+.cmp .col{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:0 18px 18px;
+  box-shadow:0 3px 10px rgba(30,30,60,.06);position:relative;overflow:hidden}
+.cmp .col .cbar{position:static;height:6px;margin:0 -18px 14px;border-radius:0}
+.cmp .col h4{font-size:20px;font-weight:800;margin-bottom:2px}
+.cmp .col .en{color:var(--muted);font-size:13px;font-style:italic;margin-bottom:8px}
+.cmp .col ul{margin-left:18px;font-size:15.5px;color:var(--mid)}
+.cmp .col li{margin-bottom:5px}
+.cmp-note{margin-top:12px;background:#eef0fb;border-left:5px solid var(--secondary);
+  border-radius:0 10px 10px 0;padding:12px 16px;font-size:16px;color:var(--primary);font-weight:600}
+
+/* table：資料表（維生素、添加物分類…） */
+.tblwrap{overflow-x:auto;background:var(--card);border:1px solid var(--border);border-radius:14px;
+  box-shadow:0 3px 10px rgba(30,30,60,.06)}
+.tbl{border-collapse:collapse;width:100%;min-width:520px;font-size:15.5px}
+.tbl th{background:var(--primary);color:#fff;text-align:left;padding:12px 14px;font-weight:700;font-size:15px}
+.tbl td{padding:11px 14px;border-top:1px solid var(--border);color:var(--mid);vertical-align:top}
+.tbl tr:nth-child(even) td{background:#fafbff}
+.tbl td:first-child{color:var(--text);font-weight:700}
+
+/* note：重點提示條 */
+.note{background:#fff8e9;border-left:5px solid var(--warm);border-radius:0 12px 12px 0;
+  padding:14px 18px;margin:14px 0;font-size:16px;color:var(--text)}
+.note b{color:var(--primary)}
+.note.key{background:#effaf3;border-left-color:var(--green)}
+.note.warn{background:#fdeeee;border-left-color:var(--red)}
+</style>
+</head>
+<body>
+<header>
+  <h1>食品科學概論 · 第 3 週 互動教學</h1>
+  <div class="sub">醣類分類　·　澱粉的糊化與老化　·　纖維與增稠劑　·　梅納反應 vs 焦糖化　＋　互動測驗</div>
+  <nav id="nav"></nav>
+</header>
+<main id="main"></main>
+<footer>互動教材 · 依課程大綱與指定教科書整理 · 供食品科學概論教學使用</footer>
+<script>window.__LESSON__={"week":3,"series":["#2D2A6E","#2FA36B","#F5A623","#5B4FB8","#00B8B8","#D65B5B"],"modules":[{"id":"m-class","nav":"醣類分類","kicker":"MODULE 1 · 單元一","h2":"醣類怎麼分類？從一個糖單位開始","lead":"一片吐司從白色烤成金黃、一鍋玉米濃湯放涼結成一層 —— 背後都是今天要談的醣類化學。先把名詞分清楚，後面的反應才講得通。","blocks":[{"type":"flips","title":"一、依「醣單位數目」分成四類（點卡片翻面）","hint":"這是整個單元的骨架，四個名詞要能立刻分辨。","cols":4,"items":[{"t":"單醣","en":"Monosaccharide","c":"#2D2A6E","b":"最小的糖單位，不能再水解。食品中常見的六碳醣為葡萄糖、果糖、半乳糖；五碳醣為核糖、阿拉伯糖。"},{"t":"雙醣","en":"Disaccharide","c":"#2FA36B","b":"兩個單醣連接而成。蔗糖、乳糖、麥芽糖三個一定要記住它們的組成。"},{"t":"寡醣","en":"Oligosaccharide","c":"#F5A623","b":"約 3–10 個單醣。多數人體無法消化，會被大腸菌叢利用（因此可能產氣），也是益生元的來源。"},{"t":"多醣","en":"Polysaccharide","c":"#5B4FB8","b":"數百至數千個單醣聚合。澱粉、肝醣、纖維素、果膠都屬此類，是本週的重點。"}]},{"type":"table","title":"二、三個必背的雙醣","hint":"考試最愛出「由哪兩個單醣組成」。","head":["雙醣","組成","來源與重點"],"rows":[["蔗糖 sucrose","葡萄糖 ＋ 果糖","砂糖的主成分。\u003cb>非還原糖\u003c/b>，水解後得到的「轉化糖」才具還原性"],["乳糖 lactose","葡萄糖 ＋ 半乳糖","少數來自動物的糖。需乳糖酶分解，缺乏者即乳糖不耐症"],["麥芽糖 maltose","葡萄糖 ＋ 葡萄糖","澱粉分解的中間產物，用於啤酒與麥芽製品"]]},{"type":"note","kind":"key","text":"\u003cb>還原糖（reducing sugar）\u003c/b>是等一下梅納反應的主角。葡萄糖、果糖、乳糖、麥芽糖都是還原糖；\u003cb>蔗糖不是\u003c/b>。這解釋了為什麼純蔗糖加熱只會焦糖化，不會直接進行梅納反應。"},{"type":"cards","title":"三、甜度不是只有「甜不甜」","hint":"以蔗糖 = 100 為基準的相對甜度。配方替換糖時，甜度、吸濕性、褐變能力都要一起考慮。","cols":4,"items":[{"h":"果糖 173","en":"Fructose","c":"#D65B5B","li":["最甜的天然糖","吸濕性強","低溫時更甜"],"p":"水果、蜂蜜與高果糖玉米糖漿的甜味來源。"},{"h":"蔗糖 100","en":"Sucrose","c":"#2D2A6E","li":["甜度基準","非還原糖","160°C 以上焦糖化"],"p":"烘焙配方的標準糖。"},{"h":"葡萄糖 74","en":"Glucose","c":"#2FA36B","li":["還原糖","褐變能力強","甜度較低"],"p":"常用於需要上色但不要太甜的產品。"},{"h":"乳糖 16","en":"Lactose","c":"#5B4FB8","li":["幾乎不甜","溶解度低","還原糖"],"p":"奶粉在儲存中變黃，就是乳糖參與梅納反應。"}]},{"type":"match","title":"術語配對挑戰","hint":"把上方標籤拖到（或先點標籤再點空格）對應的描述。全部答對即通關。","done":"✓ 全部答對！醣類名詞已經分清楚了。","pairs":[{"label":"蔗糖","desc":"葡萄糖 ＋ 果糖；非還原糖，砂糖的主成分"},{"label":"乳糖","desc":"葡萄糖 ＋ 半乳糖；缺乏分解酵素者會乳糖不耐"},{"label":"麥芽糖","desc":"葡萄糖 ＋ 葡萄糖；澱粉分解的中間產物"},{"label":"纖維素","desc":"葡萄糖直鏈，但人體酵素無法分解，不提供熱量"},{"label":"寡醣","desc":"約 3–10 個單醣，多被大腸菌叢利用"}]}]},{"id":"m-starch","nav":"澱粉：糊化與老化","kicker":"MODULE 2 · 單元二","h2":"澱粉：勾芡、卡士達與隔夜麵包的科學","lead":"為什麼太白粉水不能直接倒進冷湯？為什麼隔夜的白飯會變硬？兩個問題的答案分別是「糊化」與「老化」，而關鍵在澱粉的兩種分子形式。","blocks":[{"type":"compare","title":"一、澱粉的兩種分子：amylose 與 amylopectin","hint":"天然澱粉大約是 25% amylose ＋ 75% amylopectin，比例不同，行為就完全不同。","left":{"h":"Amylose 直鏈澱粉","en":"約占 25%","c":"#2D2A6E","li":["α-1,4 鍵結的\u003cb>直鏈\u003c/b>分子","分子能彼此靠近、形成強鍵結","會形成三維網狀鎖住水分 → \u003cb>膠凝\u003c/b>","成品較\u003cb>混濁\u003c/b>、凝固後可切開","含量高者：玉米澱粉、小麥澱粉"]},"right":{"h":"Amylopectin 支鏈澱粉","en":"約占 75%","c":"#F5A623","li":["α-1,4 為主幹，另有 α-1,6 \u003cb>分枝\u003c/b>","分枝多，分子之間難以緊密結合","鍵結太弱，\u003cb>不易膠凝\u003c/b>","成品較\u003cb>清澈\u003c/b>、質地滑順","含量高者：馬鈴薯（太白粉）、木薯澱粉"]},"note":"所以卡士達、肉汁這類要「凝固成型」的用玉米澱粉；要「清澈勾芡」的用太白粉。選錯澱粉，做不出想要的質地。"},{"type":"exp","title":"二、糊化 gelatinization（點擊展開）","hint":"澱粉增稠的機制，以及三個會打亂它的因素。","items":[{"h":"什麼是糊化","tag":"機制","body":["澱粉粒在水中受熱，水分子進入顆粒內部，顆粒\u003cb>吸水膨潤\u003c/b>。","溫度續升，顆粒\u003cb>破裂\u003c/b>，內部分子釋出到水中，形成半透明的濃稠糊。","溫度範圍：約自 \u003cb>60°C\u003c/b> 開始，至沸點附近完成。不同澱粉起始溫度略有差異。"]},{"h":"糖：延遲糊化","tag":"干擾因素 1","body":"糖會與澱粉\u003cb>爭奪水分\u003c/b>，使澱粉粒吸水變慢，糊化被延後、需要更高的溫度才完成，成品黏度也較低。高糖配方（如糖度高的餡料）必須考慮這一點。"},{"h":"酸：降低黏度","tag":"干擾因素 2","body":"pH \u003c 4 時，酸會使澱粉分子斷裂，凝膠黏度明顯下降。\u003cb>作法：酸性果汁（如檸檬、大黃）應在糊化完成後再加\u003c/b>，不要一開始就下鍋。這是水果派餡最常見的失敗原因。"},{"h":"攪拌：要拌，但不能過度","tag":"干擾因素 3","body":"加熱時必須持續攪拌，避免結塊與鍋底焦化；但糊化完成後\u003cb>過度攪拌\u003c/b>會打斷已形成的網狀結構，反而變稀。此外澱粉必須先用\u003cb>冷水調勻\u003c/b>再入鍋 —— 直接倒進熱湯，表面立刻糊化結成硬塊，內部還是生粉。"}]},{"type":"timeline","title":"三、從糊化到老化：一鍋醬汁的一生","hint":"四個階段，對應廚房裡看得到的現象。","steps":[{"h":"冷水調勻","p":"澱粉粒懸浮但未吸水。此時液體仍稀，可自由攪拌。","c":"#00B8B8"},{"h":"加熱膨潤（約 60°C 起）","p":"澱粉粒吸水膨脹，液體開始變稠、逐漸透明。持續攪拌避免結塊。","c":"#F5A623"},{"h":"膠凝（冷卻中）","p":"amylose 分子彼此靠近形成三維網狀，鎖住水分，醬汁凝固成可切開的膠體。","c":"#2D2A6E"},{"h":"老化 retrogradation（放置後）","p":"amylose 持續形成更多鍵結，質地變硬、水被擠出（離水 syneresis）。冷凍會顯著加速。","c":"#D65B5B"}]},{"type":"note","text":"\u003cb>老化的日常證據：\u003c/b>隔夜白飯變硬、放久的麵包變乾（不只是水分蒸發，更是澱粉老化）、冷藏的醬汁表面出水。工業上的解法是改用 amylose 含量極低的\u003cb>蠟質玉米澱粉（waxy maize）\u003c/b>—— 沒有直鏈分子就不容易老化，因此冷凍食品的醬汁幾乎都用它。"},{"type":"cards","title":"四、課堂示範：玉米澱粉 vs 太白粉","hint":"用兩杯就能看出 amylose 含量的差別。","cols":3,"items":[{"h":"步驟","c":"#2D2A6E","li":["兩種澱粉各 1 大匙，先用少量冷水調成粉水","分別加入加熱中的水，持續攪拌","觀察約 60°C 起開始變稠","靜置放涼數分鐘再比較"]},{"h":"觀察重點","c":"#F5A623","li":["玉米澱粉：較濃稠、偏混濁","太白粉：較清澈、質地滑順","放涼後玉米澱粉杯逐漸凝結","太白粉杯仍維持流動"]},{"h":"延伸（可選）","c":"#D65B5B","li":["其中一杯加少許檸檬汁","觀察黏度明顯下降","對應「酸降低黏度」","安全：使用熱源注意燙傷"]}]}]},{"id":"m-fiber","nav":"纖維與增稠劑","kicker":"MODULE 3 · 單元三","h2":"人體消化不了的多醣，反而最有用","lead":"同樣是葡萄糖串成的長鏈，澱粉能消化、纖維素不能 —— 差別只在鍵結的方向。而食品工業把這些「消化不了的多醣」變成了最重要的一類添加物：增稠劑。","blocks":[{"type":"compare","title":"一、澱粉 vs 纖維素：一個鍵結的差別","hint":"兩者都是葡萄糖的直鏈聚合物，人體卻只能利用其中一個。","left":{"h":"澱粉（amylose）","en":"α-1,4 鍵結","c":"#2FA36B","li":["人體澱粉酶可分解","提供 4 kcal/g 熱量","會糊化、會膠凝","主要能量來源"]},"right":{"h":"纖維素 cellulose","en":"β-1,4 鍵結","c":"#5B4FB8","li":["人體\u003cb>沒有\u003c/b>對應酵素","不提供熱量","不糊化，構成植物細胞壁","屬膳食纖維，促進腸道蠕動"]},"note":"所以「膳食纖維」的定義不是化學結構特別，而是\u003cb>人體酵素無法分解\u003c/b>。牛能吃草是靠瘤胃中的微生物，不是靠自己的酵素。"},{"type":"cards","title":"二、膳食纖維的兩大類","cols":2,"items":[{"h":"水溶性膳食纖維","en":"Soluble fiber","c":"#00B8B8","li":["果膠 pectin、植物膠、部分半纖維素","在水中形成黏稠膠體","延緩胃排空、降低血糖上升速度","有助於降低血中膽固醇"],"p":"食品應用：果膠是果醬凝固的關鍵。"},{"h":"非水溶性膳食纖維","en":"Insoluble fiber","c":"#2FA36B","li":["纖維素、木質素、部分半纖維素","不溶於水，吸水膨脹","增加糞便體積、促進腸道蠕動","預防便祕"],"p":"食品應用：全穀麩皮、蔬菜莖葉。"}]},{"type":"table","title":"三、常見增稠劑一覽","hint":"增稠劑分兩大類：\u003cb>澱粉\u003c/b>與\u003cb>膠類（gums）\u003c/b>。膠類多為植物或微生物來源，\u003cb>唯一的動物性例外是明膠（gelatin）\u003c/b>。","head":["增稠劑","類別","特性與適用"],"rows":[["玉米澱粉","澱粉","amylose 高 → 易膠凝、成品略混濁。卡士達、肉汁、派餡"],["蠟質玉米澱粉","澱粉","amylose 極低 → 清澈、耐凍不易老化。冷凍食品醬汁"],["預糊化澱粉","澱粉","已先糊化再乾燥，冷水即可增稠，免加熱。即食產品、速食湯"],["葛粉 arrowroot","澱粉","質地細緻、透明度高、耐酸性較佳。淋醬、果凍"],["果膠 pectin","膠類","需糖與酸配合才能形成凝膠。果醬、軟糖"],["洋菜 agar","膠類","海藻來源，凝固點高、質地脆。羊羹、素食凝膠"],["明膠 gelatin","膠類（\u003cb>動物性\u003c/b>）","膠原蛋白水解而來，凝膠有彈性、入口即化。慕斯、軟糖、果凍"]]},{"type":"note","kind":"key","text":"\u003cb>糊精（dextrins）\u003c/b>：澱粉受熱或被酵素分解成較小的片段，比原本的澱粉\u003cb>更甜、更易溶\u003c/b>。這就是麵包烤過之後比未烤更甜的原因 —— 也正好接到下一個模組的褐變。"}]},{"id":"m-brown","nav":"褐變反應","kicker":"MODULE 4 · 單元四","h2":"梅納反應 vs 焦糖化：兩種褐變，一個關鍵差別","lead":"煎牛排的香氣、咖啡的顏色、焦糖布丁上層的琥珀色 —— 看起來都是「烤到變褐色」，但化學上是兩件事。差別只在一個問題：有沒有蛋白質參與。","blocks":[{"type":"compare","title":"一、一句話分辨兩者","hint":"把這張表記起來，這個單元就過關了。","left":{"h":"焦糖化 Caramelization","en":"糖 ＋ 熱","c":"#F5A623","li":["只有\u003cb>糖\u003c/b>單獨受熱","蔗糖約需 160°C 以上","產生焦糖色與焦糖香","實例：焦糖、焦糖布丁、糖炒栗子、焦糖化洋蔥","\u003cb>不需要\u003c/b>蛋白質"]},"right":{"h":"梅納反應 Maillard reaction","en":"還原糖 ＋ 胺基 ＋ 熱","c":"#D65B5B","li":["\u003cb>還原糖\u003c/b>與蛋白質／胺基酸的\u003cb>胺基\u003c/b>結合","溫度較低即可發生，高溫更快","產生褐色與極複雜的香氣分子","實例：煎肉、麵包外皮、咖啡烘焙、油炸物","\u003cb>必須\u003c/b>有含氮化合物"]},"note":"兩者在烘焙時常常同時發生 —— 麵包外皮既有梅納（麵粉蛋白質＋還原糖）也有焦糖化（表面的糖）。要區分時，就問：這個食物裡有沒有蛋白質？"},{"type":"flips","title":"二、影響梅納反應的四個因素（點卡片翻面）","cols":4,"items":[{"t":"溫度","en":"Temperature","c":"#D65B5B","b":"溫度越高反應越快。這是為什麼煎鍋要夠熱才能上色 —— 鍋子不夠熱，肉只會出水而不會褐變。"},{"t":"水活性","en":"Water activity","c":"#00B8B8","b":"在 a\u003csub>w\u003c/sub> 0.6–0.8 最快（第 2 週學過）。水太多會稀釋反應物，水太少反應物無法相遇。肉表面先拍乾才好上色。"},{"t":"pH","en":"pH","c":"#2FA36B","b":"偏鹼性有利於梅納反應。加一小撮小蘇打能讓洋蔥更快焦糖化、讓麵包外皮顏色更深。"},{"t":"糖的種類","en":"Sugar type","c":"#5B4FB8","b":"必須是\u003cb>還原糖\u003c/b>。葡萄糖、果糖反應快；蔗糖必須先水解成轉化糖才能參與。"}]},{"type":"note","kind":"warn","text":"\u003cb>褐變的兩面性：\u003c/b>梅納反應帶來香氣與色澤，是烘焙、烘豆、煎烤的核心；但在\u003cb>不該發生\u003c/b>的地方（奶粉儲存變黃、乾燥蛋粉變色、殺菌乳出現蒸煮味）就是品質劣化，並會造成離胺酸等必需胺基酸的損失。此外高溫梅納反應也會生成丙烯醯胺等疑慮物質。"},{"type":"exp","title":"三、回到開場的三個問題（點擊展開對照答案）","hint":"如果四個都能答出來，本週目標就達成了。","items":[{"h":"為什麼吐司烤過會變甜、又變褐色？","tag":"綜合","body":"\u003cb>變甜\u003c/b>：澱粉受熱分解成糊精，糊精比澱粉甜。\u003cb>變褐\u003c/b>：表面的還原糖與麵粉蛋白質進行梅納反應，同時表面的糖也發生焦糖化。三個機制疊在一起。"},{"h":"為什麼玉米濃湯放涼會結成一層？","tag":"澱粉","body":"加熱時澱粉糊化增稠；放涼後 amylose 分子彼此鍵結形成三維網狀，把水鎖住而膠凝。再放久一點就會進一步老化、開始出水。"},{"h":"為什麼隔夜白飯、放久的麵包會變硬？","tag":"老化","body":"澱粉老化（retrogradation）。amylose 持續形成鍵結、結構收緊並把水擠出，質地因此變硬。冷藏會\u003cb>加速\u003c/b>老化 —— 這也是麵包不建議冷藏、要冷凍保存的原因。"},{"h":"做水果派時，酸酸的果汁該什麼時候加？","tag":"應用","body":"\u003cb>糊化完成之後再加\u003c/b>。酸（pH\u003c4）會使澱粉分子斷裂、凝膠黏度大幅下降。先讓澱粉在中性環境完成糊化與增稠，最後再拌入酸性果汁。"}]}]},{"id":"m-quiz","nav":"綜合測驗","kicker":"MODULE 5 · 綜合測驗","h2":"小測驗：檢核學習成效","lead":"共 10 題單選，取自本週互動題庫並重排選項。作答後即時顯示正解與解析，最後計算分數。","blocks":[{"type":"quiz","items":[{"q":"蔗糖（sucrose）由哪兩個單醣組成？","o":["葡萄糖 ＋ 果糖","葡萄糖 ＋ 葡萄糖","葡萄糖 ＋ 半乳糖","果糖 ＋ 半乳糖"],"a":0,"e":"蔗糖 ＝ 一分子葡萄糖 ＋ 一分子果糖，水解後得到的混合物稱為轉化糖。"},{"q":"乳糖（lactose）由葡萄糖與下列何者組成？","o":["果糖","麥芽糖","半乳糖","蔗糖"],"a":2,"e":"乳糖 ＝ 葡萄糖 ＋ 半乳糖，是少數來自動物來源的糖。缺乏乳糖酶者即乳糖不耐症。"},{"q":"植物澱粉的兩種主要形式是 amylose（直鏈）與下列何者？","o":["肝醣 glycogen","纖維素 cellulose","果膠 pectin","amylopectin（支鏈）"],"a":3,"e":"天然澱粉約由 25% 的直鏈 amylose 與 75% 的高度分枝 amylopectin 組成。"},{"q":"澱粉粒在水中受熱、吸水膨潤並破裂，形成半透明濃稠糊，此現象稱為？","o":["糊化 gelatinization","老化 retrogradation","焦糖化 caramelization","梅納反應 Maillard"],"a":0,"e":"糊化是澱粉增稠的機制：吸水 → 膨潤 → 破裂 → 形成糊。約自 60°C 開始。"},{"q":"澱粉的糊化「大約」從幾 °C 開始，並在沸點附近完成？","o":["40°C","60°C","80°C","100°C"],"a":1,"ordered":true,"e":"糊化約自 60°C（140°F）開始，隨溫度上升持續進行，至沸點附近完成。"},{"q":"直鏈的 amylose 與高度分枝的 amylopectin，何者主導澱粉的「膠凝（gel）」能力？","o":["amylopectin","兩者相同","兩者都不會膠凝","amylose"],"a":3,"e":"amylose 為直鏈，分子能彼此靠近形成三維網狀而膠凝；amylopectin 分枝多、鍵結太弱，不易膠凝。"},{"q":"澱粉凝膠冷卻或冷凍後，amylose 持續形成鍵結、質地變硬並出水，稱為？","o":["糊化","糊精化","老化（retrogradation）","乳化"],"a":2,"e":"老化即 retrogradation，是隔夜白飯變硬、醬汁離水的原因。冷凍會加速，故冷凍食品改用低 amylose 的蠟質玉米澱粉。"},{"q":"製作水果派餡時，酸性果汁（如大黃、檸檬）應在何時加入，才不會削弱澱粉增稠？","o":["與澱粉一起用冷水調勻時加入","加熱糊化完成之後再加入","冷凍定型後再加入","任何時候加入都不影響"],"a":1,"e":"酸（pH\u003c4）會使澱粉分子斷裂、凝膠黏度下降，因此應在糊化完成後才拌入酸性果汁。"},{"q":"梅納反應（Maillard reaction）是下列何者在加熱下的反應？","o":["還原糖與胺基（來自蛋白質）","糖與糖","糖與水","脂肪與蛋白質"],"a":0,"e":"梅納反應需要還原糖 ＋ 含氮的胺基。焦糖化則只需糖與熱，不需要蛋白質 —— 這是兩者最關鍵的差別。"},{"q":"麵包烤過之後比未烤更甜，是因為澱粉被熱分解成較小、較甜的？","o":["纖維素","果膠","糊精（dextrins）","肝醣"],"a":2,"e":"糊精是澱粉受熱或酵素分解的片段，比澱粉更甜也更易溶；同時表面進行梅納反應與焦糖化，因此又甜又褐。"}]}]}]};</script>
+<script>
+/*
+ * runtime.client.js — 跑在瀏覽器裡的渲染器（17 週共用，逐字內嵌進每份 HTML）
+ * 讀 window.__LESSON__ 的資料，把 modules / blocks 畫出來。
+ * 互動行為（翻卡、展開、配對、測驗）沿用週1 手寫版的做法，不要另創一套。
+ */
+(function () {
+  var D = window.__LESSON__;
+  var SERIES = D.series;
+  var $ = function (s) { return document.querySelector(s); };
+
+  function el(tag, cls, html) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (html != null) e.innerHTML = html;
+    return e;
+  }
+  function colorAt(given, i) { return given || SERIES[i % SERIES.length]; }
+  function gridCls(n) { return "grid g" + (n === 2 || n === 3 || n === 4 ? n : 3); }
+  function listHtml(v) {
+    // body 可以是字串或字串陣列；陣列渲染成 <ul>
+    if (v == null) return "";
+    if (typeof v === "string") return '<p>' + v + '</p>';
+    return '<ul>' + v.map(function (x) { return '<li>' + x + '</li>'; }).join("") + '</ul>';
+  }
+
+  /* ---------- 區塊標題 ---------- */
+  function heading(frag, b) {
+    if (b.title) frag.appendChild(el("div", "sec-title", '<span class="bar"></span>' + b.title));
+    if (b.hint) frag.appendChild(el("div", "hint", b.hint));
+  }
+
+  /* ---------- 各區塊 ---------- */
+  var BLOCKS = {};
+
+  BLOCKS.flips = function (b) {
+    var f = document.createDocumentFragment(); heading(f, b);
+    var g = el("div", gridCls(b.cols || 4));
+    b.items.forEach(function (d, i) {
+      var c = colorAt(d.c, i);
+      var card = el("div", "flip");
+      if (b.h) card.style.height = b.h + "px";
+      card.innerHTML =
+        '<div class="flip-in">' +
+        '<div class="face front"><div class="cbar" style="background:' + c + '"></div>' +
+        '<div class="t">' + d.t + '</div><div class="en">' + (d.en || "") + '</div>' +
+        '<div class="tap">▸ 點我看解釋</div></div>' +
+        '<div class="face back"><div class="cbar" style="background:' + c + '"></div>' +
+        '<p>' + d.b + '</p></div></div>';
+      card.onclick = function () { card.classList.toggle("on"); };
+      g.appendChild(card);
+    });
+    f.appendChild(g); return f;
+  };
+
+  BLOCKS.exp = function (b) {
+    var f = document.createDocumentFragment(); heading(f, b);
+    var host = el("div");
+    b.items.forEach(function (t, i) {
+      var box = el("div", "exp");
+      var res = t.res ? '<div style="margin-top:10px;font-size:13px;color:var(--secondary);font-weight:700">🔗 ' + t.res + '</div>' : "";
+      box.innerHTML =
+        '<button><span class="num">' + (i + 1) + '</span><span>' + t.h + '</span>' +
+        '<span class="tag">' + (t.tag || "") + '</span><span class="chev">›</span></button>' +
+        '<div class="body">' + listHtml(t.body) + res + '</div>';
+      var body = box.querySelector(".body");
+      box.querySelector("button").onclick = function () {
+        var on = box.classList.toggle("on");
+        if (!on) { body.style.maxHeight = "0px"; return; }
+        // 用實際內容高度展開，避免長段落被固定 max-height 截掉。
+        // 必須先解除 max-height 再量：在 max-height:0 的狀態下量 scrollHeight 會得到 0，
+        // 面板就只會開一條縫（實測過）。量完歸零並強制重排，transition 才有起點。
+        body.style.maxHeight = "none";
+        var h = body.scrollHeight;
+        body.style.maxHeight = "0px";
+        void body.offsetHeight;
+        body.style.maxHeight = h + "px";
+      };
+      host.appendChild(box);
+    });
+    f.appendChild(host); return f;
+  };
+
+  BLOCKS.cards = function (b) {
+    var f = document.createDocumentFragment(); heading(f, b);
+    var g = el("div", gridCls(b.cols || 4));
+    b.items.forEach(function (c, i) {
+      var accent = colorAt(c.c, i);
+      var box = el("div", "card");
+      box.style.borderTop = "4px solid " + accent;
+      box.innerHTML = '<div class="h">' + c.h + '</div>' +
+        (c.en ? '<div class="en">' + c.en + '</div>' : "") +
+        (c.li ? '<ul>' + c.li.map(function (x) { return '<li>' + x + '</li>'; }).join("") + '</ul>' : "") +
+        (c.p ? '<p style="margin-top:8px;font-size:15.5px;color:var(--mid)">' + c.p + '</p>' : "");
+      g.appendChild(box);
+    });
+    f.appendChild(g); return f;
+  };
+
+  BLOCKS.timeline = function (b) {
+    var f = document.createDocumentFragment(); heading(f, b);
+    var host = el("div", "tl");
+    b.steps.forEach(function (s, i) {
+      var st = el("div", "step");
+      st.innerHTML = '<div class="dot" style="background:' + colorAt(s.c, i) + '">' + (i + 1) + '</div>' +
+        '<h4>' + s.h + '</h4><p>' + s.p + '</p>';
+      host.appendChild(st);
+    });
+    f.appendChild(host); return f;
+  };
+
+  BLOCKS.compare = function (b) {
+    var f = document.createDocumentFragment(); heading(f, b);
+    var wrap = el("div", "cmp");
+    [b.left, b.right].forEach(function (c, i) {
+      var accent = colorAt(c.c, i);
+      var col = el("div", "col");
+      col.innerHTML = '<div class="cbar" style="background:' + accent + '"></div>' +
+        '<h4 style="color:' + accent + '">' + c.h + '</h4>' +
+        (c.en ? '<div class="en">' + c.en + '</div>' : "") +
+        '<ul>' + c.li.map(function (x) { return '<li>' + x + '</li>'; }).join("") + '</ul>';
+      wrap.appendChild(col);
+    });
+    f.appendChild(wrap);
+    if (b.note) f.appendChild(el("div", "cmp-note", b.note));
+    return f;
+  };
+
+  BLOCKS.table = function (b) {
+    var f = document.createDocumentFragment(); heading(f, b);
+    var wrap = el("div", "tblwrap");
+    var html = '<table class="tbl"><thead><tr>' +
+      b.head.map(function (h) { return '<th>' + h + '</th>'; }).join("") + '</tr></thead><tbody>' +
+      b.rows.map(function (r) {
+        return '<tr>' + r.map(function (c) { return '<td>' + c + '</td>'; }).join("") + '</tr>';
+      }).join("") + '</tbody></table>';
+    wrap.innerHTML = html;
+    f.appendChild(wrap); return f;
+  };
+
+  BLOCKS.note = function (b) {
+    var f = document.createDocumentFragment(); heading(f, b);
+    f.appendChild(el("div", "note" + (b.kind ? " " + b.kind : ""), b.text));
+    return f;
+  };
+
+  BLOCKS.match = function (b) {
+    var f = document.createDocumentFragment(); heading(f, b);
+    var host = el("div", "match-wrap");
+    var pool = el("div", "pool"), targets = el("div", "targets");
+    var pairs = b.pairs;
+    var order = pairs.slice().sort(function () { return Math.random() - 0.5; });
+    var selected = null, solved = 0;
+    var msg = el("div");
+    msg.style.cssText = "margin-top:14px;font-weight:700;color:var(--green)";
+
+    function tryMatch(slot, key) {
+      if (slot.classList.contains("ok")) return;
+      if (slot.dataset.k === key) {
+        slot.classList.add("ok"); slot.classList.remove("bad");
+        slot.querySelector(".drop").textContent = key;
+        var chip = pool.querySelector('.chip[data-k="' + key + '"]');
+        chip.classList.add("used"); chip.classList.remove("sel");
+        selected = null; solved++;
+        if (solved === pairs.length) msg.textContent = b.done || "✓ 全部答對！";
+      } else {
+        slot.classList.add("bad");
+        setTimeout(function () { slot.classList.remove("bad"); }, 350);
+      }
+    }
+    order.forEach(function (q) {
+      var c = el("div", "chip"); c.textContent = q.label; c.draggable = true; c.dataset.k = q.label;
+      c.addEventListener("dragstart", function (e) { e.dataTransfer.setData("k", q.label); });
+      c.onclick = function () {
+        if (c.classList.contains("used")) return;
+        if (selected === c) { c.classList.remove("sel"); selected = null; return; }
+        pool.querySelectorAll(".chip").forEach(function (x) { x.classList.remove("sel"); });
+        c.classList.add("sel"); selected = c;
+      };
+      pool.appendChild(c);
+    });
+    pairs.forEach(function (q) {
+      var s = el("div", "slot"); s.dataset.k = q.label;
+      s.innerHTML = '<div class="drop">拖到這裡</div><div class="desc">' + q.desc + '</div>';
+      s.addEventListener("dragover", function (e) { e.preventDefault(); });
+      s.addEventListener("drop", function (e) { e.preventDefault(); tryMatch(s, e.dataTransfer.getData("k")); });
+      s.onclick = function () { if (selected) tryMatch(s, selected.dataset.k); };
+      targets.appendChild(s);
+    });
+    host.appendChild(pool); host.appendChild(targets); host.appendChild(msg);
+    f.appendChild(host); return f;
+  };
+
+  /* 結果代碼：把作答結果編成一串可貼給老師的代碼（FSQ1.<base64>.<檢查碼>）。
+     解碼與彙整用專案根目錄的「食品科學概論_測驗成績解碼器.html」。 */
+  function b64utf8(s) { return btoa(unescape(encodeURIComponent(s))); }
+  function checksum(s) {
+    var h = 0;
+    for (var i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) % 1679616; // 36^4
+    return h.toString(36);
+  }
+
+  BLOCKS.quiz = function (b) {
+    var f = document.createDocumentFragment(); heading(f, b);
+    var items = b.items, n = items.length;
+    var head = el("div", "quiz-head");
+    head.innerHTML =
+      '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">' +
+      '<input class="qid" placeholder="學號（交成績必填）" style="flex:1;min-width:130px;padding:8px 10px;border:1.5px solid var(--line,#ccc);border-radius:8px;font-size:15px">' +
+      '<input class="qname" placeholder="姓名" style="flex:1;min-width:100px;padding:8px 10px;border:1.5px solid var(--line,#ccc);border-radius:8px;font-size:15px"></div>' +
+      '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">' +
+      '<strong class="qprog">進度 0 / ' + n + '</strong>' +
+      '<span class="qscore" style="color:var(--secondary);font-weight:800">得分 0</span></div>' +
+      '<div class="pbar"><div class="pfill"></div></div>';
+    var box = el("div");
+    var sb = el("div", "scorebox");
+    sb.innerHTML = '<div>你的成績</div><div class="big"><span class="fscore">0</span> / ' + n + '</div>' +
+      '<div class="smsg" style="margin:8px 0 16px"></div>' +
+      '<div class="rcwrap" style="margin:0 auto 16px;max-width:560px;text-align:left">' +
+      '<div style="font-weight:700;margin-bottom:6px">結果代碼（請複製後，貼到老師指定的表單或訊息）</div>' +
+      '<textarea class="rcode" readonly rows="3" style="width:100%;box-sizing:border-box;font-family:monospace;font-size:12px;padding:8px;border:1.5px solid var(--line,#ccc);border-radius:8px;resize:none"></textarea>' +
+      '<div class="rmsg" style="font-size:13px;color:#B34700;margin-top:4px"></div>' +
+      '<button class="btn copyrc" style="margin-top:8px">📋 複製結果代碼</button></div>' +
+      '<button class="btn ghost">重新測驗</button>';
+
+    var answered = 0, score = 0, picks = [];
+    function updateProg() {
+      head.querySelector(".qprog").textContent = "進度 " + answered + " / " + n;
+      head.querySelector(".qscore").textContent = "得分 " + score;
+      head.querySelector(".pfill").style.width = (answered / n * 100) + "%";
+    }
+    function finish() {
+      sb.querySelector(".fscore").textContent = score;
+      var pct = score / n, m;
+      if (score === n) m = "滿分！你完全掌握本週重點 🎉";
+      else if (pct >= 0.8) m = "很棒！觀念相當扎實。";
+      else if (pct >= 0.6) m = "不錯，再複習幾個弱點就更好。";
+      else m = "建議回到前面單元再看一次翻卡與展開內容。";
+      sb.querySelector(".smsg").textContent = m;
+
+      var sid = head.querySelector(".qid").value.trim();
+      var sname = head.querySelector(".qname").value.trim();
+      var korr = items.map(function (item, i) { return picks[i] === item.a ? 1 : 0; }).join("");
+      var payload = JSON.stringify({
+        w: D.week || 0, id: sid, nm: sname, s: score, n: n,
+        a: picks, k: korr, t: new Date().toISOString().slice(0, 16),
+      });
+      var body = b64utf8(payload);
+      var code = "FSQ1." + body + "." + checksum(body);
+      sb.querySelector(".rcode").value = code;
+      sb.querySelector(".rmsg").textContent = sid ? "" : "⚠ 尚未填學號 —— 請回到測驗上方填入學號後重新測驗，否則老師無法登記成績。";
+
+      sb.classList.add("show");
+      sb.scrollIntoView({ behavior: "smooth" });
+    }
+    function pick(qel, item, oi) {
+      if (qel.dataset.done === "1") return;
+      qel.dataset.done = "1"; answered++;
+      picks[parseInt(qel.dataset.qi, 10)] = oi;
+      qel.querySelectorAll(".opt").forEach(function (btn, i) {
+        btn.classList.add("dim");
+        if (i === item.a) btn.classList.add("correct");
+        if (i === oi && oi !== item.a) btn.classList.add("wrong");
+      });
+      var fb = qel.querySelector(".fb");
+      if (oi === item.a) { score++; fb.classList.add("good"); fb.innerHTML = "✓ 正確！" + item.e; }
+      else { fb.classList.add("no"); fb.innerHTML = "✗ 正解：" + item.o[item.a] + "。" + item.e; }
+      fb.classList.add("show"); updateProg();
+      if (answered === n) finish();
+    }
+    function build() {
+      box.innerHTML = ""; answered = 0; score = 0; picks = []; updateProg();
+      sb.classList.remove("show");
+      items.forEach(function (item, qi) {
+        var qel = el("div", "q"); qel.dataset.done = "0"; qel.dataset.qi = qi;
+        qel.innerHTML = '<div class="qn">第 ' + (qi + 1) + ' 題</div><div class="qt">' + item.q + '</div>';
+        item.o.forEach(function (opt, oi) {
+          var btn = el("button", "opt"); btn.textContent = opt;
+          btn.onclick = function () { pick(qel, item, oi); };
+          qel.appendChild(btn);
+        });
+        qel.appendChild(el("div", "fb"));
+        box.appendChild(qel);
+      });
+    }
+    sb.querySelector(".copyrc").onclick = function () {
+      var ta = sb.querySelector(".rcode");
+      ta.select(); ta.setSelectionRange(0, 99999);
+      var btn = this;
+      function ok() { btn.textContent = "✓ 已複製，請貼給老師"; setTimeout(function () { btn.textContent = "📋 複製結果代碼"; }, 2000); }
+      if (navigator.clipboard && navigator.clipboard.writeText)
+        navigator.clipboard.writeText(ta.value).then(ok, function () { document.execCommand("copy"); ok(); });
+      else { document.execCommand("copy"); ok(); }
+    };
+    sb.querySelector(".ghost").onclick = function () {
+      build(); window.scrollTo({ top: 0, behavior: "smooth" });
+    };
+    build();
+    f.appendChild(head); f.appendChild(box); f.appendChild(sb);
+    return f;
+  };
+
+  /* ---------- 組裝 ---------- */
+  var nav = $("#nav"), main = $("#main");
+  function switchMod(id, btn) {
+    document.querySelectorAll(".module").forEach(function (m) { m.classList.remove("active"); });
+    document.getElementById(id).classList.add("active");
+    nav.querySelectorAll("button").forEach(function (x) { x.classList.remove("active"); });
+    btn.classList.add("active");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+  D.modules.forEach(function (m, i) {
+    var btn = el("button", i === 0 ? "active" : "", m.nav);
+    btn.onclick = function () { switchMod(m.id, btn); };
+    nav.appendChild(btn);
+
+    var sec = el("section", "module" + (i === 0 ? " active" : ""));
+    sec.id = m.id;
+    sec.appendChild(el("div", "lead",
+      '<div class="kicker">' + m.kicker + '</div><h2>' + m.h2 + '</h2><p>' + m.lead + '</p>'));
+    m.blocks.forEach(function (b) {
+      var render = BLOCKS[b.type];
+      if (!render) { console.error("未知區塊型別:", b.type); return; }
+      sec.appendChild(render(b));
+    });
+    main.appendChild(sec);
+  });
+})();
+</script>
+</body>
+</html>

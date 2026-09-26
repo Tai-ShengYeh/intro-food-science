@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>食品科學概論 第6週 · 互動教學</title>
+<style>
+  :root{
+    --primary:#2D2A6E; --secondary:#5B4FB8; --accent:#00B8B8; --warm:#F5A623; --green:#2FA36B; --red:#D65B5B; --dark:#1A1A3E; --bg:#F4F5FA; --text:#1F1F2E; --mid:#5A5A75; --muted:#9096ac; --border:#E2E2EC; --card:#fff;
+  }
+/* 版型樣式 — 逐條取自「第1週_互動教學.html」，末段為新增區塊（cmp / tbl / note）。
+   這裡只用 var(--x)；色票由 tokens.js 產生 :root 注入。 */
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Segoe UI","Noto Sans TC","Microsoft JhengHei",system-ui,sans-serif;
+  background:var(--bg);color:var(--text);line-height:1.7;font-size:17px}
+header{background:linear-gradient(120deg,var(--dark),var(--primary));color:#fff;
+  padding:26px 22px 0;position:sticky;top:0;z-index:50;box-shadow:0 2px 14px rgba(0,0,0,.15)}
+header h1{font-size:31px;font-weight:800;letter-spacing:.5px}
+header .sub{color:#b9c7ff;font-size:16px;margin-top:5px}
+nav{display:flex;gap:6px;margin-top:16px;flex-wrap:wrap}
+nav button{background:rgba(255,255,255,.10);color:#dfe4ff;border:none;padding:12px 18px;
+  border-radius:10px 10px 0 0;font-size:16.5px;cursor:pointer;font-weight:600;transition:.15s}
+nav button:hover{background:rgba(255,255,255,.2)}
+nav button.active{background:var(--bg);color:var(--primary)}
+main{max-width:1080px;margin:0 auto;padding:26px 18px 80px}
+.module{display:none;animation:fade .35s}
+.module.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.lead{background:var(--dark);color:#fff;border-radius:14px;padding:22px 24px;margin-bottom:22px}
+.lead .kicker{color:var(--accent);font-weight:700;font-size:14px;letter-spacing:1px}
+.lead h2{font-size:26px;margin:6px 0 8px}
+.lead p{color:#cdd3ee;font-size:16.5px}
+.sec-title{font-size:23px;font-weight:800;color:var(--primary);margin:30px 0 6px;
+  display:flex;align-items:center;gap:10px}
+.sec-title .bar{width:6px;height:25px;background:var(--accent);border-radius:3px;display:inline-block}
+.hint{color:var(--mid);font-size:15px;margin-bottom:14px}
+.grid{display:grid;gap:14px}
+.g2{grid-template-columns:repeat(2,1fr)} .g3{grid-template-columns:repeat(3,1fr)}
+.g4{grid-template-columns:repeat(4,1fr)}
+@media(max-width:820px){.g3,.g4{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:520px){.g2,.g3,.g4{grid-template-columns:1fr}}
+
+/* flip cards */
+.flip{perspective:1100px;height:200px;cursor:pointer}
+.flip-in{position:relative;width:100%;height:100%;transition:transform .6s;transform-style:preserve-3d}
+.flip.on .flip-in{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;backface-visibility:hidden;border-radius:14px;padding:18px;
+  display:flex;flex-direction:column;justify-content:center;box-shadow:0 3px 10px rgba(30,30,60,.08);border:1px solid var(--border)}
+.front{background:var(--card)}
+.front .t{font-size:21px;font-weight:800;color:var(--primary)}
+.front .en{color:var(--muted);font-size:14px;margin-top:3px;font-style:italic}
+.front .tap{margin-top:auto;color:var(--accent);font-size:14px;font-weight:700}
+.back{background:linear-gradient(135deg,var(--primary),var(--secondary));color:#fff;transform:rotateY(180deg);overflow:auto}
+.back p{font-size:16px}
+.cbar{height:6px;border-radius:14px 14px 0 0;position:absolute;top:0;left:0;right:0}
+
+/* expandable */
+.exp{background:var(--card);border:1px solid var(--border);border-radius:12px;margin-bottom:10px;overflow:hidden}
+.exp>button{width:100%;text-align:left;background:none;border:none;padding:16px 18px;cursor:pointer;
+  display:flex;align-items:center;gap:12px;font-size:18px;font-weight:700;color:var(--text)}
+.exp .num{background:var(--primary);color:#fff;min-width:32px;height:32px;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800}
+.exp .chev{margin-left:auto;color:var(--muted);transition:.25s;font-size:20px}
+.exp.on .chev{transform:rotate(90deg);color:var(--accent)}
+.exp .body{max-height:0;overflow:hidden;transition:max-height .3s ease;padding:0 18px}
+.exp.on .body{padding:0 18px 16px 62px}
+.exp .body ul{margin-left:16px;color:var(--mid);font-size:16px}
+.exp .body p{color:var(--mid);font-size:15.5px}
+.exp .tag{font-size:13.5px;color:var(--muted);font-weight:600;margin-left:8px}
+
+/* info card */
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px;
+  box-shadow:0 3px 10px rgba(30,30,60,.06)}
+.card .h{font-weight:800;color:var(--primary);font-size:18px;margin-bottom:6px}
+.card .en{color:var(--muted);font-size:13px;font-style:italic}
+.card ul{margin:8px 0 0 18px;font-size:15.5px;color:var(--mid)}
+
+/* timeline */
+.tl{display:flex;gap:0;flex-wrap:wrap;counter-reset:s}
+.tl .step{flex:1;min-width:180px;background:var(--card);border:1px solid var(--border);border-radius:12px;
+  padding:16px 14px 14px;margin:8px;position:relative}
+.tl .dot{width:34px;height:34px;border-radius:50%;color:#fff;display:flex;align-items:center;
+  justify-content:center;font-weight:800;margin-bottom:8px}
+.tl .step h4{color:var(--primary);font-size:17.5px;margin-bottom:4px}
+.tl .step p{font-size:15px;color:var(--mid)}
+
+/* matching */
+.match-wrap{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px}
+.pool{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+.chip{background:var(--secondary);color:#fff;padding:10px 17px;border-radius:22px;font-weight:700;
+  cursor:grab;user-select:none;font-size:16.5px;box-shadow:0 2px 6px rgba(0,0,0,.12)}
+.chip.used{opacity:.35;pointer-events:none}
+.chip.sel{outline:3px solid var(--warm);outline-offset:2px}
+.targets{display:grid;gap:10px}
+.slot{display:flex;align-items:center;gap:12px;border:2px dashed var(--border);border-radius:12px;padding:10px 14px;background:#fafbff}
+.slot .desc{flex:1;font-size:16px;color:var(--text)}
+.slot .drop{min-width:130px;min-height:44px;border-radius:8px;background:#eef0f8;display:flex;
+  align-items:center;justify-content:center;color:var(--muted);font-size:15px;padding:8px 12px}
+.slot.ok{border-color:var(--green);background:#effaf3}
+.slot.ok .drop{background:var(--green);color:#fff;font-weight:700}
+.slot.bad{border-color:var(--red);animation:shake .3s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+
+/* quiz */
+.quiz-head{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px;margin-bottom:16px}
+.pbar{height:12px;background:#e7e9f4;border-radius:8px;overflow:hidden;margin-top:10px}
+.pfill{height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--secondary));transition:width .4s}
+.q{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:14px}
+.q .qn{color:var(--accent);font-weight:800;font-size:14px}
+.q .qt{font-size:19.5px;font-weight:700;margin:6px 0 14px}
+.opt{display:block;width:100%;text-align:left;background:#fafbff;border:2px solid var(--border);
+  border-radius:10px;padding:13px 16px;margin-bottom:9px;cursor:pointer;font-size:16.5px;transition:.15s}
+.opt:hover{border-color:var(--secondary)}
+.opt.correct{border-color:var(--green);background:#effaf3;font-weight:700}
+.opt.wrong{border-color:var(--red);background:#fdeeee}
+.opt.dim{opacity:.6}
+.fb{margin-top:8px;font-size:15.5px;padding:11px 14px;border-radius:9px;display:none}
+.fb.show{display:block}
+.fb.good{background:#effaf3;color:#1c7a4d} .fb.no{background:#fdeeee;color:#a83b3b}
+.scorebox{background:linear-gradient(135deg,var(--primary),var(--secondary));color:#fff;border-radius:16px;
+  padding:26px;text-align:center;margin-top:10px;display:none}
+.scorebox.show{display:block}
+.scorebox .big{font-size:46px;font-weight:800}
+.btn{background:var(--accent);color:#fff;border:none;padding:11px 22px;border-radius:10px;
+  font-weight:700;cursor:pointer;font-size:15px}
+.btn.ghost{background:rgba(255,255,255,.18)}
+.tagrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+.pill{font-size:12px;background:#eef0fb;color:var(--secondary);padding:3px 10px;border-radius:20px;font-weight:700}
+footer{text-align:center;color:var(--muted);font-size:12.5px;padding:24px}
+
+/* ===== 新增區塊 ===== */
+/* compare：兩欄對照（梅納 vs 焦糖化、冷藏 vs 冷凍…） */
+.cmp{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:stretch}
+@media(max-width:640px){.cmp{grid-template-columns:1fr}}
+.cmp .col{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:0 18px 18px;
+  box-shadow:0 3px 10px rgba(30,30,60,.06);position:relative;overflow:hidden}
+.cmp .col .cbar{position:static;height:6px;margin:0 -18px 14px;border-radius:0}
+.cmp .col h4{font-size:20px;font-weight:800;margin-bottom:2px}
+.cmp .col .en{color:var(--muted);font-size:13px;font-style:italic;margin-bottom:8px}
+.cmp .col ul{margin-left:18px;font-size:15.5px;color:var(--mid)}
+.cmp .col li{margin-bottom:5px}
+.cmp-note{margin-top:12px;background:#eef0fb;border-left:5px solid var(--secondary);
+  border-radius:0 10px 10px 0;padding:12px 16px;font-size:16px;color:var(--primary);font-weight:600}
+
+/* table：資料表（維生素、添加物分類…） */
+.tblwrap{overflow-x:auto;background:var(--card);border:1px solid var(--border);border-radius:14px;
+  box-shadow:0 3px 10px rgba(30,30,60,.06)}
+.tbl{border-collapse:collapse;width:100%;min-width:520px;font-size:15.5px}
+.tbl th{background:var(--primary);color:#fff;text-align:left;padding:12px 14px;font-weight:700;font-size:15px}
+.tbl td{padding:11px 14px;border-top:1px solid var(--border);color:var(--mid);vertical-align:top}
+.tbl tr:nth-child(even) td{background:#fafbff}
+.tbl td:first-child{color:var(--text);font-weight:700}
+
+/* note：重點提示條 */
+.note{background:#fff8e9;border-left:5px solid var(--warm);border-radius:0 12px 12px 0;
+  padding:14px 18px;margin:14px 0;font-size:16px;color:var(--text)}
+.note b{color:var(--primary)}
+.note.key{background:#effaf3;border-left-color:var(--green)}
+.note.warn{background:#fdeeee;border-left-color:var(--red)}
+</style>
+</head>
+<body>
+<header>
+  <h1>食品科學概論 · 第 6 週 互動教學</h1>
+  <div class="sub">脂溶性與水溶性維生素　·　重要礦物質　·　加工儲存中的損失　·　食品強化與營養標示　＋　互動測驗</div>
+  <nav id="nav"></nav>
+</header>
+<main id="main"></main>
+<footer>互動教材 · 依課程大綱與指定教科書整理 · 供食品科學概論教學使用</footer>
+<script>window.__LESSON__={"week":6,"series":["#2D2A6E","#2FA36B","#F5A623","#5B4FB8","#00B8B8","#D65B5B"],"modules":[{"id":"m-vit","nav":"維生素","kicker":"MODULE 1 · 維生素","h2":"微量卻不可或缺：13 種維生素","lead":"炒青菜真的比水煮保留更多維生素嗎？冷凍蔬菜真的比較不營養嗎？這兩個問題的答案，都從同一個分類軸開始：這個維生素溶在油裡，還是溶在水裡。","blocks":[{"type":"compare","title":"一、脂溶性 vs 水溶性","hint":"這個分類決定了吸收方式、儲存能力、過量風險與加工中的損失途徑。","left":{"h":"脂溶性維生素","en":"A · D · E · K","c":"#F5A623","li":["隨脂肪一起吸收，需要膽鹽協助","可\u003cb>儲存\u003c/b>在肝臟與脂肪組織","不需每天攝取，但\u003cb>過量會蓄積中毒\u003c/b>","加工中主要因\u003cb>氧化與光照\u003c/b>而損失","水煮時不易流失"]},"right":{"h":"水溶性維生素","en":"B 群 · C","c":"#00B8B8","li":["直接由小腸吸收進入血液","體內\u003cb>幾乎不儲存\u003c/b>（B12 為例外，可存於肝）","需\u003cb>經常補充\u003c/b>，過量多由尿液排出","加工中主要因\u003cb>溶入水中而流失\u003c/b>，並怕熱","汆燙、洗滌是最大損失來源"]},"note":"所以「炒青菜比水煮保留較多維生素」是對的 —— 少水、快速，水溶性維生素來不及流失。"},{"type":"table","title":"二、脂溶性維生素","head":["維生素","主要功能","缺乏症","食品來源與安定性"],"rows":[["A（視網醇）","視覺、上皮組織、免疫","夜盲症、乾眼症","肝、蛋黃、乳製品；\u003cb>前驅物 β-胡蘿蔔素\u003c/b>來自深色蔬果。怕光、怕氧化"],["D（鈣化醇）","促進鈣、磷吸收","佝僂病、骨軟化症","魚肝油、蕈菇、強化乳品；皮膚經\u003cb>日照\u003c/b>可自行合成。相當耐熱"],["E（生育醇）","抗氧化，保護細胞膜","溶血性貧血（罕見）","植物油、堅果、胚芽；本身即\u003cb>天然抗氧化劑\u003c/b>，會優先被氧化而消耗"],["K","凝血因子合成","凝血時間延長","深綠色蔬菜、納豆；腸道菌可部分合成。耐熱但\u003cb>怕光與鹼\u003c/b>"]]},{"type":"table","title":"三、水溶性維生素","head":["維生素","主要功能","缺乏症","安定性重點"],"rows":[["B1 硫胺","醣類代謝的輔酶","腳氣病","\u003cb>最怕熱與鹼\u003c/b>；洗米、加小蘇打煮豆會大量流失"],["B2 核黃素","能量代謝、皮膚黏膜","口角炎、舌炎","耐熱但\u003cb>極怕光\u003c/b>；鮮乳裝在透明瓶曬到光會損失"],["B3 菸鹼酸","氧化還原反應輔酶","癩皮病","在維生素中\u003cb>最安定\u003c/b>，主要因溶入水而流失"],["B6","胺基酸代謝","皮膚炎、神經症狀","怕光、怕熱"],["B9 葉酸","細胞分裂、紅血球生成","巨球性貧血、\u003cb>胎兒神經管缺陷\u003c/b>","怕熱、怕氧化；孕期需求量顯著增加"],["B12","紅血球生成、神經功能","惡性貧血","\u003cb>僅存在動物性食品\u003c/b>，純素食者需注意補充"],["C 抗壞血酸","膠原蛋白合成、抗氧化、促進鐵吸收","壞血病","\u003cb>所有維生素中最不安定\u003c/b>：怕熱、氧、光、鹼與銅鐵離子"]]},{"type":"note","kind":"key","text":"如果只記一件事：\u003cb>維生素 C 是最脆弱的指標\u003c/b>。加工條件若能保住維生素 C，其他維生素通常也保住了 —— 所以它常被拿來當熱加工損失的評估標的。"}]},{"id":"m-min","nav":"礦物質","kicker":"MODULE 2 · 礦物質","h2":"礦物質不會被熱破壞，但會被水帶走","lead":"礦物質是元素，不像維生素會被熱分解。加工中的損失幾乎只有兩條路：溶入水中，或隨著去除的部位（如糠層、外皮）一起被丟掉。","blocks":[{"type":"cards","title":"一、六種必須認識的礦物質","cols":3,"items":[{"h":"鈣 Ca","c":"#2D2A6E","li":["骨骼與牙齒、肌肉收縮","乳品、小魚乾、豆腐（石膏凝固）","缺乏：骨質疏鬆"],"p":"維生素 D 可促進吸收；草酸、植酸會抑制。"},{"h":"鐵 Fe","c":"#D65B5B","li":["血紅素與肌紅蛋白的核心","紅肉、內臟、深綠色蔬菜","缺乏：缺鐵性貧血"],"p":"血基質鐵（動物性）吸收率遠高於非血基質鐵。"},{"h":"鈉 Na","c":"#F5A623","li":["體液平衡、神經傳導","食鹽、加工食品","過量：高血壓風險"],"p":"台灣成人每日鈉建議上限 2400 mg（約 6 g 鹽）。"},{"h":"鉀 K","c":"#2FA36B","li":["體液平衡、心臟功能","蔬果、根莖類","與鈉相互拮抗"],"p":"腎功能不佳者需限制攝取。"},{"h":"碘 I","c":"#5B4FB8","li":["甲狀腺素的組成元素","海帶、海鮮、加碘鹽","缺乏：甲狀腺腫大"],"p":"台灣以加碘鹽作為全民性的預防措施。"},{"h":"鋅 Zn","c":"#00B8B8","li":["酵素輔因子、免疫、傷口癒合","牡蠣、紅肉、全穀","缺乏：生長遲緩、味覺遲鈍"],"p":"植酸會顯著降低吸收率。"}]},{"type":"exp","title":"二、生物利用率：吃進去 ≠ 吸收得到（點擊展開）","hint":"營養標示上的數字是「含量」，不是「你能用到多少」。","items":[{"h":"促進因子","tag":"提高吸收","body":["\u003cb>維生素 C\u003c/b>：把三價鐵還原成二價鐵，可使非血基質鐵的吸收率提高數倍 —— 炒青菜擠檸檬、飯後吃水果都有效。","\u003cb>維生素 D\u003c/b>：促進小腸吸收鈣。","\u003cb>動物性蛋白質\u003c/b>：可提升同餐中非血基質鐵的吸收。"]},{"h":"抑制因子","tag":"降低吸收","body":["\u003cb>植酸\u003c/b>（全穀、豆類、堅果）：與鈣、鐵、鋅形成不溶性複合物。浸泡、發酵、發芽可降低植酸。","\u003cb>草酸\u003c/b>（菠菜、莧菜）：與鈣結合成草酸鈣。菠菜含鈣雖高但可利用性低。","\u003cb>單寧\u003c/b>（茶、咖啡）：抑制鐵吸收，故建議餐後間隔一段時間再喝茶。","\u003cb>膳食纖維過量\u003c/b>：加快通過速度，減少吸收時間。"]},{"h":"血基質鐵 vs 非血基質鐵","tag":"重要區辨","body":"動物性食品中的\u003cb>血基質鐵\u003c/b>（來自血紅素、肌紅蛋白）吸收率約 15–35%，且不太受抑制因子影響；植物性的\u003cb>非血基質鐵\u003c/b>吸收率僅約 2–20%，且深受植酸、單寧影響。這是素食者較易缺鐵的主因。"}]}]},{"id":"m-loss","nav":"加工損失","kicker":"MODULE 3 · 加工與儲存","h2":"從田裡到餐桌，營養素流失在哪些環節","lead":"了解損失途徑，才知道該從哪裡下手保留。四條途徑：溶出、熱分解、氧化、光解。","blocks":[{"type":"timeline","title":"一、四條損失途徑","steps":[{"h":"溶出流失","p":"水溶性維生素與礦物質溶入汆燙水、洗滌水、罐頭湯汁中。是\u003cb>最大宗\u003c/b>的損失途徑。","c":"#00B8B8"},{"h":"熱分解","p":"維生素 C、B1、葉酸在高溫下直接被破壞。時間越長、溫度越高損失越多。","c":"#D65B5B"},{"h":"氧化","p":"維生素 C、A、E 與氧接觸即被氧化。切割破壞細胞後接觸面積大增，損失加快。","c":"#F5A623"},{"h":"光解","p":"維生素 B2、A、K 對光敏感。透明包裝的鮮乳在賣場燈光下即持續損失 B2。","c":"#5B4FB8"}]},{"type":"cards","title":"二、實務上的保留策略","cols":2,"items":[{"h":"烹調端","c":"#2FA36B","li":["\u003cb>蒸優於水煮\u003c/b>；水煮則減少水量並縮短時間","食材\u003cb>先洗後切、切大塊\u003c/b>，減少接觸面積","汆燙水可回收做湯，把溶出的營養吃回來","\u003cb>不要加小蘇打\u003c/b>保綠 —— 鹼會嚴重破壞 B1 與 C","現切現煮，避免切好久放"]},{"h":"加工與儲存端","c":"#2D2A6E","li":["\u003cb>高溫短時（HTST）\u003c/b>優於低溫長時","遮光包裝（鋁箔、褐色瓶）保護 B2 與 A","真空／充氮包裝減少氧化","低溫儲存降低所有反應速率","冷凍前\u003cb>殺菁\u003c/b>雖有溶出損失，但能鈍化酵素、保住長期品質"]}]},{"type":"note","text":"\u003cb>常見誤解：「冷凍蔬菜沒有生鮮的營養」\u003c/b> —— 通常不成立。冷凍蔬菜多在採收後數小時內殺菁並急凍，維生素被「凍結」在當下；生鮮蔬菜若經過數天運輸與陳列，維生素 C 反而可能損失更多。比較的基準不是加工與否，而是\u003cb>採收後經過多久\u003c/b>。"}]},{"id":"m-fort","nav":"強化與標示","kicker":"MODULE 4 · 強化與標示","h2":"食品強化：用食品解決全民營養問題","lead":"當某種缺乏症在人群中普遍存在，最有效的辦法往往不是叫大家吃補充劑，而是把營養素加進大家本來就會吃的食物裡。","blocks":[{"type":"flips","title":"一、四個容易混淆的名詞（點卡片翻面）","cols":4,"items":[{"t":"強化","en":"Fortification","c":"#2D2A6E","b":"添加\u003cb>原本不存在或含量很低\u003c/b>的營養素。例：加碘鹽、添加維生素 D 的鮮乳。"},{"t":"回復","en":"Restoration","c":"#2FA36B","b":"補回\u003cb>加工過程中損失\u003c/b>的營養素，使其回到原料水準。例：白米加工後回添 B 群。"},{"t":"營養添加","en":"Enrichment","c":"#F5A623","b":"依法規標準添加特定營養素至規定量。例：美國強制麵粉添加葉酸與鐵。"},{"t":"營養宣稱","en":"Nutrient claim","c":"#5B4FB8","b":"在包裝上標示「高鈣」「低鈉」等 —— 必須符合法規訂定的門檻，不能自由宣稱。"}]},{"type":"table","title":"二、幾個成功的公共衛生案例","head":["措施","解決的問題","結果"],"rows":[["食鹽加碘","地方性甲狀腺腫","台灣自 1967 年推行，甲狀腺腫盛行率大幅下降"],["麵粉添加葉酸","胎兒神經管缺陷","多國強制實施後，神經管缺陷發生率顯著下降"],["鮮乳添加維生素 D","佝僂病","與日照不足地區的佝僂病防治高度相關"],["醬油／魚露添加鐵","缺鐵性貧血","在部分亞洲國家作為貧血防治策略"]]},{"type":"exp","title":"三、怎麼讀營養標示（點擊展開）","hint":"這是第 17 週法規的預告，也是最貼近生活的一段。","items":[{"h":"先看「每份」還是「每 100 公克」","tag":"最容易被誤導","body":"同一包產品標「每份」與「每 100 公克」數字差很多。要比較兩個產品，必須換算成\u003cb>同一基準\u003c/b>。有些產品把「一份」定得很小，讓數字看起來漂亮。"},{"h":"營養參考值百分比（NRV%）","tag":"看比例","body":"表示吃一份可滿足每日建議量的百分之多少。\u003cb>≥ 20% 算高、≤ 5% 算低\u003c/b>，可以用這個門檻快速判斷。"},{"h":"台灣強制標示的項目","tag":"法規","body":"熱量、蛋白質、脂肪（含飽和脂肪、反式脂肪）、碳水化合物（含糖）、鈉，共八項。若有營養宣稱，該營養素也必須一併標示。"},{"h":"「無添加糖」不等於「無糖」","tag":"常見陷阱","body":"果汁沒有另外加糖，但水果本身的糖仍在，含糖量可能不低。看數字（每 100 mL 幾公克糖）比看宣稱可靠。"}]}]},{"id":"m-quiz","nav":"綜合測驗","kicker":"MODULE 5 · 綜合測驗","h2":"小測驗：檢核學習成效","lead":"共 10 題單選，涵蓋四個模組。作答後即時顯示正解與解析，最後計算分數。","blocks":[{"type":"quiz","items":[{"q":"下列哪一組全部屬於「脂溶性維生素」？","o":["B1、B2、C","A、D、E、K","C、B6、葉酸","B12、菸鹼酸、C"],"a":1,"e":"脂溶性維生素為 A、D、E、K，可儲存於體內、過量會蓄積；其餘 B 群與 C 皆為水溶性。"},{"q":"在所有維生素中，公認\u003cb>最不安定\u003c/b>（怕熱、氧、光、鹼與金屬離子）的是？","o":["維生素 C","維生素 D","菸鹼酸","維生素 K"],"a":0,"e":"維生素 C 最脆弱，常被拿來當加工損失的評估指標；菸鹼酸則是維生素中最安定的。"},{"q":"鮮乳若裝在透明瓶並暴露於光線下，最容易損失哪一種維生素？","o":["維生素 D","菸鹼酸","維生素 B2（核黃素）","維生素 K"],"a":2,"e":"B2 耐熱但極怕光，因此鮮乳多採不透光包裝。"},{"q":"煮豆或煮粥時加小蘇打（鹼）會造成什麼問題？","o":["蛋白質完全流失","礦物質被熱破壞","脂肪快速氧化","維生素 B1 與 C 大量被破壞"],"a":3,"e":"B1 與 C 都極怕鹼。加小蘇打雖能加速軟化與保綠，代價是水溶性維生素的嚴重損失。"},{"q":"礦物質在加工中損失的主要途徑是？","o":["溶入水中或隨去除的部位被丟棄","被高溫分解","被光線分解","被氧氣氧化成氣體"],"a":0,"e":"礦物質是元素，不會被熱、光分解，只會隨水流失或隨糠層、外皮等被去除的部位一起損失。"},{"q":"下列何者可以顯著\u003cb>提高\u003c/b>植物性食品中鐵的吸收率？","o":["同時攝取濃茶","同時攝取富含維生素 C 的食物","同時攝取高植酸的麩皮","同時攝取大量草酸"],"a":1,"e":"維生素 C 把三價鐵還原為二價鐵，可使非血基質鐵吸收率提高數倍；單寧、植酸、草酸則為抑制因子。"},{"q":"菠菜含鈣量雖高，但鈣的利用率偏低，主要是因為含有？","o":["單寧","植酸","草酸","膳食纖維"],"a":2,"e":"草酸與鈣結合成不溶性的草酸鈣，因此菠菜不是良好的鈣質來源。"},{"q":"把「原本不存在或含量很低」的營養素加入食品，例如食鹽加碘，稱為？","o":["回復（restoration）","強化（fortification）","精製（refining）","標準化（standardization）"],"a":1,"e":"強化是添加原本沒有的營養素；回復則是補回加工中損失的部分，兩者常被混用但定義不同。"},{"q":"只存在於動物性食品、純素食者需特別注意補充的維生素是？","o":["維生素 B12","維生素 C","維生素 E","菸鹼酸"],"a":0,"e":"B12 幾乎僅存在動物性食品中，長期純素而未補充會導致惡性貧血與神經症狀。"},{"q":"營養標示中的「營養參考值百分比（NRV%）」，一般以多少以上視為該營養素的良好來源？","o":["1% 以上","5% 以上","10% 以上","20% 以上"],"a":3,"ordered":true,"e":"通則是 NRV% ≥ 20% 算高、≤ 5% 算低，可用來快速判斷一份食品在該營養素上的貢獻。"}]}]}]};</script>
+<script>
+/*
+ * runtime.client.js — 跑在瀏覽器裡的渲染器（17 週共用，逐字內嵌進每份 HTML）
+ * 讀 window.__LESSON__ 的資料，把 modules / blocks 畫出來。
+ * 互動行為（翻卡、展開、配對、測驗）沿用週1 手寫版的做法，不要另創一套。
+ */
+(function () {
+  var D = window.__LESSON__;
+  var SERIES = D.series;
+  var $ = function (s) { return document.querySelector(s); };
+
+  function el(tag, cls, html) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (html != null) e.innerHTML = html;
+    return e;
+  }
+  function colorAt(given, i) { return given || SERIES[i % SERIES.length]; }
+  function gridCls(n) { return "grid g" + (n === 2 || n === 3 || n === 4 ? n : 3); }
+  function listHtml(v) {
+    // body 可以是字串或字串陣列；陣列渲染成 <ul>
+    if (v == null) return "";
+    if (typeof v === "string") return '<p>' + v + '</p>';
+    return '<ul>' + v.map(function (x) { return '<li>' + x + '</li>'; }).join("") + '</ul>';
+  }
+
+  /* ---------- 區塊標題 ---------- */
+  function heading(frag, b) {
+    if (b.title) frag.appendChild(el("div", "sec-title", '<span class="bar"></span>' + b.title));
+    if (b.hint) frag.appendChild(el("div", "hint", b.hint));
+  }
+
+  /* ---------- 各區塊 ---------- */
+  var BLOCKS = {};
+
+  BLOCKS.flips = function (b) {
+    var f = document.createDocumentFragment(); heading(f, b);
+    var g = el("div", gridCls(b.cols || 4));
+    b.items.forEach(function (d, i) {
+      var c = colorAt(d.c, i);
+      var card = el("div", "flip");
+      if (b.h) card.style.height = b.h + "px";
+      card.innerHTML =
+        '<div class="flip-in">' +
+        '<div class="face front"><div class="cbar" style="background:' + c + '"></div>' +
+        '<div class="t">' + d.t + '</div><div class="en">' + (d.en || "") + '</div>' +
+        '<div class="tap">▸ 點我看解釋</div></div>' +
+        '<div class="face back"><div class="cbar" style="background:' + c + '"></div>' +
+        '<p>' + d.b + '</p></div></div>';
+      card.onclick = function () { card.classList.toggle("on"); };
+      g.appendChild(card);
+    });
+    f.appendChild(g); return f;
+  };
+
+  BLOCKS.exp = function (b) {
+    var f = document.createDocumentFragment(); heading(f, b);
+    var host = el("div");
+    b.items.forEach(function (t, i) {
+      var box = el("div", "exp");
+      var res = t.res ? '<div style="margin-top:10px;font-size:13px;color:var(--secondary);font-weight:700">🔗 ' + t.res + '</div>' : "";
+      box.innerHTML =
+        '<button><span class="num">' + (i + 1) + '</span><span>' + t.h + '</span>' +
+        '<span class="tag">' + (t.tag || "") + '</span><span class="chev">›</span></button>' +
+        '<div class="body">' + listHtml(t.body) + res + '</div>';
+      var body = box.querySelector(".body");
+      box.querySelector("button").onclick = function () {
+        var on = box.classList.toggle("on");
+        if (!on) { body.style.maxHeight = "0px"; return; }
+        // 用實際內容高度展開，避免長段落被固定 max-height 截掉。
+        // 必須先解除 max-height 再量：在 max-height:0 的狀態下量 scrollHeight 會得到 0，
+        // 面板就只會開一條縫（實測過）。量完歸零並強制重排，transition 才有起點。
+        body.style.maxHeight = "none";
+        var h = body.scrollHeight;
+        body.style.maxHeight = "0px";
+        void body.offsetHeight;
+        body.style.maxHeight = h + "px";
+      };
+      host.appendChild(box);
+    });
+    f.appendChild(host); return f;
+  };
+
+  BLOCKS.cards = function (b) {
+    var f = document.createDocumentFragment(); heading(f, b);
+    var g = el("div", gridCls(b.cols || 4));
+    b.items.forEach(function (c, i) {
+      var accent = colorAt(c.c, i);
+      var box = el("div", "card");
+      box.style.borderTop = "4px solid " + accent;
+      box.innerHTML = '<div class="h">' + c.h + '</div>' +
+        (c.en ? '<div class="en">' + c.en + '</div>' : "") +
+        (c.li ? '<ul>' + c.li.map(function (x) { return '<li>' + x + '</li>'; }).join("") + '</ul>' : "") +
+        (c.p ? '<p style="margin-top:8px;font-size:15.5px;color:var(--mid)">' + c.p + '</p>' : "");
+      g.appendChild(box);
+    });
+    f.appendChild(g); return f;
+  };
+
+  BLOCKS.timeline = function (b) {
+    var f = document.createDocumentFragment(); heading(f, b);
+    var host = el("div", "tl");
+    b.steps.forEach(function (s, i) {
+      var st = el("div", "step");
+      st.innerHTML = '<div class="dot" style="background:' + colorAt(s.c, i) + '">' + (i + 1) + '</div>' +
+        '<h4>' + s.h + '</h4><p>' + s.p + '</p>';
+      host.appendChild(st);
+    });
+    f.appendChild(host); return f;
+  };
+
+  BLOCKS.compare = function (b) {
+    var f = document.createDocumentFragment(); heading(f, b);
+    var wrap = el("div", "cmp");
+    [b.left, b.right].forEach(function (c, i) {
+      var accent = colorAt(c.c, i);
+      var col = el("div", "col");
+      col.innerHTML = '<div class="cbar" style="background:' + accent + '"></div>' +
+        '<h4 style="color:' + accent + '">' + c.h + '</h4>' +
+        (c.en ? '<div class="en">' + c.en + '</div>' : "") +
+        '<ul>' + c.li.map(function (x) { return '<li>' + x + '</li>'; }).join("") + '</ul>';
+      wrap.appendChild(col);
+    });
+    f.appendChild(wrap);
+    if (b.note) f.appendChild(el("div", "cmp-note", b.note));
+    return f;
+  };
+
+  BLOCKS.table = function (b) {
+    var f = document.createDocumentFragment(); heading(f, b);
+    var wrap = el("div", "tblwrap");
+    var html = '<table class="tbl"><thead><tr>' +
+      b.head.map(function (h) { return '<th>' + h + '</th>'; }).join("") + '</tr></thead><tbody>' +
+      b.rows.map(function (r) {
+        return '<tr>' + r.map(function (c) { return '<td>' + c + '</td>'; }).join("") + '</tr>';
+      }).join("") + '</tbody></table>';
+    wrap.innerHTML = html;
+    f.appendChild(wrap); return f;
+  };
+
+  BLOCKS.note = function (b) {
+    var f = document.createDocumentFragment(); heading(f, b);
+    f.appendChild(el("div", "note" + (b.kind ? " " + b.kind : ""), b.text));
+    return f;
+  };
+
+  BLOCKS.match = function (b) {
+    var f = document.createDocumentFragment(); heading(f, b);
+    var host = el("div", "match-wrap");
+    var pool = el("div", "pool"), targets = el("div", "targets");
+    var pairs = b.pairs;
+    var order = pairs.slice().sort(function () { return Math.random() - 0.5; });
+    var selected = null, solved = 0;
+    var msg = el("div");
+    msg.style.cssText = "margin-top:14px;font-weight:700;color:var(--green)";
+
+    function tryMatch(slot, key) {
+      if (slot.classList.contains("ok")) return;
+      if (slot.dataset.k === key) {
+        slot.classList.add("ok"); slot.classList.remove("bad");
+        slot.querySelector(".drop").textContent = key;
+        var chip = pool.querySelector('.chip[data-k="' + key + '"]');
+        chip.classList.add("used"); chip.classList.remove("sel");
+        selected = null; solved++;
+        if (solved === pairs.length) msg.textContent = b.done || "✓ 全部答對！";
+      } else {
+        slot.classList.add("bad");
+        setTimeout(function () { slot.classList.remove("bad"); }, 350);
+      }
+    }
+    order.forEach(function (q) {
+      var c = el("div", "chip"); c.textContent = q.label; c.draggable = true; c.dataset.k = q.label;
+      c.addEventListener("dragstart", function (e) { e.dataTransfer.setData("k", q.label); });
+      c.onclick = function () {
+        if (c.classList.contains("used")) return;
+        if (selected === c) { c.classList.remove("sel"); selected = null; return; }
+        pool.querySelectorAll(".chip").forEach(function (x) { x.classList.remove("sel"); });
+        c.classList.add("sel"); selected = c;
+      };
+      pool.appendChild(c);
+    });
+    pairs.forEach(function (q) {
+      var s = el("div", "slot"); s.dataset.k = q.label;
+      s.innerHTML = '<div class="drop">拖到這裡</div><div class="desc">' + q.desc + '</div>';
+      s.addEventListener("dragover", function (e) { e.preventDefault(); });
+      s.addEventListener("drop", function (e) { e.preventDefault(); tryMatch(s, e.dataTransfer.getData("k")); });
+      s.onclick = function () { if (selected) tryMatch(s, selected.dataset.k); };
+      targets.appendChild(s);
+    });
+    host.appendChild(pool); host.appendChild(targets); host.appendChild(msg);
+    f.appendChild(host); return f;
+  };
+
+  /* 結果代碼：把作答結果編成一串可貼給老師的代碼（FSQ1.<base64>.<檢查碼>）。
+     解碼與彙整用專案根目錄的「食品科學概論_測驗成績解碼器.html」。 */
+  function b64utf8(s) { return btoa(unescape(encodeURIComponent(s))); }
+  function checksum(s) {
+    var h = 0;
+    for (var i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) % 1679616; // 36^4
+    return h.toString(36);
+  }
+
+  BLOCKS.quiz = function (b) {
+    var f = document.createDocumentFragment(); heading(f, b);
+    var items = b.items, n = items.length;
+    var head = el("div", "quiz-head");
+    head.innerHTML =
+      '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">' +
+      '<input class="qid" placeholder="學號（交成績必填）" style="flex:1;min-width:130px;padding:8px 10px;border:1.5px solid var(--line,#ccc);border-radius:8px;font-size:15px">' +
+      '<input class="qname" placeholder="姓名" style="flex:1;min-width:100px;padding:8px 10px;border:1.5px solid var(--line,#ccc);border-radius:8px;font-size:15px"></div>' +
+      '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">' +
+      '<strong class="qprog">進度 0 / ' + n + '</strong>' +
+      '<span class="qscore" style="color:var(--secondary);font-weight:800">得分 0</span></div>' +
+      '<div class="pbar"><div class="pfill"></div></div>';
+    var box = el("div");
+    var sb = el("div", "scorebox");
+    sb.innerHTML = '<div>你的成績</div><div class="big"><span class="fscore">0</span> / ' + n + '</div>' +
+      '<div class="smsg" style="margin:8px 0 16px"></div>' +
+      '<div class="rcwrap" style="margin:0 auto 16px;max-width:560px;text-align:left">' +
+      '<div style="font-weight:700;margin-bottom:6px">結果代碼（請複製後，貼到老師指定的表單或訊息）</div>' +
+      '<textarea class="rcode" readonly rows="3" style="width:100%;box-sizing:border-box;font-family:monospace;font-size:12px;padding:8px;border:1.5px solid var(--line,#ccc);border-radius:8px;resize:none"></textarea>' +
+      '<div class="rmsg" style="font-size:13px;color:#B34700;margin-top:4px"></div>' +
+      '<button class="btn copyrc" style="margin-top:8px">📋 複製結果代碼</button></div>' +
+      '<button class="btn ghost">重新測驗</button>';
+
+    var answered = 0, score = 0, picks = [];
+    function updateProg() {
+      head.querySelector(".qprog").textContent = "進度 " + answered + " / " + n;
+      head.querySelector(".qscore").textContent = "得分 " + score;
+      head.querySelector(".pfill").style.width = (answered / n * 100) + "%";
+    }
+    function finish() {
+      sb.querySelector(".fscore").textContent = score;
+      var pct = score / n, m;
+      if (score === n) m = "滿分！你完全掌握本週重點 🎉";
+      else if (pct >= 0.8) m = "很棒！觀念相當扎實。";
+      else if (pct >= 0.6) m = "不錯，再複習幾個弱點就更好。";
+      else m = "建議回到前面單元再看一次翻卡與展開內容。";
+      sb.querySelector(".smsg").textContent = m;
+
+      var sid = head.querySelector(".qid").value.trim();
+      var sname = head.querySelector(".qname").value.trim();
+      var korr = items.map(function (item, i) { return picks[i] === item.a ? 1 : 0; }).join("");
+      var payload = JSON.stringify({
+        w: D.week || 0, id: sid, nm: sname, s: score, n: n,
+        a: picks, k: korr, t: new Date().toISOString().slice(0, 16),
+      });
+      var body = b64utf8(payload);
+      var code = "FSQ1." + body + "." + checksum(body);
+      sb.querySelector(".rcode").value = code;
+      sb.querySelector(".rmsg").textContent = sid ? "" : "⚠ 尚未填學號 —— 請回到測驗上方填入學號後重新測驗，否則老師無法登記成績。";
+
+      sb.classList.add("show");
+      sb.scrollIntoView({ behavior: "smooth" });
+    }
+    function pick(qel, item, oi) {
+      if (qel.dataset.done === "1") return;
+      qel.dataset.done = "1"; answered++;
+      picks[parseInt(qel.dataset.qi, 10)] = oi;
+      qel.querySelectorAll(".opt").forEach(function (btn, i) {
+        btn.classList.add("dim");
+        if (i === item.a) btn.classList.add("correct");
+        if (i === oi && oi !== item.a) btn.classList.add("wrong");
+      });
+      var fb = qel.querySelector(".fb");
+      if (oi === item.a) { score++; fb.classList.add("good"); fb.innerHTML = "✓ 正確！" + item.e; }
+      else { fb.classList.add("no"); fb.innerHTML = "✗ 正解：" + item.o[item.a] + "。" + item.e; }
+      fb.classList.add("show"); updateProg();
+      if (answered === n) finish();
+    }
+    function build() {
+      box.innerHTML = ""; answered = 0; score = 0; picks = []; updateProg();
+      sb.classList.remove("show");
+      items.forEach(function (item, qi) {
+        var qel = el("div", "q"); qel.dataset.done = "0"; qel.dataset.qi = qi;
+        qel.innerHTML = '<div class="qn">第 ' + (qi + 1) + ' 題</div><div class="qt">' + item.q + '</div>';
+        item.o.forEach(function (opt, oi) {
+          var btn = el("button", "opt"); btn.textContent = opt;
+          btn.onclick = function () { pick(qel, item, oi); };
+          qel.appendChild(btn);
+        });
+        qel.appendChild(el("div", "fb"));
+        box.appendChild(qel);
+      });
+    }
+    sb.querySelector(".copyrc").onclick = function () {
+      var ta = sb.querySelector(".rcode");
+      ta.select(); ta.setSelectionRange(0, 99999);
+      var btn = this;
+      function ok() { btn.textContent = "✓ 已複製，請貼給老師"; setTimeout(function () { btn.textContent = "📋 複製結果代碼"; }, 2000); }
+      if (navigator.clipboard && navigator.clipboard.writeText)
+        navigator.clipboard.writeText(ta.value).then(ok, function () { document.execCommand("copy"); ok(); });
+      else { document.execCommand("copy"); ok(); }
+    };
+    sb.querySelector(".ghost").onclick = function () {
+      build(); window.scrollTo({ top: 0, behavior: "smooth" });
+    };
+    build();
+    f.appendChild(head); f.appendChild(box); f.appendChild(sb);
+    return f;
+  };
+
+  /* ---------- 組裝 ---------- */
+  var nav = $("#nav"), main = $("#main");
+  function switchMod(id, btn) {
+    document.querySelectorAll(".module").forEach(function (m) { m.classList.remove("active"); });
+    document.getElementById(id).classList.add("active");
+    nav.querySelectorAll("button").forEach(function (x) { x.classList.remove("active"); });
+    btn.classList.add("active");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+  D.modules.forEach(function (m, i) {
+    var btn = el("button", i === 0 ? "active" : "", m.nav);
+    btn.onclick = function () { switchMod(m.id, btn); };
+    nav.appendChild(btn);
+
+    var sec = el("section", "module" + (i === 0 ? " active" : ""));
+    sec.id = m.id;
+    sec.appendChild(el("div", "lead",
+      '<div class="kicker">' + m.kicker + '</div><h2>' + m.h2 + '</h2><p>' + m.lead + '</p>'));
+    m.blocks.forEach(function (b) {
+      var render = BLOCKS[b.type];
+      if (!render) { console.error("未知區塊型別:", b.type); return; }
+      sec.appendChild(render(b));
+    });
+    main.appendChild(sec);
+  });
+})();
+</script>
+</body>
+</html>
