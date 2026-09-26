@@ -12,7 +12,7 @@
   header .in, main { max-width:860px; margin:0 auto; }
   h1 { margin:0; font-size:26px; }
   header p { margin:6px 0 0; opacity:.85; font-size:15px; }
-  main { padding:20px 16px 48px; display:grid; gap:10px; }
+  main { padding:20px 16px 48px; display:grid; grid-template-columns:minmax(0,1fr); gap:10px; }
   .wk { display:flex; gap:14px; align-items:center; background:var(--card); border:1px solid var(--border); border-radius:12px; padding:14px 16px; text-decoration:none; color:inherit; transition:border-color .15s, transform .15s; }
   .wk:hover { border-color:var(--secondary); transform:translateY(-1px); }
   .no { flex:none; width:52px; height:52px; border-radius:10px; background:var(--secondary); color:#fff; display:grid; place-items:center; font-weight:700; }
