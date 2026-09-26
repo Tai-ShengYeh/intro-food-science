@@ -20,6 +20,9 @@
   .tx { display:grid; gap:4px; min-width:0; }
   .tx b { font-size:17px; color:var(--primary); }
   .tx small { font-size:13.5px; color:var(--mid); line-height:1.5; }
+  .wk .go { display:flex; gap:14px; align-items:center; flex:1; min-width:0; text-decoration:none; color:inherit; }
+  .sl { flex:none; font-size:13.5px; font-weight:700; color:var(--secondary); border:1px solid var(--secondary); border-radius:8px; padding:6px 10px; text-decoration:none; white-space:nowrap; }
+  .sl:hover { background:var(--secondary); color:#fff; }
   footer { text-align:center; color:var(--mid); font-size:13px; padding:0 16px 32px; }
 </style>
 </head>
@@ -29,9 +32,10 @@
   <p>18 週互動教學　·　點選週次開始學習（手機、電腦皆可）</p>
 </div></header>
 <main>
-    <a class="wk" href="食品科學概論_第1週_互動教學.html">
-      <span class="no">W01</span><span class="tx"><b>食品科學概論導論</b><small>什麼是食品科學　·　從農場到餐桌　·　IFT 食品趨勢</small></span>
-    </a>
+    <div class="wk">
+      <a class="go" href="食品科學概論_第1週_互動教學.html"><span class="no">W01</span><span class="tx"><b>食品科學概論導論</b><small>什麼是食品科學　·　從農場到餐桌　·　IFT 食品趨勢</small></span></a>
+      <a class="sl" href="食品科學概論_第1週_投影片.html">投影片</a>
+    </div>
     <a class="wk" href="食品科學概論_第2週_互動教學.html">
       <span class="no">W02</span><span class="tx"><b>食品中的水分與水活性</b><small>水分子與氫鍵　·　結合水與自由水　·　水活性 aw 與吸濕等溫線</small></span>
     </a>
