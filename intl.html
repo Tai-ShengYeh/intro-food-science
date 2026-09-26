@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>食品科學概論 · 國合班</title>
+<style>
+  :root { --primary:#2D2A6E; --secondary:#5B4FB8; --accent:#00B8B8; --warm:#F5A623; --text:#1F1F2E; --mid:#5A5A75; --border:#E2E2EC; --card:#fff; --bg:#F4F5FA; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--text); font-family:"Microsoft JhengHei","Noto Sans TC","PingFang TC",sans-serif; }
+  header { background:var(--primary); color:#fff; padding:28px 16px 24px; }
+  header .in, main { max-width:860px; margin:0 auto; }
+  header a.back { color:#fff; opacity:.8; font-size:14px; text-decoration:none; }
+  h1 { margin:6px 0 0; font-size:26px; }
+  header p { margin:6px 0 0; opacity:.85; font-size:15px; line-height:1.5; }
+  main { padding:20px 16px 48px; display:grid; grid-template-columns:minmax(0,1fr); gap:10px; }
+  .wk { display:flex; gap:14px; align-items:center; background:var(--card); border:1px solid var(--border); border-radius:12px; padding:14px 16px; }
+  .no { flex:none; width:52px; height:52px; border-radius:10px; background:var(--secondary); color:#fff; display:grid; place-items:center; font-weight:700; }
+  .intl .no { background:var(--accent); }
+  .rev .no { background:var(--warm); }
+  .tx { display:grid; gap:3px; min-width:0; flex:1; overflow-wrap:anywhere; }
+  .tx b { font-size:17px; color:var(--primary); }
+  .tx i { font-style:normal; font-size:13px; color:var(--secondary); }
+  .tx small { font-size:13.5px; color:var(--mid); line-height:1.5; }
+  .wk a.go { display:flex; gap:14px; align-items:center; flex:1; min-width:0; text-decoration:none; color:inherit; }
+  .btns { flex:none; display:flex; flex-direction:column; gap:6px; }
+  .sl { font-size:13.5px; font-weight:700; color:var(--secondary); border:1px solid var(--secondary); border-radius:8px; padding:6px 10px; text-decoration:none; white-space:nowrap; text-align:center; }
+  .sl:hover { background:var(--secondary); color:#fff; }
+  .choose { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:16px; }
+  .pick { display:block; background:var(--card); border:1px solid var(--border); border-top:6px solid var(--secondary); border-radius:14px; padding:22px; text-decoration:none; color:inherit; transition:transform .15s, border-color .15s; }
+  .pick.intl { border-top-color:var(--accent); }
+  .pick:hover { transform:translateY(-2px); border-color:var(--secondary); }
+  .pick b { display:block; font-size:21px; color:var(--primary); }
+  .pick i { display:block; font-style:normal; color:var(--secondary); margin-top:2px; }
+  .pick p { color:var(--mid); font-size:15px; line-height:1.6; margin:10px 0 0; }
+  .pick span.go { display:inline-block; margin-top:12px; font-weight:700; color:var(--secondary); }
+  .soon { font-size:12.5px; color:var(--mid); }
+  footer { text-align:center; color:var(--mid); font-size:13px; padding:0 16px 32px; }
+  @media (max-width:520px) { .wk { flex-wrap:wrap; } .wk a.go { flex:1 1 100%; } .btns { flex-direction:row; width:100%; } .btns .sl { flex:1; } }
+</style>
+</head>
+<body>
+<header><div class="in">
+<a class="back" href="index.html">‹ 選擇班級 Chọn lớp</a>
+  <h1>食品科學概論 · 國合班</h1>
+  <p>Nhập môn Khoa học Thực phẩm · Lớp quốc tế<br>中文 A2　·　拼音　·　越南文對照</p>
+</div></header>
+<main>
+  <div class="wk intl"><a class="go" href="食品科學概論_第1週_投影片.html"><span class="no">W01</span><span class="tx"><b>食品科學概論</b><i>shípǐn kēxué gàilùn　·　Giới thiệu Khoa học Thực phẩm</i><small>什麼是食品科學？　·　食品科學家要會什麼？　·　台灣的食品工業</small></span></a><span class="btns"><a class="sl" href="食品科學概論_第1週_投影片.html">投影片 Slide</a></span></div>
+  <div class="wk intl"><a class="go" href="食品科學概論_第2週_投影片.html"><span class="no">W02</span><span class="tx"><b>水分與水活性</b><i>shuǐfèn yǔ shuǐ huóxìng　·　Nước &amp; Hoạt độ nước (aw)</i><small>水在食品裡做什麼？　·　自由水和結合水　·　水活性 aw 和保存</small></span></a><span class="btns"><a class="sl" href="食品科學概論_第2週_投影片.html">投影片 Slide</a></span></div>
+  <div class="wk intl"><a class="go" href="食品科學概論_第3週_投影片.html"><span class="no">W03</span><span class="tx"><b>碳水化合物</b><i>tànshuǐ huàhéwù　·　Carbohydrate (gluxit)</i><small>醣類怎麼分類？　·　澱粉：糊化和老化　·　褐變：梅納反應和焦糖化</small></span></a><span class="btns"><a class="sl" href="食品科學概論_第3週_投影片.html">投影片 Slide</a></span></div>
+  <div class="wk intl"><a class="go" href="食品科學概論_第4週_投影片.html"><span class="no">W04</span><span class="tx"><b>蛋白質</b><i>dànbáizhí　·　Protein</i><small>蛋白質的結構　·　變性和凝固　·　蛋白質在食物裡做什麼？</small></span></a><span class="btns"><a class="sl" href="食品科學概論_第4週_投影片.html">投影片 Slide</a></span></div>
+  <div class="wk intl"><a class="go" href="食品科學概論_第5週_投影片.html"><span class="no">W05</span><span class="tx"><b>脂質</b><i>zhīzhí　·　Lipid (chất béo)</i><small>油脂的結構　·　熔點、結晶和塑性　·　油脂為什麼會壞？</small></span></a><span class="btns"><a class="sl" href="食品科學概論_第5週_投影片.html">投影片 Slide</a></span></div>
+  <div class="wk intl"><a class="go" href="食品科學概論_第6週_投影片.html"><span class="no">W06</span><span class="tx"><b>維生素與礦物質</b><i>wéishēngsù yǔ kuàngwùzhí　·　Vitamin và chất khoáng</i><small>維生素：溶在油，還是溶在水？　·　礦物質：吃進去，吸收多少？　·　加工怎麼讓營養變少？</small></span></a><span class="btns"><a class="sl" href="食品科學概論_第6週_投影片.html">投影片 Slide</a></span></div>
+  <div class="wk intl"><a class="go" href="食品科學概論_第7週_投影片.html"><span class="no">W07</span><span class="tx"><b>色素、風味與酵素</b><i>sèsù, fēngwèi yǔ xiàosù　·　Sắc tố, hương vị và enzyme</i><small>食物的顏色從哪裡來？　·　風味：味覺和嗅覺　·　酵素：有用，也有麻煩</small></span></a><span class="btns"><a class="sl" href="食品科學概論_第7週_投影片.html">投影片 Slide</a></span></div>
+  <div class="wk intl rev"><a class="go" href="食品科學概論_第8週_投影片.html"><span class="no">W08</span><span class="tx"><b>期中複習</b><i>qízhōng fùxí　·　Ôn tập giữa kỳ</i><small>複習第 1–7 週的重點　·　分清楚容易搞混的詞　·　練習：用四個問題看一個食品</small></span></a><span class="btns"><a class="sl" href="食品科學概論_第8週_投影片.html">投影片 Slide</a></span></div>
+  <div class="wk intl"><a class="go" href="食品科學概論_第9週_投影片.html"><span class="no">W09</span><span class="tx"><b>食品微生物</b><i>shípǐn wéishēngwù　·　Vi sinh vật thực phẩm</i><small>食品裡有哪四類微生物？　·　微生物怎麼長大？要什麼？　·　壞菌、病菌和好菌</small></span></a><span class="btns"><a class="sl" href="食品科學概論_第9週_投影片.html">投影片 Slide</a></span></div>
+  <div class="wk intl"><a class="go" href="食品科學概論_第10週_投影片.html"><span class="no">W10</span><span class="tx"><b>食品腐敗與保存原理</b><i>shípǐn fǔbài yǔ bǎocún yuánlǐ　·　Hư hỏng thực phẩm và nguyên lý bảo quản</i><small>食品怎麼壞？四種劣變　·　保存原理：抑制和殺滅　·　保存期限怎麼訂？</small></span></a><span class="btns"><a class="sl" href="食品科學概論_第10週_投影片.html">投影片 Slide</a></span></div>
+  <div class="wk intl"><a class="go" href="食品科學概論_第11週_投影片.html"><span class="no">W11</span><span class="tx"><b>熱加工技術</b><i>rè jiāgōng jìshù　·　Kỹ thuật xử lý nhiệt</i><small>加熱有三個層級　·　D 值、Z 值、F 值　·　高溫短時：殺菌多，傷品質少</small></span></a><span class="btns"><a class="sl" href="食品科學概論_第11週_投影片.html">投影片 Slide</a></span></div>
+  <div class="wk intl"><a class="go" href="食品科學概論_第12週_投影片.html"><span class="no">W12</span><span class="tx"><b>低溫保存：冷藏與冷凍</b><i>dīwēn bǎocún: lěngcáng yǔ lěngdòng　·　Bảo quản ở nhiệt độ thấp: bảo quản lạnh và cấp đông</i><small>冷藏：做得到和做不到的　·　冷凍：冰晶大還是小？　·　凍住了，還是會壞</small></span></a><span class="btns"><a class="sl" href="食品科學概論_第12週_投影片.html">投影片 Slide</a></span></div>
+  <div class="wk intl"><a class="go" href="食品科學概論_第13週_投影片.html"><span class="no">W13</span><span class="tx"><b>乾燥、濃縮與其他保存</b><i>gānzào, nóngsuō yǔ qítā bǎocún　·　Sấy khô, cô đặc và các cách bảo quản khác</i><small>乾燥：把水拿掉　·　濃縮：拿掉一部分的水　·　其他方法：鹽、糖、煙、照射、高壓</small></span></a><span class="btns"><a class="sl" href="食品科學概論_第13週_投影片.html">投影片 Slide</a></span></div>
+  <div class="wk intl"><a class="go" href="食品科學概論_第14週_投影片.html"><span class="no">W14</span><span class="tx"><b>發酵與發酵食品</b><i>fāxiào yǔ fāxiào shípǐn　·　Lên men và thực phẩm lên men</i><small>發酵是什麼？有哪三種？　·　優格和乳酪：兩種凝固　·　泡菜和醬油：植物的發酵</small></span></a><span class="btns"><a class="sl" href="食品科學概論_第14週_投影片.html">投影片 Slide</a></span></div>
+  <div class="wk intl"><a class="go" href="食品科學概論_第15週_投影片.html"><span class="no">W15</span><span class="tx"><b>食品添加物</b><i>shípǐn tiānjiāwù　·　Phụ gia thực phẩm</i><small>添加物有哪些？在做什麼？　·　ADI：吃多少才安全？　·　看懂成分表</small></span></a><span class="btns"><a class="sl" href="食品科學概論_第15週_投影片.html">投影片 Slide</a></span></div>
+  <div class="wk intl"><a class="go" href="食品科學概論_第16週_投影片.html"><span class="no">W16</span><span class="tx"><b>食品包裝技術</b><i>shípǐn bāozhuāng jìshù　·　Công nghệ bao bì thực phẩm</i><small>包裝材料和阻隔性　·　改變包裝裡的空氣　·　包裝標示和環保</small></span></a><span class="btns"><a class="sl" href="食品科學概論_第16週_投影片.html">投影片 Slide</a></span></div>
+  <div class="wk intl"><a class="go" href="食品科學概論_第17週_投影片.html"><span class="no">W17</span><span class="tx"><b>食品安全、法規與品質管制</b><i>shípǐn ānquán, fǎguī yǔ pǐnzhí guǎnzhì　·　An toàn thực phẩm, pháp quy và kiểm soát chất lượng</i><small>食品的三種危害　·　HACCP：事前預防　·　感官評定：用人來測量</small></span></a><span class="btns"><a class="sl" href="食品科學概論_第17週_投影片.html">投影片 Slide</a></span></div>
+  <div class="wk intl rev"><a class="go" href="食品科學概論_第18週_投影片.html"><span class="no">W18</span><span class="tx"><b>期末專題與課程總結</b><i>qímò zhuāntí yǔ kèchéng zǒngjié　·　Dự án cuối kỳ và tổng kết môn học</i><small>複習：18 週只講一條線　·　練習：用學過的概念想一想　·　期末專題：怎麼做、怎麼報告</small></span></a><span class="btns"><a class="sl" href="食品科學概論_第18週_投影片.html">投影片 Slide</a></span></div>
+</main>
+<footer>橘色為期中／期末複習週</footer>
+</body>
+</html>
