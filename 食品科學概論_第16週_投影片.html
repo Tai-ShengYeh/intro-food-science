@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>食品科學概論 第16週 · 投影片</title>
+<style>
+:root{--bg:#F8F9FC;--dark:#1A1A3E;--navy:#2D2A6E;--ink:#1F1F2E;--teal:#00B8B8;--tealdk:#0E7C7B;--tealdkr:#0B3F3F;--grey:#A0A0B5;--line:#E2E2EC;--white:#FFFFFF}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-snap-type:y proximity;scroll-padding-top:44px}
+body{font-family:"Segoe UI","Noto Sans TC","Microsoft JhengHei",system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.45;-webkit-text-size-adjust:100%}
+a{color:inherit}
+i{font-style:italic}
+.top{position:fixed;top:0;left:0;right:0;height:44px;z-index:20;display:flex;align-items:center;gap:12px;padding:0 14px;background:var(--dark);color:#cfd3ea;font-size:14px;box-shadow:0 2px 10px rgba(0,0,0,.25)}
+.top a{text-decoration:none;color:#fff;font-weight:600;white-space:nowrap}
+.top a:hover{color:var(--teal)}
+.top .sp{flex:1;text-align:center;color:#cfd3ea;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.top .pg{font-variant-numeric:tabular-nums;color:var(--teal);font-weight:700;white-space:nowrap}
+.slide{scroll-snap-align:start;min-height:100svh;display:flex;flex-direction:column;padding:60px 16px 20px;border-top:6px solid var(--navy);position:relative}
+.slide .in{width:100%;max-width:1120px;margin:auto;display:grid;gap:18px}
+.slide .foot{max-width:1120px;width:100%;margin:14px auto 0;padding-right:104px;display:flex;justify-content:space-between;font-size:12px;color:var(--grey)}
+.slide.dark{background:var(--dark);color:#fff;border-top-color:var(--dark)}
+.slide.dark .foot{color:#8a8fb0}
+.slide.dark .in{border-left:8px solid var(--teal);padding-left:clamp(16px,3vw,36px);gap:10px}
+.slide.dark h1{font-size:clamp(34px,6vw,58px);font-weight:800;line-height:1.15}
+.slide.dark .kicker{color:var(--teal);font-weight:700;font-size:clamp(16px,2.2vw,22px)}
+.slide.dark .num{color:var(--teal);font-weight:800;font-size:clamp(56px,9vw,92px);line-height:1}
+.slide.dark .py{color:var(--grey);font-size:clamp(14px,1.8vw,17px)}
+.slide.dark .vn{color:var(--teal);font-size:clamp(18px,2.6vw,26px)}
+.slide.dark .meta{color:var(--grey);font-size:clamp(14px,1.8vw,17px);margin-top:14px}
+.t{font-size:clamp(22px,3.2vw,30px);font-weight:800;line-height:1.25}
+.tvn{color:var(--tealdk);font-style:italic;font-size:clamp(14px,1.7vw,16px);margin-top:-12px}
+.banner{background:var(--navy);color:#fff;padding:12px 18px;display:grid;gap:2px}
+.banner b{font-size:clamp(16px,1.9vw,18px)}
+.banner i{color:var(--teal);font-size:clamp(13px,1.5vw,14px)}
+.idea{background:var(--dark);color:#fff;padding:16px 20px;display:grid;gap:4px}
+.idea b{font-size:clamp(22px,3.1vw,30px);line-height:1.2}
+.idea small{color:var(--grey);font-size:14px}
+.idea i{color:var(--teal);font-size:clamp(15px,1.8vw,17px)}
+.cards{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr))}
+.card{background:var(--white);border:1px solid var(--line);border-top:8px solid var(--a);padding:12px 14px 14px;display:grid;gap:3px;align-content:start}
+.card b{color:var(--a);font-size:clamp(20px,2.4vw,24px);line-height:1.2}
+.card small{color:var(--grey);font-size:12.5px}
+.card i{color:var(--tealdk);font-size:14px}
+.card p{font-size:15.5px;line-height:1.45;margin-top:8px}
+.numbered{list-style:none;display:grid;gap:10px}
+.numbered li{background:var(--white);border:1px solid var(--line);display:flex;gap:14px;align-items:center;padding:12px 14px}
+.numbered .n{flex:none;width:44px;height:44px;border-radius:50%;background:var(--a);color:#fff;display:grid;place-items:center;font-weight:800;font-size:22px}
+.numbered li>span:last-child{display:grid;gap:2px;min-width:0}
+.numbered b{color:var(--a);font-size:clamp(18px,2.4vw,24px);line-height:1.25}
+.numbered i{color:var(--tealdk);font-size:15px}
+.star{background:var(--teal);color:var(--tealdkr);padding:12px 18px;display:grid;gap:2px}
+.star b{font-size:clamp(17px,2.1vw,21px)}
+.star i{font-size:14px}
+.vocab{display:grid;gap:8px;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr))}
+.vocab .w{background:var(--white);border:1px solid var(--line);border-left:8px solid var(--teal);padding:10px 14px;display:grid;grid-template-columns:auto 1fr;gap:0 14px;align-items:center}
+.vocab .w b{color:var(--navy);font-size:clamp(20px,2.6vw,26px);grid-row:span 2}
+.vocab .w small{color:var(--grey);font-size:13px}
+.vocab .w i{color:var(--tealdk);font-size:15px}
+.flow{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;align-items:center}
+.flow .step{flex:1 1 180px;max-width:260px;background:var(--white);border:2.5px solid var(--a);border-radius:12px;padding:14px 10px;text-align:center;display:grid;gap:2px}
+.flow .step b{color:var(--a);font-size:clamp(20px,2.6vw,26px)}
+.flow .step small{color:var(--grey);font-size:12px}
+.flow .step i{color:var(--tealdk);font-size:14px}
+.flow .arrow{color:var(--teal);font-weight:800;font-size:20px}
+.fig{position:relative;width:100%;max-width:1120px;margin:0 auto;container-type:inline-size}
+.fig img{display:block;width:100%;height:auto}
+.fig-todo{display:grid;place-items:center;text-align:center;border:1.5px dashed var(--grey);border-radius:10px;color:var(--grey);font-size:14px}
+.fig .lb{position:absolute;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;line-height:1.1;overflow:visible}
+.fig .lb b{font-size:max(10px,1.7cqw);white-space:nowrap}
+.fig .lb i{color:var(--tealdk);font-size:max(8px,1.15cqw);white-space:nowrap}
+.figtext{display:grid;gap:16px;grid-template-columns:1fr;align-items:center}
+.figtext .fig.side{max-width:440px}
+.rows{display:grid;gap:10px}
+.row{background:var(--white);border:1px solid var(--line);border-left:8px solid var(--a);padding:10px 14px;display:grid;gap:2px}
+.row b{color:var(--a);font-size:clamp(17px,2.1vw,20px)}
+.row i{color:var(--tealdk);font-size:13.5px}
+.video{display:grid;gap:16px;grid-template-columns:1fr}
+.player{position:relative;width:100%;aspect-ratio:16/9;background:#000;border:1px solid var(--line)}
+.player iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.vinfo{display:grid;gap:8px;align-content:start}
+.vinfo .vt{color:var(--navy);font-weight:800;font-size:clamp(18px,2.4vw,22px);text-decoration:none}
+.vinfo .vt:hover{text-decoration:underline}
+.vinfo>i{color:var(--tealdk);font-size:14px;margin-top:-6px}
+.vinfo .time{color:#D65B5B;font-weight:700;font-size:14.5px}
+.vinfo .qh{color:var(--tealdk);font-weight:700;font-size:15px;margin-top:6px}
+.numbered.q .n{width:34px;height:34px;font-size:16px}
+.numbered.q b{font-size:clamp(16px,2vw,18px);color:var(--ink)}
+.numbered.q i{font-size:13px}
+.terms{color:var(--grey);font-size:12.5px}
+.ctl{position:fixed;right:12px;bottom:12px;z-index:20;display:flex;gap:8px}
+.ctl button{width:44px;height:44px;border-radius:50%;border:0;background:var(--navy);color:#fff;font-size:22px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.ctl button:hover{background:var(--tealdk)}
+@media (min-width:760px){
+  .figtext{grid-template-columns:1fr minmax(260px,42%)}
+  .figtext .fig.side{order:2}
+  .video{grid-template-columns:minmax(0,1.3fr) minmax(280px,1fr)}
+}
+@media (max-width:759px){
+  .flow .arrow{transform:rotate(90deg);flex-basis:100%;text-align:center}
+}
+@media print{
+  .top,.ctl{display:none}
+  .slide{min-height:auto;page-break-after:always;padding-top:20px}
+}
+</style>
+</head>
+<body>
+<div class="top"><a href="index.html">‹ 目錄</a><span class="sp">第 16 週 投影片 · Bài 16</span><a href="食品科學概論_第16週_互動教學.html">互動教學 ›</a><span class="pg" id="pg">1 / 20</span></div>
+<section class="slide dark l-cover" id="p1">
+  <div class="in">
+    <p class="kicker">第 16 週　Bài 16</p>
+    <h1>食品包裝技術</h1>
+    <p class="py">shípǐn bāozhuāng jìshù</p>
+    <p class="vn">Công nghệ bao bì thực phẩm</p>
+    <p class="meta">中文 A2 版　|　Dành cho sinh viên Việt Nam</p>
+  </div>
+  <div class="foot"><span>食品科學概論 第 16 週 · A2 · Công nghệ bao bì thực phẩm</span><span>1 / 20</span></div>
+</section>
+<section class="slide  l-numbered" id="p2">
+  <div class="in">
+  <h2 class="t">今天學三件事</h2><p class="tvn">Hôm nay học 3 điều</p>
+    <ol class="numbered">
+      <li style="--a:#2D2A6E"><span class="n">1</span><span><b>包裝材料和阻隔性</b><i>Vật liệu bao bì và tính chắn</i></span></li>
+      <li style="--a:#2FA36B"><span class="n">2</span><span><b>改變包裝裡的空氣</b><i>Thay đổi không khí trong bao bì</i></span></li>
+      <li style="--a:#F5A623"><span class="n">3</span><span><b>包裝標示和環保</b><i>Ghi nhãn bao bì và bảo vệ môi trường</i></span></li>
+    </ol>
+    
+  </div>
+  <div class="foot"><span>食品科學概論 第 16 週 · A2 · Công nghệ bao bì thực phẩm</span><span>2 / 20</span></div>
+</section>
+<section class="slide  l-vocab" id="p3">
+  <div class="in">
+  <h2 class="t">生詞 (10 個)</h2><p class="tvn">Từ mới (10 từ)</p>
+    <div class="vocab">
+      <div class="w"><b>包裝</b><small>bāozhuāng</small><i>bao bì</i></div>
+      <div class="w"><b>阻隔性</b><small>zǔgéxìng</small><i>tính chắn (khí, ẩm)</i></div>
+      <div class="w"><b>塑膠</b><small>sùjiāo</small><i>nhựa</i></div>
+      <div class="w"><b>積層</b><small>jīcéng</small><i>màng ghép nhiều lớp</i></div>
+      <div class="w"><b>真空包裝</b><small>zhēnkōng bāozhuāng</small><i>bao gói chân không</i></div>
+      <div class="w"><b>氣調包裝</b><small>qìtiáo bāozhuāng</small><i>bao gói MAP (điều chỉnh khí)</i></div>
+      <div class="w"><b>活性包裝</b><small>huóxìng bāozhuāng</small><i>bao bì chủ động (active)</i></div>
+      <div class="w"><b>脫氧劑</b><small>tuōyǎngjì</small><i>chất hấp thụ oxy</i></div>
+      <div class="w"><b>標示</b><small>biāoshì</small><i>ghi nhãn</i></div>
+      <div class="w"><b>回收</b><small>huíshōu</small><i>tái chế</i></div>
+    </div>
+  <div class="banner"><b>這 10 個生詞，今天都會用到。</b><i>10 từ mới này, hôm nay đều sẽ dùng.</i></div>
+  </div>
+  <div class="foot"><span>食品科學概論 第 16 週 · A2 · Công nghệ bao bì thực phẩm</span><span>3 / 20</span></div>
+</section>
+<section class="slide  l-video" id="p4">
+  <div class="in">
+  <h2 class="t">看影片：牛肉乾的包裝</h2><p class="tvn">Xem video: bao bì của khô bò</p>
+    <div class="video">
+      <div class="player"><iframe src="https://www.youtube-nocookie.com/embed/BCKpajZY5QY?start=764&end=947&rel=0" title="牛肉乾怎麼放 15 個月？" loading="lazy" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen></iframe></div>
+      <div class="vinfo">
+        <a class="vt" href="https://youtu.be/BCKpajZY5QY?t=764" target="_blank" rel="noopener">▶ 牛肉乾怎麼放 15 個月？</a><i>Khô bò giữ được 15 tháng bằng cách nào?</i>
+        <p class="time">12:44 開始，看到 15:47（約 3 分鐘）<br>Xem từ 12:44 đến 15:47</p>
+        <p class="qh">邊看邊想　Vừa xem vừa nghĩ</p>
+        <ol class="numbered q">
+          <li style="--a:#2D2A6E"><span class="n">1</span><span><b>袋子裡打進什麼氣體？</b><i>Người ta bơm khí gì vào túi?</i></span></li>
+          <li style="--a:#2FA36B"><span class="n">2</span><span><b>袋子裡還放了什麼小包？</b><i>Trong túi còn bỏ thêm gói nhỏ gì?</i></span></li>
+          <li style="--a:#F5A623"><span class="n">3</span><span><b>可以放幾個月？</b><i>Để được bao nhiêu tháng?</i></span></li>
+        </ol>
+        <p class="terms">影片用語：保質期＝保存期限</p>
+        <p class="terms">YouTube《超級後廚》</p>
+      </div>
+    </div>
+  <div class="banner"><b>氮氣加脫氧劑：把氧氣趕出去。</b><i>Khí nitơ + chất hấp thụ oxy: đuổi oxy ra khỏi túi.</i></div>
+  </div>
+  <div class="foot"><span>食品科學概論 第 16 週 · A2 · Công nghệ bao bì thực phẩm</span><span>4 / 20</span></div>
+</section>
+<section class="slide dark l-section" id="p5">
+  <div class="in">
+    <p class="num">一</p>
+    <h1>包裝材料和阻隔性</h1>
+    <p class="vn">Vật liệu bao bì và tính chắn</p>
+  </div>
+  <div class="foot"><span>食品科學概論 第 16 週 · A2 · Công nghệ bao bì thực phẩm</span><span>5 / 20</span></div>
+</section>
+<section class="slide  l-cards" id="p6">
+  <div class="in">
+  <h2 class="t">包裝的四個功能</h2><p class="tvn">4 chức năng của bao bì</p>
+  <div class="cards n4">
+    <div class="card" style="--a:#2D2A6E">
+      <b>容納</b><small>róngnà</small><i>Chứa đựng</i>
+      <p>把食物裝起來<br>方便算錢<br>方便運送</p>
+    </div>
+    <div class="card" style="--a:#D65B5B">
+      <b>保護</b><small>bǎohù</small><i>Bảo vệ</i>
+      <p>擋氧氣、水氣<br>擋光、擋味道<br>防止碰撞<br>防止再污染</p>
+    </div>
+    <div class="card" style="--a:#F5A623">
+      <b>便利</b><small>biànlì</small><i>Tiện lợi</i>
+      <p>容易打開<br>可以再封起來<br>可以微波</p>
+    </div>
+    <div class="card" style="--a:#2FA36B">
+      <b>溝通</b><small>gōutōng</small><i>Truyền thông tin</i>
+      <p>寫品名、成分<br>寫有效日期<br>法規要求</p>
+    </div>
+  </div>
+  <div class="banner"><b>殺菌、乾燥做得再好，包裝擋不住就白費。</b><i>Tiệt trùng, sấy khô tốt đến đâu, bao bì không chắn được thì cũng vô ích.</i></div>
+  </div>
+  <div class="foot"><span>食品科學概論 第 16 週 · A2 · Công nghệ bao bì thực phẩm</span><span>6 / 20</span></div>
+</section>
+<section class="slide  l-figure" id="p7">
+  <div class="in">
+  <h2 class="t">四類材料：擋得住嗎？</h2><p class="tvn">4 loại vật liệu: có chắn được không?</p><div class="fig " style="aspect-ratio:1600/620"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABkAAAAJsCAIAAAAqT/iuAABLiUlEQVR4nO3deYBl110f+HPufa/2ruq9W62t1dola7exZWPLtox3bPAQCMEGMkyYhCGA8UDIhCGZYRImk5kkY8gyQIKNZTDEkBBjFDBe5EWyLEuWrF3W2lqsVq/V3bW+d++ZP16rrV3t7qq65736fNx/qPvX/eq8Lr9vv/rWuefG+YVuAAAAAIBcFU0vAAAAAABeigILAAAAgKwpsAAAAADImgILAAAAgKwpsAAAAADImgILAAAAgKwpsAAAAADImgILAAAAgKwpsAAAAADImgILAAAAgKwpsAAAAADImgILAAAAgKwpsAAAAADImgILAAAAgKwpsAAAAADImgILAAAAgKwpsAAAAADImgILAAAAgKwpsAAAAADImgILAAAAgKwpsAAAAADImgILAAAAgKwpsAAAAADImgILAAAAgKwpsAAAAADImgILAAAAgKwpsAAAAADImgILAAAAgKwpsAAAAADImgILAAAAgKwpsAAAAADImgILAAAAgKwpsAAAAADImgILAAAAgKwpsAAAAADImgILAAAAgKwpsAAAAADImgILAAAAgKwpsAAAAADImgILAAAAgKwpsAAAAADImgILAAAAgKwpsAAAAADImgILAAAAgKwpsAAAAADImgILAAAAgKwpsAAAAADImgILAAAAgKwpsAAAAADImgILAAAAgKwpsAAAAADImgILAAAAgKwpsAAAAADImgILAAAAgKwpsAAAAADImgILAAAAgKwpsAAAAADImgILAAAAgKwpsAAAAADImgILAAAAgKwpsAAAAADImgILAAAAgKwpsAAAAADImgILAAAAgKwpsAAAAADImgILAAAAgKwpsAAAAADIWqvpBRynuk4hhBhDWergoK/Fuq6PvqJjjE2v55iIIBgUIghokAgCGtR/ERTnF7pNr+G7kFJKKZRlMdQuQggphMOH51NqelnA8YkhpTQ2OtJuxRBCtwqdTjfn9BRBMFBEENAgEQQ0qN8iqKefCqy6Tu122Srj4ZnFxx7f9djjew5MH3pq9/6qqrP+OwZeTIx1VW/cuHZqcmzbts0nn7Rh86apOoXFxW4I2aWnCIJBI4KABokgoEF9FUFH9UeBlVIKIY4Ml7v3HLzt9vsffOiJ3XunQ0pVVTe9NGAJxCLG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AgsAAACArCmwAAAAAMiaAgsAAACArCmwAAAAAMiaAgsAAACArCmwAAAAAMiaAgsAAACArCmwAAAAAMiaAgsAAACArCmwAAAAAMiaAgsAAACArCmwAAAAAMiaAgsAAACArCmwAAAAAMiaAgsAAACArCmwAAAAAMiaAgsAAACArCmwAAAAAMiaAgsAAACArCmwAAAAAMiaAgsAAACArCmwAAAAAMiaAgsAAACArCmwAAAAAMiaAgsAAACArCmwAAAAAMiaAgsAAACArCmwAAAAAMiaAgsAAACArCmwAAAAAMiaAgsAAACArCmwAAAAAMiaAgsAAACArCmwAAAAAMiaAgsAAACArCmwAAAAAMiaAgsAAACArCmwAAAAAMiaAgsAAACArCmwAAAAAMiaAgsAAACArCmwAAAAAMiaAgsAAACArCmwAAAAAMiaAgsAAACArCmwAAAAAMiaAgsAAACArCmwAAAAAMiaAgsAAACArCmwAAAAAMiaAgsAAACArCmwAAAAAMiaAgsAAACArCmwAAAAAMiaAgsAAACArCmwAAAAAMiaAgsAAACArCmwAAAAAMiaAgsAAACArCmwAAAAAMiaAgsAAACArCmwAAAAAMiaAgsAAACArCmwAAAAAMiaAgsAAACArCmwAAAAAMiaAgsAAACArCmwAAAAAMiaAgsAAACArCmwAAAAAMiaAgsAAACArCmwAAAAAMiaAgsAAACArCmwAAAAAMiaAgsAAACArCmwAAAAAMiaAgsAAACArCmwAAAAAMiaAgsAAACArCmwAAAAAMiaAgsAAACArCmwAAAAAMiaAgsAAACArCmwAAAAAMiaAgsAAACArCmwAAAAAMiaAgsAAACArCmwAAAAAMiaAgsAAACArCmwAAAAAMiaAgsAAACArCmwAAAAAMiaAgsAAACArCmwAAAAAMiaAgsAAACArCmwAAAAAMiaAgsAAACArCmwAAAAAMiaAgsAAACArCmwAAAAAMiaAgsAAACArCmwAAAAAMiaAgsAAACArCmwAAAAAMiaAgsAAACArCmwAAAAAMiaAgsAAACArCmwAAAAAMiaAgsAAACArCmwAAAAAMiaAgsAAACArCmwAAAAAMiaAgsAAACArCmwAAAAAMiaAgsAAACArCmwAAAAAMiaAgsAAACArCmwAAAAAMiaAgsAAACArCmwAAAAAMia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sAAAAADImgILAAAAgKwpsAAAAADImgILAAAAgKwpsAAAAADImgILAAAAgKwpsAAAAADImgILAAAAgKwpsAAAAADImgILAAAAgKwpsAAAAADImgILAAAAgKwpsAAAAADImgILAAAAgKwpsAAAAADImgILAAAAgKwpsAAAAADImgILAAAAgKwpsAAAAADImgILAAAAgKwpsAAAAADImgILAAAAgKwpsAAAAADImgILAAAAgKwpsAAAAADImgILAAAAgKwpsAAAAADImgILAAAAgKwpsAAAAADImgILAAAAgKwpsAAAAADImgILAAAAgKwpsAAAAADImgILAAAAgKwpsAAAAADImgILAAAAgKwpsAAAAADImgILAAAAgKwpsAAAAADImgILAAAAgKwpsAAAAADImgILAAAAgKwpsAAAAADImgILAAAAgKwpsAAAAADImgILAAAAgKwpsAAAAADImgILAAAAgKwpsAAAAADImgILAAAAgKwpsAAAAADImgILAAAAgKwpsAAAAADImgILAAAAgKwpsAAAAADImgILAAAAgKwpsAAAAADImgILAAAAgKwpsAAAAADImgILAAAAgKwpsAAAAADImgILAAAAgKwpsAAAAADI2v8PBNOaOiNh0yIAAAAASUVORK5CYII=" alt="玻璃／金屬／塑膠／紙的阻隔性" width="1600" height="620"><span class="lb" style="left:4.37%;top:77.74%;width:19.38%;height:8.39%;color:#00B8B8"><b>玻璃：全擋，但透光</b><i>Thủy tinh: chắn hết, nhưng lọt sáng</i></span><span class="lb" style="left:28.44%;top:77.74%;width:19.38%;height:8.39%;color:#2D2A6E"><b>金屬：光也全擋</b><i>Kim loại: chắn hết, cả ánh sáng</i></span><span class="lb" style="left:52.50%;top:77.74%;width:19.38%;height:8.39%;color:#F5A623"><b>塑膠：看材質</b><i>Nhựa: tùy loại nhựa</i></span><span class="lb" style="left:76.56%;top:77.74%;width:19.38%;height:8.39%;color:#2FA36B"><b>紙：幾乎不擋</b><i>Giấy: gần như không chắn</i></span></div>
+  <div class="banner"><b>沒有一種材料樣樣都好。</b><i>Không có vật liệu nào tốt về mọi mặt.</i></div>
+  </div>
+  <div class="foot"><span>食品科學概論 第 16 週 · A2 · Công nghệ bao bì thực phẩm</span><span>7 / 20</span></div>
+</section>
+<section class="slide  l-cards" id="p8">
+  <div class="in">
+  <h2 class="t">塑膠：選材質，選要擋什麼</h2><p class="tvn">Nhựa: chọn loại nhựa là chọn chắn cái gì</p>
+  <div class="cards n4">
+    <div class="card" style="--a:#2D2A6E">
+      <b>聚乙烯</b><small>jùyǐxī</small><i>Polyetylen (PE)</i>
+      <p>擋水氣好<br>擋氧氣差<br>容易熱封<br>常在最內層</p>
+    </div>
+    <div class="card" style="--a:#00B8B8">
+      <b>聚酯</b><small>jùzhǐ</small><i>PET (chai nhựa)</i>
+      <p>透明、堅固<br>做寶特瓶<br>擋氣中等<br>不太耐熱</p>
+    </div>
+    <div class="card" style="--a:#F5A623">
+      <b>聚丙烯</b><small>jùbǐngxī</small><i>Polypropylen (PP)</i>
+      <p>比較耐熱<br>可以微波<br>微波餐盒<br>優格杯</p>
+    </div>
+    <div class="card" style="--a:#D65B5B">
+      <b>EVOH</b><i>Lớp chắn oxy</i>
+      <p>擋氧氣最好<br>但是怕潮濕<br>受潮就不擋<br>夾在中間層</p>
+    </div>
+  </div>
+  <div class="banner"><b>先問：這個食物怕什麼？</b><i>Hỏi trước: thực phẩm này sợ cái gì?</i></div>
+  </div>
+  <div class="foot"><span>食品科學概論 第 16 週 · A2 · Công nghệ bao bì thực phẩm</span><span>8 / 20</span></div>
+</section>
+<section class="slide  l-bigidea" id="p9">
+  <div class="in">
+  <h2 class="t">積層：把優點疊起來</h2><p class="tvn">Màng ghép: chồng các ưu điểm lên nhau</p>
+  <div class="idea"><b>一種材料不夠，就疊好幾層</b><small>yī zhǒng cáiliào bú gòu, jiù dié hǎo jǐ céng</small><i>Một vật liệu không đủ thì ghép nhiều lớp</i></div>
+  <div class="cards n3">
+    <div class="card" style="--a:#2FA36B">
+      <b>紙</b><small>zhǐ</small><i>Giấy</i>
+      <p>撐住形狀<br>可以印刷</p>
+    </div>
+    <div class="card" style="--a:#2D2A6E">
+      <b>鋁箔</b><small>lǚbó</small><i>Lá nhôm</i>
+      <p>擋光<br>擋氧氣</p>
+    </div>
+    <div class="card" style="--a:#00B8B8">
+      <b>聚乙烯</b><small>jùyǐxī</small><i>Polyetylen (PE)</i>
+      <p>防水<br>可以熱封</p>
+    </div>
+  </div>
+  <div class="banner"><b>保久乳紙盒有六層：紙＋鋁箔＋PE。</b><i>Hộp sữa tiệt trùng UHT có 6 lớp: giấy + lá nhôm + PE.</i></div>
+  </div>
+  <div class="foot"><span>食品科學概論 第 16 週 · A2 · Công nghệ bao bì thực phẩm</span><span>9 / 20</span></div>
+</section>
+<section class="slide dark l-section" id="p10">
+  <div class="in">
+    <p class="num">二</p>
+    <h1>改變包裝裡的空氣</h1>
+    <p class="vn">Thay đổi không khí trong bao bì</p>
+  </div>
+  <div class="foot"><span>食品科學概論 第 16 週 · A2 · Công nghệ bao bì thực phẩm</span><span>10 / 20</span></div>
+</section>
+<section class="slide  l-cards" id="p11">
+  <div class="in">
+  <h2 class="t">氣調包裝：三種氣體</h2><p class="tvn">Bao gói MAP: 3 loại khí</p>
+  <div class="cards n3">
+    <div class="card" style="--a:#D65B5B">
+      <b>氧氣 O₂</b><small>yǎngqì</small><i>Oxy (O₂)</i>
+      <p>讓紅肉保持紅色<br>讓蔬果呼吸<br>但會讓油脂氧化</p>
+    </div>
+    <div class="card" style="--a:#2D2A6E">
+      <b>二氧化碳 CO₂</b><small>èryǎnghuàtàn</small><i>Cacbon đioxit (CO₂)</i>
+      <p>抑制細菌<br>抑制黴菌</p>
+    </div>
+    <div class="card" style="--a:#00B8B8">
+      <b>氮氣 N₂</b><small>dànqì</small><i>Nitơ (N₂)</i>
+      <p>不參加反應<br>把袋子撐滿<br>保護食物不壓碎</p>
+    </div>
+  </div>
+  <div class="banner"><b>氣調包裝：用設計好的氣體換掉空氣。</b><i>Bao gói MAP: thay không khí bằng hỗn hợp khí đã thiết kế.</i></div>
+  </div>
+  <div class="foot"><span>食品科學概論 第 16 週 · A2 · Công nghệ bao bì thực phẩm</span><span>11 / 20</span></div>
+</section>
+<section class="slide  l-cards" id="p12">
+  <div class="in">
+  <h2 class="t">不同食物，不同配方</h2><p class="tvn">Thực phẩm khác nhau, công thức khí khác nhau</p>
+  <div class="cards n4">
+    <div class="card" style="--a:#D65B5B">
+      <b>生鮮紅肉</b><small>shēngxiān hóngròu</small><i>Thịt đỏ tươi</i>
+      <p>高氧 70–80%<br>＋CO₂<br>保持鮮紅色</p>
+    </div>
+    <div class="card" style="--a:#2FA36B">
+      <b>生鮮蔬果</b><small>shēngxiān shūguǒ</small><i>Rau quả tươi</i>
+      <p>低氧 3–5%<br>呼吸變慢<br>氧太低會發酵<br>產生怪味</p>
+    </div>
+    <div class="card" style="--a:#F5A623">
+      <b>熟食、麵包</b><small>shúshí, miànbāo</small><i>Đồ chín, bánh mì</i>
+      <p>CO₂＋N₂<br>幾乎沒有氧<br>防黴、防氧化</p>
+    </div>
+    <div class="card" style="--a:#00B8B8">
+      <b>洋芋片</b><small>yángyùpiàn</small><i>Snack khoai tây</i>
+      <p>只有 N₂<br>防油脂氧化<br>也防壓碎</p>
+    </div>
+  </div>
+  <div class="banner"><b>紅肉要高氧，蔬果要低氧：目的不一樣。</b><i>Thịt đỏ cần nhiều oxy, rau quả cần ít oxy: mục đích khác nhau.</i></div>
+  </div>
+  <div class="foot"><span>食品科學概論 第 16 週 · A2 · Công nghệ bao bì thực phẩm</span><span>12 / 20</span></div>
+</section>
+<section class="slide  l-bigidea" id="p13">
+  <div class="in">
+  <h2 class="t">真空包裝 vs 氣調包裝</h2><p class="tvn">Bao gói chân không và bao gói MAP</p>
+  <div class="idea"><b>真空是抽掉空氣，氣調是換掉空氣</b><small>zhēnkōng shì chōudiào kōngqì, qìtiáo shì huàndiào kōngqì</small><i>Chân không: rút hết khí; MAP: thay khí</i></div>
+  <div class="cards n2">
+    <div class="card" style="--a:#5B4FB8">
+      <b>真空包裝</b><small>zhēnkōng bāozhuāng</small><i>Bao gói chân không</i>
+      <p>膜貼緊，體積小<br>食物會被壓扁<br>紅肉變暗紫，不是壞掉</p>
+    </div>
+    <div class="card" style="--a:#00B8B8">
+      <b>氣調包裝</b><small>qìtiáo bāozhuāng</small><i>Bao gói MAP (điều chỉnh khí)</i>
+      <p>不壓扁食物<br>紅肉保持鮮紅<br>設備和包材比較貴</p>
+    </div>
+  </div>
+  <div class="banner"><b>沒有氧氣：小心厭氧的肉毒桿菌，要冷藏！</b><i>Không có oxy: cẩn thận Clostridium botulinum (kỵ khí), phải bảo quản lạnh!</i></div>
+  </div>
+  <div class="foot"><span>食品科學概論 第 16 週 · A2 · Công nghệ bao bì thực phẩm</span><span>13 / 20</span></div>
+</section>
+<section class="slide  l-cards" id="p14">
+  <div class="in">
+  <h2 class="t">活性包裝和智慧包裝</h2><p class="tvn">Bao bì chủ động và bao bì thông minh</p>
+  <div class="cards n2">
+    <div class="card" style="--a:#2FA36B">
+      <b>活性包裝</b><small>huóxìng bāozhuāng</small><i>Bao bì chủ động (active)</i>
+      <p>包裝會改變裡面的環境<br>脫氧劑：鐵粉吃掉氧氣<br>（月餅袋裡的小包）<br>乾燥劑：吸走水氣<br>乙烯吸收劑：蔬果慢熟</p>
+    </div>
+    <div class="card" style="--a:#F5A623">
+      <b>智慧包裝</b><small>zhìhuì bāozhuāng</small><i>Bao bì thông minh</i>
+      <p>包裝會告訴你資訊<br>TTI：顏色顯示有沒有變熱過<br>新鮮度指示：壞了會變色<br>QR 碼：可以追溯</p>
+    </div>
+  </div>
+  <div class="banner"><b>活性包裝會「做事」，智慧包裝會「說話」。</b><i>Bao bì chủ động thì “làm việc”, bao bì thông minh thì “báo tin”.</i></div>
+  </div>
+  <div class="foot"><span>食品科學概論 第 16 週 · A2 · Công nghệ bao bì thực phẩm</span><span>14 / 20</span></div>
+</section>
+<section class="slide  l-cards" id="p15">
+  <div class="in">
+  <h2 class="t">選包裝：先問它怕什麼</h2><p class="tvn">Chọn bao bì: hỏi trước nó sợ gì</p>
+  <div class="cards n4">
+    <div class="card" style="--a:#F5A623">
+      <b>洋芋片</b><small>yángyùpiàn</small><i>Snack khoai tây</i>
+      <p>怕氧氣、水氣<br>→ 鋁箔積層袋<br>→ 充氮氣</p>
+    </div>
+    <div class="card" style="--a:#2D2A6E">
+      <b>魚露</b><small>yúlù</small><i>Nước mắm</i>
+      <p>很鹹，放很久<br>→ 玻璃瓶<br>不和食物反應</p>
+    </div>
+    <div class="card" style="--a:#00B8B8">
+      <b>保久乳</b><small>bǎojiǔrǔ</small><i>Sữa tiệt trùng UHT</i>
+      <p>怕光、怕細菌<br>→ 無菌紙盒<br>不開可放幾個月</p>
+    </div>
+    <div class="card" style="--a:#2FA36B">
+      <b>生菜</b><small>shēngcài</small><i>Rau sống</i>
+      <p>還在呼吸<br>→ 會透氣的膜<br>氧不能太低</p>
+    </div>
+  </div>
+  <div class="banner"><b>包裝要配合食物，不是越擋越好。</b><i>Bao bì phải hợp với thực phẩm, không phải càng chắn càng tốt.</i></div>
+  </div>
+  <div class="foot"><span>食品科學概論 第 16 週 · A2 · Công nghệ bao bì thực phẩm</span><span>15 / 20</span></div>
+</section>
+<section class="slide dark l-section" id="p16">
+  <div class="in">
+    <p class="num">三</p>
+    <h1>包裝標示和環保</h1>
+    <p class="vn">Ghi nhãn bao bì và bảo vệ môi trường</p>
+  </div>
+  <div class="foot"><span>食品科學概論 第 16 週 · A2 · Công nghệ bao bì thực phẩm</span><span>16 / 20</span></div>
+</section>
+<section class="slide  l-cards" id="p17">
+  <div class="in">
+  <h2 class="t">包裝上一定要寫什麼？</h2><p class="tvn">Trên bao bì bắt buộc phải ghi gì?</p>
+  <div class="cards n2">
+    <div class="card" style="--a:#2D2A6E">
+      <b>產品資訊</b><small>chǎnpǐn zīxùn</small><i>Thông tin sản phẩm</i>
+      <p>品名<br>成分：含量多的寫前面<br>淨重或容量<br>食品添加物名稱<br>原產地</p>
+    </div>
+    <div class="card" style="--a:#D65B5B">
+      <b>安全資訊</b><small>ānquán zīxùn</small><i>Thông tin an toàn</i>
+      <p>有效日期<br>廠商名稱、電話、地址<br>營養標示<br>過敏原<br>基因改造等公告事項</p>
+    </div>
+  </div>
+  <div class="banner"><b>依據：台灣《食品安全衛生管理法》第 22 條。</b><i>Căn cứ: Luật Quản lý vệ sinh an toàn thực phẩm Đài Loan, Điều 22.</i></div>
+  </div>
+  <div class="foot"><span>食品科學概論 第 16 週 · A2 · Công nghệ bao bì thực phẩm</span><span>17 / 20</span></div>
+</section>
+<section class="slide  l-bigidea" id="p18">
+  <div class="in">
+  <h2 class="t">永續：包裝的難題</h2><p class="tvn">Bền vững: bài toán khó của bao bì</p>
+  <div class="idea"><b>越好擋的包裝，越難回收</b><small>yuè hǎo dǎng de bāozhuāng, yuè nán huíshōu</small><i>Bao bì chắn càng tốt thì càng khó tái chế</i></div>
+  <div class="cards n3">
+    <div class="card" style="--a:#2FA36B">
+      <b>單一材質</b><small>dānyī cáizhí</small><i>Đơn vật liệu (mono)</i>
+      <p>全部用 PE 或 PP<br>整包都能回收</p>
+    </div>
+    <div class="card" style="--a:#F5A623">
+      <b>減量</b><small>jiǎnliàng</small><i>Giảm lượng</i>
+      <p>膜做薄，少用外盒<br>減量比回收優先</p>
+    </div>
+    <div class="card" style="--a:#D65B5B">
+      <b>生物可分解</b><small>shēngwù kě fēnjiě</small><i>Phân hủy sinh học</i>
+      <p>PLA 要工業堆肥<br>丟在野外分解很慢</p>
+    </div>
+  </div>
+  <div class="banner"><b>別忘了：包裝也能減少食物浪費。</b><i>Đừng quên: bao bì cũng giúp giảm lãng phí thực phẩm.</i></div>
+  </div>
+  <div class="foot"><span>食品科學概論 第 16 週 · A2 · Công nghệ bao bì thực phẩm</span><span>18 / 20</span></div>
+</section>
+<section class="slide  l-numbered" id="p19">
+  <div class="in">
+  <h2 class="t">今天的重點</h2><p class="tvn">Điểm chính hôm nay</p>
+    <ol class="numbered">
+      <li style="--a:#2D2A6E"><span class="n">1</span><span><b>玻璃、金屬全擋；紙幾乎不擋</b><i>Thủy tinh, kim loại chắn hết; giấy gần như không chắn</i></span></li>
+      <li style="--a:#2FA36B"><span class="n">2</span><span><b>積層：把不同材料的優點疊起來</b><i>Màng ghép: chồng ưu điểm của nhiều vật liệu</i></span></li>
+      <li style="--a:#00B8B8"><span class="n">3</span><span><b>紅肉高氧，蔬果低氧，洋芋片充氮</b><i>Thịt đỏ: nhiều oxy; rau quả: ít oxy; snack: bơm nitơ</i></span></li>
+      <li style="--a:#F5A623"><span class="n">4</span><span><b>阻隔越好，越難回收</b><i>Chắn càng tốt thì càng khó tái chế</i></span></li>
+    </ol>
+    
+  <div class="banner"><b>回家：看一包零食，它用什麼包裝？</b><i>Về nhà: xem 1 gói snack — nó dùng bao bì gì?</i></div>
+  </div>
+  <div class="foot"><span>食品科學概論 第 16 週 · A2 · Công nghệ bao bì thực phẩm</span><span>19 / 20</span></div>
+</section>
+<section class="slide dark l-end" id="p20">
+  <div class="in">
+    <h1>謝謝</h1>
+    <p class="vn">Cảm ơn các bạn!</p>
+    <p class="meta">下星期：食品安全、法規與品質管制 (Tuần sau: An toàn TP, pháp quy, kiểm soát CL)</p>
+  </div>
+  <div class="foot"><span>食品科學概論 第 16 週 · A2 · Công nghệ bao bì thực phẩm</span><span>20 / 20</span></div>
+</section>
+<div class="ctl"><button id="prev" aria-label="上一頁">‹</button><button id="next" aria-label="下一頁">›</button></div>
+<script>
+(function(){
+  var slides=[].slice.call(document.querySelectorAll('.slide')),pg=document.getElementById('pg'),cur=0;
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){cur=slides.indexOf(e.target);pg.textContent=(cur+1)+' / '+slides.length;}})},{rootMargin:'-45% 0px -45% 0px'});
+  slides.forEach(function(s){io.observe(s)});
+  function go(d){var n=Math.max(0,Math.min(slides.length-1,cur+d));slides[n].scrollIntoView({behavior:'smooth',block:'start'});}
+  document.getElementById('prev').onclick=function(){go(-1)};
+  document.getElementById('next').onclick=function(){go(1)};
+  document.addEventListener('keydown',function(e){
+    if(e.target.tagName==='IFRAME')return;
+    if(e.key==='ArrowRight'||e.key==='PageDown'||e.key===' '){e.preventDefault();go(1);}
+    else if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();go(-1);}
+  });
+})();
+</script>
+</body>
+</html>
