@@ -179,6 +179,55 @@ footer{text-align:center;color:var(--muted);font-size:12.5px;padding:24px}
   var SERIES = D.series;
   var $ = function (s) { return document.querySelector(s); };
 
+  /* ---------- 學習歷程記錄（Supabase） ----------
+     只在 lesson.js 注入 D.track = {url, key} 的週次啟用（lib/tracking.json 的 weeks）；
+     其他週 TRACK.on 為 false，send() 是空函式，教材行為完全不變。
+     只送「學號代碼」與互動事件，不送姓名。送失敗就丟掉，不重試、不阻擋教材。 */
+  var CTX = { mod: null, bi: 0 };   // 目前正在渲染的模組 id 與區塊序號（render 是同步的）
+  var TRACK = (function () {
+    var cfg = D.track;
+    var noop = function () {};
+    if (!cfg || !cfg.url || !cfg.key) return { on: false, send: noop, flush: noop, code: function () { return ""; }, setCode: noop };
+    var KEY = "ifs_code", DKEY = "ifs_device";
+    var rnd = function () { return Math.random().toString(36).slice(2, 10); };
+    var sid = rnd() + Date.now().toString(36);
+    // device_id：同一支手機／瀏覽器跨次開頁不變。學生後來才填學號代碼時，先前的 anon 事件可靠它回接。
+    var did = "";
+    try { did = localStorage.getItem(DKEY) || ""; if (!did) { did = "d" + rnd() + rnd(); localStorage.setItem(DKEY, did); } } catch (e) { did = "d" + rnd(); }
+    var q = [], timer = null;
+    function code() { try { return (localStorage.getItem(KEY) || "").trim(); } catch (e) { return ""; } }
+    function setCode(v) { try { localStorage.setItem(KEY, (v || "").trim().slice(0, 20)); } catch (e) {} }
+    function cut(s, n) { return s == null ? null : String(s).slice(0, n); }
+    // 欄位長度與 payload 大小在前端先截到資料表 CHECK 的上限：PostgREST 批次 INSERT 是原子的，
+    // 一筆違反 CHECK 整批都會被拒，而我們失敗即丟，會靜默掉整個 4 秒窗口。
+    function send(event, mod, block, payload) {
+      var p = payload || {};
+      var ps = JSON.stringify(p);
+      if (ps.length > 1800) p = { trunc: true, keys: Object.keys(p).slice(0, 10) };
+      q.push({
+        student_code: cut(code(), 20) || "anon", device_id: cut(did, 40), week: D.week || 0,
+        module_id: cut(mod, 30), block_type: cut(block, 10), event: cut(event, 30),
+        payload: p, session_id: cut(sid, 40), build: cut(D.build, 16), client_ts: new Date().toISOString(),
+      });
+      if (q.length >= 40) flush();
+      else if (!timer) timer = setTimeout(flush, 4000);
+    }
+    function flush() {
+      if (timer) { clearTimeout(timer); timer = null; }
+      if (!q.length) return;
+      var body = JSON.stringify(q.splice(0, 50));
+      try {
+        fetch(cfg.url.replace(/\/+$/, "") + "/rest/v1/ifs_lesson_events", {
+          method: "POST", keepalive: true, body: body,
+          headers: { "Content-Type": "application/json", "apikey": cfg.key, "Prefer": "return=minimal" },
+        }).catch(noop);
+      } catch (e) { /* 舊瀏覽器沒有 fetch：不記錄 */ }
+      if (q.length) timer = setTimeout(flush, 1000);
+    }
+    window.addEventListener("pagehide", flush);
+    return { on: true, send: send, flush: flush, code: code, setCode: setCode };
+  })();
+
   function el(tag, cls, html) {
     var e = document.createElement(tag);
     if (cls) e.className = cls;
@@ -217,7 +266,10 @@ footer{text-align:center;color:var(--muted);font-size:12.5px;padding:24px}
         '<div class="tap">▸ 點我看解釋</div></div>' +
         '<div class="face back"><div class="cbar" style="background:' + c + '"></div>' +
         '<p>' + d.b + '</p></div></div>';
-      card.onclick = function () { card.classList.toggle("on"); };
+      var mod = CTX.mod, bi = CTX.bi;
+      card.onclick = function () {
+        if (card.classList.toggle("on")) TRACK.send("flip_open", mod, "flips", { b: bi, i: i, t: d.t });
+      };
       g.appendChild(card);
     });
     f.appendChild(g); return f;
@@ -234,9 +286,11 @@ footer{text-align:center;color:var(--muted);font-size:12.5px;padding:24px}
         '<span class="tag">' + (t.tag || "") + '</span><span class="chev">›</span></button>' +
         '<div class="body">' + listHtml(t.body) + res + '</div>';
       var body = box.querySelector(".body");
+      var mod = CTX.mod, bi = CTX.bi;
       box.querySelector("button").onclick = function () {
         var on = box.classList.toggle("on");
         if (!on) { body.style.maxHeight = "0px"; return; }
+        TRACK.send("exp_open", mod, "exp", { b: bi, i: i, h: t.h });
         // 用實際內容高度展開，避免長段落被固定 max-height 截掉。
         // 必須先解除 max-height 再量：在 max-height:0 的狀態下量 scrollHeight 會得到 0，
         // 面板就只會開一條縫（實測過）。量完歸零並強制重排，transition 才有起點。
@@ -320,20 +374,28 @@ footer{text-align:center;color:var(--muted);font-size:12.5px;padding:24px}
     var pool = el("div", "pool"), targets = el("div", "targets");
     var pairs = b.pairs;
     var order = pairs.slice().sort(function () { return Math.random() - 0.5; });
-    var selected = null, solved = 0;
+    var selected = null, solved = 0, errors = 0, t0 = null;
+    var mod = CTX.mod, bi = CTX.bi;
     var msg = el("div");
     msg.style.cssText = "margin-top:14px;font-weight:700;color:var(--green)";
 
     function tryMatch(slot, key) {
       if (slot.classList.contains("ok")) return;
+      if (t0 === null) t0 = Date.now();
       if (slot.dataset.k === key) {
         slot.classList.add("ok"); slot.classList.remove("bad");
         slot.querySelector(".drop").textContent = key;
         var chip = pool.querySelector('.chip[data-k="' + key + '"]');
         chip.classList.add("used"); chip.classList.remove("sel");
         selected = null; solved++;
-        if (solved === pairs.length) msg.textContent = b.done || "✓ 全部答對！";
+        TRACK.send("match_ok", mod, "match", { b: bi, label: key });
+        if (solved === pairs.length) {
+          msg.textContent = b.done || "✓ 全部答對！";
+          TRACK.send("match_done", mod, "match", { b: bi, n: pairs.length, errors: errors, ms: Date.now() - t0 });
+        }
       } else {
+        errors++;
+        TRACK.send("match_bad", mod, "match", { b: bi, label: key, slot: slot.dataset.k });
         slot.classList.add("bad");
         setTimeout(function () { slot.classList.remove("bad"); }, 350);
       }
@@ -393,7 +455,17 @@ footer{text-align:center;color:var(--muted);font-size:12.5px;padding:24px}
       '<button class="btn copyrc" style="margin-top:8px">📋 複製結果代碼</button></div>' +
       '<button class="btn ghost">重新測驗</button>';
 
-    var answered = 0, score = 0, picks = [];
+    var answered = 0, score = 0, picks = [], qt0 = null, attempt = 0;
+    var mod = CTX.mod, bi = CTX.bi;
+    // 測驗的學號欄與頁首的學號代碼同步（兩邊填任一邊都行）
+    var qidInput = head.querySelector(".qid");
+    if (TRACK.on) {
+      if (TRACK.code()) qidInput.value = TRACK.code();
+      qidInput.addEventListener("change", function () {
+        TRACK.setCode(qidInput.value);
+        var top = $("#ifs-code"); if (top) top.value = TRACK.code();
+      });
+    }
     function updateProg() {
       head.querySelector(".qprog").textContent = "進度 " + answered + " / " + n;
       head.querySelector(".qscore").textContent = "得分 " + score;
@@ -419,6 +491,8 @@ footer{text-align:center;color:var(--muted);font-size:12.5px;padding:24px}
       var code = "FSQ1." + body + "." + checksum(body);
       sb.querySelector(".rcode").value = code;
       sb.querySelector(".rmsg").textContent = sid ? "" : "⚠ 尚未填學號 —— 請回到測驗上方填入學號後重新測驗，否則老師無法登記成績。";
+      TRACK.send("quiz_done", mod, "quiz", { b: bi, attempt: attempt, score: score, n: n, picks: picks, ms: qt0 ? Date.now() - qt0 : null });
+      TRACK.flush();
 
       sb.classList.add("show");
       sb.scrollIntoView({ behavior: "smooth" });
@@ -426,7 +500,9 @@ footer{text-align:center;color:var(--muted);font-size:12.5px;padding:24px}
     function pick(qel, item, oi) {
       if (qel.dataset.done === "1") return;
       qel.dataset.done = "1"; answered++;
+      if (qt0 === null) qt0 = Date.now();
       picks[parseInt(qel.dataset.qi, 10)] = oi;
+      TRACK.send("quiz_answer", mod, "quiz", { b: bi, attempt: attempt, qi: parseInt(qel.dataset.qi, 10), pick: oi, ok: oi === item.a });
       qel.querySelectorAll(".opt").forEach(function (btn, i) {
         btn.classList.add("dim");
         if (i === item.a) btn.classList.add("correct");
@@ -439,7 +515,7 @@ footer{text-align:center;color:var(--muted);font-size:12.5px;padding:24px}
       if (answered === n) finish();
     }
     function build() {
-      box.innerHTML = ""; answered = 0; score = 0; picks = []; updateProg();
+      box.innerHTML = ""; answered = 0; score = 0; picks = []; qt0 = null; attempt++; updateProg();
       sb.classList.remove("show");
       items.forEach(function (item, qi) {
         var qel = el("div", "q"); qel.dataset.done = "0"; qel.dataset.qi = qi;
@@ -472,12 +548,17 @@ footer{text-align:center;color:var(--muted);font-size:12.5px;padding:24px}
 
   /* ---------- 組裝 ---------- */
   var nav = $("#nav"), main = $("#main");
+  var curMod = D.modules.length ? D.modules[0].id : null, modT0 = Date.now();
   function switchMod(id, btn) {
     document.querySelectorAll(".module").forEach(function (m) { m.classList.remove("active"); });
     document.getElementById(id).classList.add("active");
     nav.querySelectorAll("button").forEach(function (x) { x.classList.remove("active"); });
     btn.classList.add("active");
     window.scrollTo({ top: 0, behavior: "smooth" });
+    if (id !== curMod) {
+      TRACK.send("module_view", id, null, { from: curMod, ms: Date.now() - modT0 });
+      curMod = id; modT0 = Date.now();
+    }
   }
   D.modules.forEach(function (m, i) {
     var btn = el("button", i === 0 ? "active" : "", m.nav);
@@ -488,13 +569,44 @@ footer{text-align:center;color:var(--muted);font-size:12.5px;padding:24px}
     sec.id = m.id;
     sec.appendChild(el("div", "lead",
       '<div class="kicker">' + m.kicker + '</div><h2>' + m.h2 + '</h2><p>' + m.lead + '</p>'));
-    m.blocks.forEach(function (b) {
+    m.blocks.forEach(function (b, bi) {
       var render = BLOCKS[b.type];
       if (!render) { console.error("未知區塊型別:", b.type); return; }
+      CTX.mod = m.id; CTX.bi = bi;
       sec.appendChild(render(b));
     });
     main.appendChild(sec);
   });
+
+  /* ---------- 學號代碼列（只在啟用記錄的週出現） ---------- */
+  if (TRACK.on) {
+    var bar = el("div", "codebar");
+    bar.style.cssText = "display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:10px 0 4px;font-size:14px";
+    bar.innerHTML = '<label for="ifs-code" style="font-weight:700">學號代碼</label>' +
+      '<input id="ifs-code" maxlength="20" placeholder="例：S001" style="width:120px;padding:6px 10px;border:1.5px solid var(--line,#ccc);border-radius:8px;font-size:14px">' +
+      '<span style="opacity:.75">只記錄你的學習歷程（翻卡、配對、測驗），不需要姓名。</span>';
+    nav.parentNode.insertBefore(bar, nav);
+    var inp = bar.querySelector("#ifs-code");
+    inp.value = TRACK.code();
+    inp.addEventListener("change", function () {
+      TRACK.setCode(inp.value);
+      document.querySelectorAll(".qid").forEach(function (x) { x.value = TRACK.code(); });
+      TRACK.send("code_set", null, null, {});
+    });
+    TRACK.send("session_start", curMod, null, {
+      device: /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent || "") ? "mobile" : "desktop",
+      w: window.innerWidth, build: D.build || null,
+    });
+    // 停留時間以「頁面可見」為準：切到背景就結算一段 module_leave，回來重新計時。
+    // 手機瀏覽器殺分頁常不觸發 pagehide，所以以 visibilitychange→hidden 為主。
+    document.addEventListener("visibilitychange", function () {
+      if (document.visibilityState === "hidden") {
+        TRACK.send("module_leave", curMod, null, { ms: Date.now() - modT0 }); TRACK.flush();
+      } else {
+        modT0 = Date.now();
+      }
+    });
+  }
 })();
 </script>
 </body>
