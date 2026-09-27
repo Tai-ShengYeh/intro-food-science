@@ -157,6 +157,9 @@ footer{text-align:center;color:var(--muted);font-size:12.5px;padding:24px}
 .note b{color:var(--primary)}
 .note.key{background:#effaf3;border-left-color:var(--green)}
 .note.warn{background:#fdeeee;border-left-color:var(--red)}
+/* 國合班 A2 互動練習：拼音與越南文（build_a2.js 產生的內容才會用到） */
+.py{display:block;font-size:.78em;font-weight:500;color:var(--mid);margin-top:2px}
+.vn{display:block;font-size:.88em;font-weight:500;color:var(--secondary);margin-top:2px}
 </style>
 </head>
 <body>
@@ -178,6 +181,9 @@ footer{text-align:center;color:var(--muted);font-size:12.5px;padding:24px}
   var D = window.__LESSON__;
   var SERIES = D.series;
   var $ = function (s) { return document.querySelector(s); };
+  // 國合班 A2 版（D.a2）：介面文字加越南文；一般班 U() 只回中文，畫面與原本完全相同
+  var A2 = !!D.a2;
+  function U(zh, vn) { return A2 ? zh + " " + vn : zh; }
 
   /* ---------- 學習歷程記錄（Supabase） ----------
      只在 lesson.js 注入 D.track = {url, key} 的週次啟用（lib/tracking.json 的 weeks）；
@@ -263,7 +269,7 @@ footer{text-align:center;color:var(--muted);font-size:12.5px;padding:24px}
         '<div class="flip-in">' +
         '<div class="face front"><div class="cbar" style="background:' + c + '"></div>' +
         '<div class="t">' + d.t + '</div><div class="en">' + (d.en || "") + '</div>' +
-        '<div class="tap">▸ 點我看解釋</div></div>' +
+        '<div class="tap">▸ ' + U("點我看解釋", "Chạm để xem") + '</div></div>' +
         '<div class="face back"><div class="cbar" style="background:' + c + '"></div>' +
         '<p>' + d.b + '</p></div></div>';
       var mod = CTX.mod, bi = CTX.bi;
@@ -390,7 +396,7 @@ footer{text-align:center;color:var(--muted);font-size:12.5px;padding:24px}
         selected = null; solved++;
         TRACK.send("match_ok", mod, "match", { b: bi, label: key });
         if (solved === pairs.length) {
-          msg.textContent = b.done || "✓ 全部答對！";
+          msg.textContent = b.done || U("✓ 全部答對！", "Đúng hết!");
           TRACK.send("match_done", mod, "match", { b: bi, n: pairs.length, errors: errors, ms: Date.now() - t0 });
         }
       } else {
@@ -413,7 +419,7 @@ footer{text-align:center;color:var(--muted);font-size:12.5px;padding:24px}
     });
     pairs.forEach(function (q) {
       var s = el("div", "slot"); s.dataset.k = q.label;
-      s.innerHTML = '<div class="drop">拖到這裡</div><div class="desc">' + q.desc + '</div>';
+      s.innerHTML = '<div class="drop">' + U("拖到這裡", "Kéo vào đây") + '</div><div class="desc">' + q.desc + '</div>';
       s.addEventListener("dragover", function (e) { e.preventDefault(); });
       s.addEventListener("drop", function (e) { e.preventDefault(); tryMatch(s, e.dataTransfer.getData("k")); });
       s.onclick = function () { if (selected) tryMatch(s, selected.dataset.k); };
@@ -438,22 +444,22 @@ footer{text-align:center;color:var(--muted);font-size:12.5px;padding:24px}
     var head = el("div", "quiz-head");
     head.innerHTML =
       '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">' +
-      '<input class="qid" placeholder="學號（交成績必填）" style="flex:1;min-width:130px;padding:8px 10px;border:1.5px solid var(--line,#ccc);border-radius:8px;font-size:15px">' +
-      '<input class="qname" placeholder="姓名" style="flex:1;min-width:100px;padding:8px 10px;border:1.5px solid var(--line,#ccc);border-radius:8px;font-size:15px"></div>' +
+      '<input class="qid" placeholder="' + U("學號（交成績必填）", "Mã số SV") + '" style="flex:1;min-width:130px;padding:8px 10px;border:1.5px solid var(--line,#ccc);border-radius:8px;font-size:15px">' +
+      '<input class="qname" placeholder="' + U("姓名", "Họ tên") + '" style="flex:1;min-width:100px;padding:8px 10px;border:1.5px solid var(--line,#ccc);border-radius:8px;font-size:15px"></div>' +
       '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">' +
-      '<strong class="qprog">進度 0 / ' + n + '</strong>' +
-      '<span class="qscore" style="color:var(--secondary);font-weight:800">得分 0</span></div>' +
+      '<strong class="qprog">' + U("進度", "Tiến độ") + ' 0 / ' + n + '</strong>' +
+      '<span class="qscore" style="color:var(--secondary);font-weight:800">' + U("得分", "Điểm") + ' 0</span></div>' +
       '<div class="pbar"><div class="pfill"></div></div>';
     var box = el("div");
     var sb = el("div", "scorebox");
-    sb.innerHTML = '<div>你的成績</div><div class="big"><span class="fscore">0</span> / ' + n + '</div>' +
+    sb.innerHTML = '<div>' + U("你的成績", "Điểm của bạn") + '</div><div class="big"><span class="fscore">0</span> / ' + n + '</div>' +
       '<div class="smsg" style="margin:8px 0 16px"></div>' +
       '<div class="rcwrap" style="margin:0 auto 16px;max-width:560px;text-align:left">' +
-      '<div style="font-weight:700;margin-bottom:6px">結果代碼（請複製後，貼到老師指定的表單或訊息）</div>' +
+      '<div style="font-weight:700;margin-bottom:6px">' + U("結果代碼（請複製後，貼到老師指定的表單或訊息）", "— Mã kết quả: sao chép và gửi cho thầy/cô") + '</div>' +
       '<textarea class="rcode" readonly rows="3" style="width:100%;box-sizing:border-box;font-family:monospace;font-size:12px;padding:8px;border:1.5px solid var(--line,#ccc);border-radius:8px;resize:none"></textarea>' +
       '<div class="rmsg" style="font-size:13px;color:#B34700;margin-top:4px"></div>' +
-      '<button class="btn copyrc" style="margin-top:8px">📋 複製結果代碼</button></div>' +
-      '<button class="btn ghost">重新測驗</button>';
+      '<button class="btn copyrc" style="margin-top:8px">📋 ' + U("複製結果代碼", "Sao chép mã") + '</button></div>' +
+      '<button class="btn ghost">' + U("重新測驗", "Làm lại") + '</button>';
 
     var answered = 0, score = 0, picks = [], qt0 = null, attempt = 0;
     var mod = CTX.mod, bi = CTX.bi;
@@ -467,30 +473,30 @@ footer{text-align:center;color:var(--muted);font-size:12.5px;padding:24px}
       });
     }
     function updateProg() {
-      head.querySelector(".qprog").textContent = "進度 " + answered + " / " + n;
-      head.querySelector(".qscore").textContent = "得分 " + score;
+      head.querySelector(".qprog").textContent = U("進度", "Tiến độ") + " " + answered + " / " + n;
+      head.querySelector(".qscore").textContent = U("得分", "Điểm") + " " + score;
       head.querySelector(".pfill").style.width = (answered / n * 100) + "%";
     }
     function finish() {
       sb.querySelector(".fscore").textContent = score;
       var pct = score / n, m;
-      if (score === n) m = "滿分！你完全掌握本週重點 🎉";
-      else if (pct >= 0.8) m = "很棒！觀念相當扎實。";
-      else if (pct >= 0.6) m = "不錯，再複習幾個弱點就更好。";
-      else m = "建議回到前面單元再看一次翻卡與展開內容。";
+      if (score === n) m = U("滿分！你完全掌握本週重點 🎉", "Điểm tuyệt đối!");
+      else if (pct >= 0.8) m = U("很棒！觀念相當扎實。", "Rất tốt!");
+      else if (pct >= 0.6) m = U("不錯，再複習幾個弱點就更好。", "Khá tốt, ôn lại vài chỗ nữa nhé.");
+      else m = U("建議回到前面單元再看一次翻卡與展開內容。", "Hãy xem lại các phần phía trước.");
       sb.querySelector(".smsg").textContent = m;
 
       var sid = head.querySelector(".qid").value.trim();
       var sname = head.querySelector(".qname").value.trim();
       var korr = items.map(function (item, i) { return picks[i] === item.a ? 1 : 0; }).join("");
       var payload = JSON.stringify({
-        w: D.week || 0, id: sid, nm: sname, s: score, n: n,
+        w: D.week || 0, c: A2 ? "a2" : undefined, id: sid, nm: sname, s: score, n: n,
         a: picks, k: korr, t: new Date().toISOString().slice(0, 16),
       });
       var body = b64utf8(payload);
       var code = "FSQ1." + body + "." + checksum(body);
       sb.querySelector(".rcode").value = code;
-      sb.querySelector(".rmsg").textContent = sid ? "" : "⚠ 尚未填學號 —— 請回到測驗上方填入學號後重新測驗，否則老師無法登記成績。";
+      sb.querySelector(".rmsg").textContent = sid ? "" : U("⚠ 尚未填學號 —— 請回到測驗上方填入學號後重新測驗，否則老師無法登記成績。", "Chưa nhập mã số SV: hãy nhập ở trên rồi làm lại.");
       TRACK.send("quiz_done", mod, "quiz", { b: bi, attempt: attempt, score: score, n: n, picks: picks, ms: qt0 ? Date.now() - qt0 : null });
       TRACK.flush();
 
@@ -509,8 +515,8 @@ footer{text-align:center;color:var(--muted);font-size:12.5px;padding:24px}
         if (i === oi && oi !== item.a) btn.classList.add("wrong");
       });
       var fb = qel.querySelector(".fb");
-      if (oi === item.a) { score++; fb.classList.add("good"); fb.innerHTML = "✓ 正確！" + item.e; }
-      else { fb.classList.add("no"); fb.innerHTML = "✗ 正解：" + item.o[item.a] + "。" + item.e; }
+      if (oi === item.a) { score++; fb.classList.add("good"); fb.innerHTML = U("✓ 正確！", "Đúng!") + item.e; }
+      else { fb.classList.add("no"); fb.innerHTML = U("✗ 正解：", "Sai. Đáp án:") + item.o[item.a] + "。" + item.e; }
       fb.classList.add("show"); updateProg();
       if (answered === n) finish();
     }
@@ -519,7 +525,7 @@ footer{text-align:center;color:var(--muted);font-size:12.5px;padding:24px}
       sb.classList.remove("show");
       items.forEach(function (item, qi) {
         var qel = el("div", "q"); qel.dataset.done = "0"; qel.dataset.qi = qi;
-        qel.innerHTML = '<div class="qn">第 ' + (qi + 1) + ' 題</div><div class="qt">' + item.q + '</div>';
+        qel.innerHTML = '<div class="qn">第 ' + (qi + 1) + ' 題' + (A2 ? ' · Câu ' + (qi + 1) : '') + '</div><div class="qt">' + item.q + '</div>';
         item.o.forEach(function (opt, oi) {
           var btn = el("button", "opt"); btn.textContent = opt;
           btn.onclick = function () { pick(qel, item, oi); };
@@ -533,7 +539,7 @@ footer{text-align:center;color:var(--muted);font-size:12.5px;padding:24px}
       var ta = sb.querySelector(".rcode");
       ta.select(); ta.setSelectionRange(0, 99999);
       var btn = this;
-      function ok() { btn.textContent = "✓ 已複製，請貼給老師"; setTimeout(function () { btn.textContent = "📋 複製結果代碼"; }, 2000); }
+      function ok() { btn.textContent = U("✓ 已複製，請貼給老師", "Đã sao chép"); setTimeout(function () { btn.textContent = "📋 " + U("複製結果代碼", "Sao chép mã"); }, 2000); }
       if (navigator.clipboard && navigator.clipboard.writeText)
         navigator.clipboard.writeText(ta.value).then(ok, function () { document.execCommand("copy"); ok(); });
       else { document.execCommand("copy"); ok(); }
