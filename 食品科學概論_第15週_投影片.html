@@ -53,10 +53,16 @@ i{font-style:italic}
 .star b{font-size:clamp(17px,2.1vw,21px)}
 .star i{font-size:14px}
 .vocab{display:grid;gap:8px;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr))}
-.vocab .w{background:var(--white);border:1px solid var(--line);border-left:8px solid var(--teal);padding:10px 14px;display:grid;grid-template-columns:auto 1fr;gap:0 14px;align-items:center}
-.vocab .w b{color:var(--navy);font-size:clamp(20px,2.6vw,26px);grid-row:span 2}
-.vocab .w small{color:var(--grey);font-size:13px}
-.vocab .w i{color:var(--tealdk);font-size:15px}
+.vocab .w{background:var(--white);border:1px solid var(--line);border-left:8px solid var(--teal);padding:10px 14px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 12px;align-items:center}
+.vocab .w b{color:var(--navy);font-size:clamp(20px,2.6vw,26px);grid-column:1;grid-row:1}
+.vocab .w small{color:#67677F;font-size:13px;grid-column:1;grid-row:2}
+.vocab .w i{color:var(--tealdk);font-size:15px;grid-column:1;grid-row:3;overflow-wrap:anywhere}
+.vocab-hint{color:var(--tealdkr);font-size:14px;line-height:1.5}
+.vocab-hint span{color:var(--tealdk)}
+.vocab-speak{grid-column:2;grid-row:1 / span 3;min-height:44px;min-width:80px;padding:8px 10px;border:1px solid var(--navy);border-radius:8px;background:var(--white);color:var(--navy);font:inherit;font-size:14px;font-weight:600;cursor:pointer;white-space:nowrap}
+.vocab-speak:hover,.vocab-speak[aria-pressed="true"]{background:var(--navy);color:var(--white)}
+.vocab-speak:focus-visible{outline:3px solid var(--tealdk);outline-offset:3px}
+.vocab-speak:disabled{opacity:.55;cursor:not-allowed}
 .flow{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;align-items:center}
 .flow .step{flex:1 1 180px;max-width:260px;background:var(--white);border:2.5px solid var(--a);border-radius:12px;padding:14px 10px;text-align:center;display:grid;gap:2px}
 .flow .step b{color:var(--a);font-size:clamp(20px,2.6vw,26px)}
@@ -100,7 +106,7 @@ i{font-style:italic}
   .flow .arrow{transform:rotate(90deg);flex-basis:100%;text-align:center}
 }
 @media print{
-  .top,.ctl{display:none}
+  .top,.ctl,.vocab-speak,.vocab-hint{display:none}
   .slide{min-height:auto;page-break-after:always;padding-top:20px}
 }
 </style>
@@ -132,17 +138,18 @@ i{font-style:italic}
 <section class="slide  l-vocab" id="p3">
   <div class="in">
   <h2 class="t">生詞 (10 個)</h2><p class="tvn">Từ mới (10 từ)</p>
+    <p class="vocab-hint" role="status" aria-live="polite">按「▶ 發音」，聽中文，再跟著唸。<br><span lang="vi">Nhấn ▶ để nghe tiếng Trung, rồi đọc theo.</span></p>
     <div class="vocab">
-      <div class="w"><b>防腐劑</b><small>fángfǔjì</small><i>chất bảo quản</i></div>
-      <div class="w"><b>抗氧化劑</b><small>kàngyǎnghuàjì</small><i>chất chống oxy hóa</i></div>
-      <div class="w"><b>乳化劑</b><small>rǔhuàjì</small><i>chất nhũ hóa</i></div>
-      <div class="w"><b>著色劑</b><small>zhuósèjì</small><i>chất tạo màu</i></div>
-      <div class="w"><b>甜味劑</b><small>tiánwèijì</small><i>chất tạo ngọt</i></div>
-      <div class="w"><b>黏稠劑</b><small>niánchóujì</small><i>chất làm dày (làm đặc)</i></div>
-      <div class="w"><b>保色劑</b><small>bǎosèjì</small><i>chất giữ màu</i></div>
-      <div class="w"><b>亞硝酸鹽</b><small>yàxiāosuānyán</small><i>nitrit</i></div>
-      <div class="w"><b>安全係數</b><small>ānquán xìshù</small><i>hệ số an toàn</i></div>
-      <div class="w"><b>成分表</b><small>chéngfènbiǎo</small><i>bảng thành phần</i></div>
+      <div class="w"><b>防腐劑</b><small>fángfǔjì</small><i>chất bảo quản</i><button class="vocab-speak" type="button" data-word="防腐劑" aria-label="播放「防腐劑」的中文發音" aria-pressed="false">▶ 發音</button></div>
+      <div class="w"><b>抗氧化劑</b><small>kàngyǎnghuàjì</small><i>chất chống oxy hóa</i><button class="vocab-speak" type="button" data-word="抗氧化劑" aria-label="播放「抗氧化劑」的中文發音" aria-pressed="false">▶ 發音</button></div>
+      <div class="w"><b>乳化劑</b><small>rǔhuàjì</small><i>chất nhũ hóa</i><button class="vocab-speak" type="button" data-word="乳化劑" aria-label="播放「乳化劑」的中文發音" aria-pressed="false">▶ 發音</button></div>
+      <div class="w"><b>著色劑</b><small>zhuósèjì</small><i>chất tạo màu</i><button class="vocab-speak" type="button" data-word="著色劑" aria-label="播放「著色劑」的中文發音" aria-pressed="false">▶ 發音</button></div>
+      <div class="w"><b>甜味劑</b><small>tiánwèijì</small><i>chất tạo ngọt</i><button class="vocab-speak" type="button" data-word="甜味劑" aria-label="播放「甜味劑」的中文發音" aria-pressed="false">▶ 發音</button></div>
+      <div class="w"><b>黏稠劑</b><small>niánchóujì</small><i>chất làm dày (làm đặc)</i><button class="vocab-speak" type="button" data-word="黏稠劑" aria-label="播放「黏稠劑」的中文發音" aria-pressed="false">▶ 發音</button></div>
+      <div class="w"><b>保色劑</b><small>bǎosèjì</small><i>chất giữ màu</i><button class="vocab-speak" type="button" data-word="保色劑" aria-label="播放「保色劑」的中文發音" aria-pressed="false">▶ 發音</button></div>
+      <div class="w"><b>亞硝酸鹽</b><small>yàxiāosuānyán</small><i>nitrit</i><button class="vocab-speak" type="button" data-word="亞硝酸鹽" aria-label="播放「亞硝酸鹽」的中文發音" aria-pressed="false">▶ 發音</button></div>
+      <div class="w"><b>安全係數</b><small>ānquán xìshù</small><i>hệ số an toàn</i><button class="vocab-speak" type="button" data-word="安全係數" aria-label="播放「安全係數」的中文發音" aria-pressed="false">▶ 發音</button></div>
+      <div class="w"><b>成分表</b><small>chéngfènbiǎo</small><i>bảng thành phần</i><button class="vocab-speak" type="button" data-word="成分表" aria-label="播放「成分表」的中文發音" aria-pressed="false">▶ 發音</button></div>
     </div>
   <div class="banner"><b>ADI：每日可接受攝取量。</b><i>ADI: lượng ăn vào hàng ngày chấp nhận được.</i></div>
   </div>
@@ -468,10 +475,63 @@ i{font-style:italic}
   document.getElementById('prev').onclick=function(){go(-1)};
   document.getElementById('next').onclick=function(){go(1)};
   document.addEventListener('keydown',function(e){
-    if(e.target.tagName==='IFRAME')return;
+    if(e.target.closest('button,a,input,textarea,select,[contenteditable]')||e.target.tagName==='IFRAME')return;
     if(e.key==='ArrowRight'||e.key==='PageDown'||e.key===' '){e.preventDefault();go(1);}
     else if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();go(-1);}
   });
+})();
+(function(){
+  var buttons=[].slice.call(document.querySelectorAll('.vocab-speak'));
+  if(!buttons.length)return;
+  var synth=window.speechSynthesis,active=null,voices=[],timer=null;
+  function status(button,message){button.closest('.l-vocab').querySelector('.vocab-hint').textContent=message;}
+  if(!synth||!window.SpeechSynthesisUtterance){
+    buttons.forEach(function(button){button.disabled=true;status(button,'這個瀏覽器無法播放發音，請換瀏覽器再試。 Trình duyệt này không hỗ trợ phát âm. Hãy thử trình duyệt khác.');});
+    return;
+  }
+  function loadVoices(){voices=synth.getVoices();}
+  loadVoices();
+  synth.addEventListener('voiceschanged',loadVoices);
+  function mandarinVoice(){
+    loadVoices();
+    return voices.find(function(v){return v.lang.toLowerCase().replace('_','-')==='zh-tw';})||
+      voices.find(function(v){return /^(zh-(cn|sg)|cmn)(-|$)/i.test(v.lang.replace('_','-'));})||
+      voices.find(function(v){return /^(zh|zh-hant|zh-hans)$/i.test(v.lang);});
+  }
+  function reset(){
+    clearTimeout(timer);
+    if(active){active.button.textContent='▶ 發音';active.button.setAttribute('aria-pressed','false');}
+    active=null;
+  }
+  function stop(){var previous=active;reset();synth.cancel();if(previous)status(previous.button,'已停止。再按一次，可以重聽。 Đã dừng. Nhấn lại để nghe.');}
+  buttons.forEach(function(button){
+    button.addEventListener('click',function(){
+      var same=active&&active.button===button;
+      stop();
+      if(same)return;
+      var word=button.dataset.word,utterance=new SpeechSynthesisUtterance(word),voice=mandarinVoice();
+      utterance.lang=voice?voice.lang:'zh-TW';
+      if(voice)utterance.voice=voice;
+      utterance.rate=.8;
+      active={button:button,utterance:utterance};
+      button.textContent='■ 停止';button.setAttribute('aria-pressed','true');
+      status(button,'準備播放「'+word+'」… Chuẩn bị phát âm…');
+      function current(){return active&&active.utterance===utterance;}
+      function failed(){if(!current())return;reset();synth.cancel();status(button,'無法播放。請確認裝置有中文語音，再試一次。 Không phát được. Hãy kiểm tra giọng tiếng Trung trên thiết bị rồi thử lại.');}
+      utterance.onstart=function(){
+        if(!current())return;
+        clearTimeout(timer);
+        status(button,'正在唸「'+word+'」。請跟著唸。 Đang đọc. Hãy đọc theo.');
+        timer=setTimeout(failed,15000);
+      };
+      utterance.onend=function(){if(!current())return;reset();status(button,'換你唸「'+word+'」！再按一次，可以重聽。 Đến lượt bạn đọc! Nhấn lại để nghe.');};
+      utterance.onerror=failed;
+      timer=setTimeout(failed,12000);
+      try{synth.speak(utterance);}catch(e){failed();}
+    });
+  });
+  document.addEventListener('visibilitychange',function(){if(document.hidden)stop();});
+  window.addEventListener('pagehide',stop);
 })();
 </script>
 </body>
