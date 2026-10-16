@@ -126,13 +126,36 @@
   .tagrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
   .pill{font-size:12px;background:#eef0fb;color:var(--secondary);padding:3px 10px;border-radius:20px;font-weight:700}
   footer{text-align:center;color:var(--muted);font-size:12.5px;padding:24px}
+
+/* Shared classroom tasks: oral response, sentence support, then sample explanation. */
+.class-activity{display:grid;gap:12px;min-width:0}
+.class-activity .vn{display:block;color:#0E7C7B;font-size:15px;line-height:1.5;margin-top:4px}
+.activity-time{color:#0E7C7B;font-weight:700;font-size:15px}
+.activity-prompt{font-size:clamp(18px,2.3vw,23px);line-height:1.5}
+.sentence-stem{padding:12px 16px;background:#EFFAF3;border-left:5px solid #2FA36B;color:#1A1A3E;line-height:1.6}
+.class-activity label{font-size:14px;color:#52526B}
+.activity-response{display:block;width:100%;max-width:100%;min-height:72px;border:1.5px solid #A0A0B5;border-radius:8px;padding:10px 12px;resize:vertical;font:inherit;font-size:17px;background:#fff;color:#1F1F2E}
+.activity-answer{border:1px solid #E2E2EC;background:#fff;border-radius:8px;padding:10px 14px;font-size:16px;line-height:1.5}
+.activity-answer summary{cursor:pointer;font-weight:700;color:#2D2A6E}
+.activity-answer p{margin-top:10px}
+.activity-response:focus-visible,.activity-answer summary:focus-visible{outline:3px solid #0E7C7B;outline-offset:3px}
+.source-note{font-size:13px;color:#52526B;line-height:1.5;overflow-wrap:anywhere;margin-top:10px}
+.source-note .vn{display:block;color:#0E7C7B;font-size:13px}
+.lesson-links{display:flex;gap:10px;flex-wrap:wrap;font-size:14px;margin-top:10px}
+.lesson-links a{color:inherit;text-underline-offset:3px}
+.feedback-reason,.feedback-transfer{margin-top:6px}
+.feedback-transfer{font-weight:600}
+@media(max-width:640px){header{position:relative!important}.class-activity{gap:10px}}
+@media print{.activity-response{min-height:64px}}
+
+.vn{display:block;color:#0E7C7B;font-size:15px;line-height:1.5;margin-top:4px}.note b .vn{font-weight:500}.fb .vn{margin-top:6px}.face .t{font-size:21px}.back .vn{color:#D7FAF3}
 </style>
 </head>
 <body>
 <header>
   <h1>食品科學概論 · 第 1 週 互動教學</h1>
   <div class="sub">本質 · 核心能力 · 產業概況　＋　IFT 2025／2026 食品趨勢　＋　互動測驗</div>
-  <nav id="nav"></nav>
+  <div class="lesson-links"><a href="食品科學概論_第1週_投影片.html">投影片 / Slide</a><a href="食品科學概論_第1週_A2互動練習.html">A2 互動練習 / Luyện tập A2</a></div><nav id="nav"></nav>
 </header>
 <main>
   <!-- ================= MODULE: 主課程 ================= -->
@@ -140,7 +163,7 @@
     <div class="lead">
       <div class="kicker">MODULE 1 · 主課程</div>
       <h2>食品科學概論</h2>
-      <p>點翻卡看定義、展開看細節、玩配對測驗。食品科學是整合化學、生物、物理與工程的應用科學，貫穿「從農場到餐桌」。</p>
+      <p>點翻卡看定義、展開看細節、玩配對測驗。食品科學會運用化學、生物、物理與工程等領域的知識，貫穿「從農場到餐桌」。</p>
     </div>
 
     <div class="sec-title"><span class="bar"></span>一、食品科學的本質（點卡片翻面）</div>
@@ -149,16 +172,46 @@
 
     <div class="sec-title"><span class="bar"></span>食品品質的四大要素 · 配對挑戰</div>
     <div class="hint">把上方標籤拖到（或先點標籤再點空格）對應的描述。全部答對即通關。</div>
-    <div class="match-wrap" id="qualityMatch"></div>
+    <div class="match-wrap" id="qualityMatch"></div><div class="sec-title"><span class="bar"></span>短活動 1｜我想研究什麼？<span class="vn" lang="vi">Hoạt động 1: Tôi muốn nghiên cứu điều gì?</span></div><div class="class-activity" data-activity="ask">
+      <p class="activity-time">1 分鐘 / 1 phút</p>
+      <p class="activity-prompt">看一瓶豆漿，選一個你想研究的問題，說給同學聽。<span class="vn" lang="vi">Nhìn một chai sữa đậu nành, chọn một câu hỏi bạn muốn nghiên cứu và nói với bạn cùng lớp.</span></p>
+      <div class="sentence-stem"><b>中文句型</b> / <span lang="vi">Mẫu câu tiếng Trung</span><br>我想知道＿＿。<span class="vn" lang="vi">Tôi muốn biết ___.</span></div>
+      <label for="general-ask">先說給同學聽，再寫下關鍵詞。<span lang="vi"> Nói với bạn trước, rồi ghi từ khóa.</span></label>
+      <textarea id="general-ask" class="activity-response" rows="2" placeholder="寫一兩句中文 / Viết một hoặc hai câu tiếng Trung"></textarea>
+      <details class="activity-answer"><summary>參考回答（不只一種） / <span lang="vi">Câu trả lời tham khảo</span></summary><p>我想知道這瓶豆漿有多少糖。<span class="vn" lang="vi">Tôi muốn biết chai sữa đậu nành này có bao nhiêu đường.</span></p><p>成分、加工、保存、安全，都可以成為研究問題。<span class="vn" lang="vi">Thành phần, chế biến, bảo quản và an toàn đều có thể là câu hỏi nghiên cứu.</span></p></details>
+    </div>
 
-    <div class="sec-title"><span class="bar"></span>二、食品科學的核心能力（IFT 五大能力，點翻卡）</div>
-    <div class="grid g3" id="iftFlips"></div>
+    <div class="sec-title"><span class="bar"></span>二、食品科學家要會什麼？ / Nhà khoa học thực phẩm cần biết gì?</div>
+    <div class="note lesson-ift"><b>IFT = Institute of Food Technologists（美國食品科技學會）</b><br>IFT 是食品科學與食品科技的國際專業組織，提供教育標準，幫助大學培養食品專業人才。<span class="vn" lang="vi">IFT là một tổ chức nghề nghiệp quốc tế về khoa học và công nghệ thực phẩm, đưa ra các tiêu chuẩn giáo dục giúp trường đại học đào tạo nhân lực ngành thực phẩm.</span><p class="source-note"><a href="https://www.ift.org/advance-your-career/students/undergraduate-programs/ift-undergraduate-program-approval/" target="_blank" rel="noopener">IFT 教育說明 / Tiêu chuẩn giáo dục IFT ↗</a></p></div>
+<div class="note">參考 IFT 教育架構，我們把它簡化成 5 個方向。<span class="vn" lang="vi">Dựa trên khung giáo dục IFT, chúng ta tóm tắt thành 5 hướng học tập.</span></div>
+<div class="grid g3" id="iftFlips"></div>
+<div class="note">專業知識 + 解決問題 + 溝通合作 = 食品科學家的能力<span class="vn" lang="vi">Kiến thức chuyên môn + giải quyết vấn đề + giao tiếp và hợp tác = năng lực của nhà khoa học thực phẩm</span></div>
+<div class="sec-title"><span class="bar"></span>一杯豆漿，五個學習方向 / Một chai sữa đậu nành, năm hướng học tập</div>
+<div class="grid g3" id="soymilkCase"></div>
+<div class="sec-title"><span class="bar"></span>公司除了專業，還看什麼？ / Doanh nghiệp còn cần năng lực gì?</div>
+<div class="grid g3"><div class="card"><div class="h">會溝通<span class="vn" lang="vi">Biết giao tiếp</span></div><p>做報告、寫紀錄、說明結果<span class="vn" lang="vi">Thuyết trình, ghi chép, giải thích kết quả</span></p></div><div class="card"><div class="h">會思考<span class="vn" lang="vi">Biết tư duy</span></div><p>看數據、找原因、解決問題<span class="vn" lang="vi">Xem dữ liệu, tìm nguyên nhân, giải quyết vấn đề</span></p></div><div class="card"><div class="h">會合作<span class="vn" lang="vi">Biết hợp tác</span></div><p>一起工作、守時、負責<span class="vn" lang="vi">Làm việc cùng nhau, đúng giờ, có trách nhiệm</span></p></div></div>
+<div class="note">如果食品出了問題，只會做實驗夠嗎？<span class="vn" lang="vi">Nếu thực phẩm có vấn đề, chỉ biết làm thí nghiệm có đủ không?</span></div>
+<div class="sec-title"><span class="bar"></span>短活動 2｜這需要什麼能力？<span class="vn" lang="vi">Hoạt động 2: Cần năng lực gì?</span></div><div class="class-activity" data-activity="team">
+      <p class="activity-time">2 分鐘 / 2 phút</p>
+      <p class="activity-prompt">同一批豆漿，有幾瓶味道不同。兩人一組：先看什麼？需要哪些能力？<span class="vn" lang="vi">Trong cùng một lô sữa đậu nành, vài chai có vị khác. Làm theo cặp: xem gì trước? Cần những năng lực nào?</span></p>
+      <div class="sentence-stem"><b>中文句型</b> / <span lang="vi">Mẫu câu tiếng Trung</span><br>我會先看＿＿。需要＿＿，因為＿＿。<span class="vn" lang="vi">Tôi sẽ xem ___ trước. Cần ___ vì ___.</span></div>
+      <label for="general-team">先說給同學聽，再寫下關鍵詞。<span lang="vi"> Nói với bạn trước, rồi ghi từ khóa.</span></label>
+      <textarea id="general-team" class="activity-response" rows="2" placeholder="寫一兩句中文 / Viết một hoặc hai câu tiếng Trung"></textarea>
+      <details class="activity-answer"><summary>參考回答（不只一種） / <span lang="vi">Câu trả lời tham khảo</span></summary><p>我會先看配方和製作紀錄。需要思考和溝通，因為要一起找原因。<span class="vn" lang="vi">Tôi sẽ xem công thức và hồ sơ sản xuất trước. Cần tư duy và giao tiếp vì phải cùng tìm nguyên nhân.</span></p><p>先查紀錄、比較資料，再說明結果並分工處理；不能只靠猜測下結論。<span class="vn" lang="vi">Xem hồ sơ, so sánh dữ liệu, rồi giải thích kết quả và phân công xử lý; không kết luận chỉ bằng phỏng đoán.</span></p></details>
+    </div>
 
     <div class="sec-title"><span class="bar"></span>三、台灣食品產業發展史</div>
-    <div class="tl" id="twTimeline"></div>
+    <div class="tl" id="twTimeline"></div><div class="sec-title"><span class="bar"></span>2024 年臺灣食品產業概況 / Ngành thực phẩm Đài Loan năm 2024</div><div class="note">總產值：1 兆 44 億元；出口：1,119 億元。<span class="vn" lang="vi">Giá trị sản xuất: 1.004,4 tỷ NT$; xuất khẩu: 111,9 tỷ NT$.</span><p class="source-note">統計範圍：2024 年臺灣食品及飲料工業，不含菸草業；金額以新臺幣計。<span class="vn" lang="vi">Phạm vi: ngành thực phẩm và đồ uống Đài Loan năm 2024, không gồm thuốc lá; đơn vị tiền tệ: Đài tệ (NT$).</span><br><a href="https://www.itis.org.tw/DwnPre.aspx?rpt_id=59173383" target="_blank" rel="noopener">資料來源 / Nguồn：《2025 食品產業年鑑》序言</a></p></div>
 
     <div class="sec-title"><span class="bar"></span>畢業生的就業方向</div>
-    <div class="grid g4" id="careerCards"></div>
+    <div class="grid g4" id="careerCards"></div><div class="sec-title"><span class="bar"></span>短活動 3｜我想做什麼工作？<span class="vn" lang="vi">Hoạt động 3: Tôi muốn làm nghề gì?</span></div><div class="class-activity" data-activity="career">
+      <p class="activity-time">1 分鐘 / 1 phút</p>
+      <p class="activity-prompt">選一個食品工作，說出原因，再說你想練習的能力。<span class="vn" lang="vi">Chọn một công việc ngành thực phẩm, nói lý do và năng lực bạn muốn rèn luyện.</span></p>
+      <div class="sentence-stem"><b>中文句型</b> / <span lang="vi">Mẫu câu tiếng Trung</span><br>我想做＿＿，因為＿＿。我想練習＿＿。<span class="vn" lang="vi">Tôi muốn làm ___ vì ___. Tôi muốn rèn luyện ___.</span></div>
+      <label for="general-career">先說給同學聽，再寫下關鍵詞。<span lang="vi"> Nói với bạn trước, rồi ghi từ khóa.</span></label>
+      <textarea id="general-career" class="activity-response" rows="2" placeholder="寫一兩句中文 / Viết một hoặc hai câu tiếng Trung"></textarea>
+      <details class="activity-answer"><summary>參考回答（不只一種） / <span lang="vi">Câu trả lời tham khảo</span></summary><p>我想做研發，因為我想做新口味的豆漿。我想練習比較配方和說明結果。<span class="vn" lang="vi">Tôi muốn làm nghiên cứu và phát triển vì muốn tạo vị sữa đậu nành mới. Tôi muốn luyện so sánh công thức và giải thích kết quả.</span></p><p>選擇可以不同；要把工作、理由和能力說清楚。<span class="vn" lang="vi">Có thể chọn khác nhau; hãy nói rõ công việc, lý do và năng lực.</span></p></details>
+    </div>
   </section>
 
   <!-- ================= MODULE: IFT 2025 ================= -->
@@ -188,7 +241,7 @@
     <div class="lead">
       <div class="kicker">MODULE 4 · 綜合測驗</div>
       <h2>小測驗：檢核學習成效</h2>
-      <p>共 10 題單選，涵蓋三個單元。作答後即時顯示正解與解析，最後計算分數。</p>
+      <p>共 10 題單選，對應食品科學、五個學習方向與產業應用。作答後看原因，再練習說一句中文。2025／2026 趨勢保留作延伸閱讀。</p>
     </div>
     <div class="quiz-head">
       <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
@@ -214,20 +267,15 @@ const NAV=[["m-core","主課程"],["m-2025","IFT 2025 趨勢"],["m-2026","IFT 20
 const COLORS=["#2D2A6E","#2FA36B","#F5A623","#5B4FB8","#00B8B8","#D65B5B"];
 
 const coreFlips=[
-  {t:"跨領域整合",en:"Interdisciplinary",c:"#2D2A6E",b:"化學 × 生物 × 物理 × 工程，四大學科交會的綜合應用科學。"},
+  {t:"跨領域整合",en:"Interdisciplinary",c:"#2D2A6E",b:"化學 × 生物 × 物理 × 工程，等領域知識的綜合應用，也會結合營養、感官與其他領域。"},
   {t:"從農場到餐桌",en:"Farm to Table",c:"#2FA36B",b:"研究對象涵蓋原料生產、加工保存、物流通路到消費的整條食物鏈。"},
   {t:"食品科學定義",en:"Definition",c:"#5B4FB8",b:"運用科學與工程原理，研究食品的組成、性質、加工、保存與安全。"},
   {t:"四大品質要素",en:"Quality",c:"#F5A623",b:"安全、營養、感官、便利；其中以『安全』為最優先。"},
 ];
-const iftFlips=[
-  {t:"化學與分析",en:"Chemistry & Analysis",c:"#2D2A6E",b:"成分結構與性質、加工中的化學變化、成分與品質分析。"},
-  {t:"安全與微生物",en:"Safety & Micro",c:"#2FA36B",b:"致病與腐敗菌、食品安全危害、衛生與品質管制。"},
-  {t:"加工與工程",en:"Processing",c:"#F5A623",b:"單元操作原理、保存與加工技術、包裝與製程。"},
-  {t:"應用食品科學",en:"Applied",c:"#5B4FB8",b:"產品開發設計、整合前述知識、解決實務問題。"},
-  {t:"成功技能 ★",en:"Success Skills",c:"#00B8B8",b:"溝通、批判思考、團隊與專業素養 — 雇主調查中最被看重(4.35/5)。"},
-];
+const iftFlips=[{"t": "了解食品成分", "en": "Hiểu thành phần thực phẩm", "c": "#2D2A6E", "b": "食品化學、食品分析<span class=\"vn\" lang=\"vi\">Hóa học thực phẩm, phân tích thực phẩm</span>"}, {"t": "讓食品安全", "en": "Giữ thực phẩm an toàn", "c": "#2FA36B", "b": "微生物、衛生、安全<span class=\"vn\" lang=\"vi\">Vi sinh vật, vệ sinh, an toàn</span>"}, {"t": "把食品做得更好", "en": "Chế biến thực phẩm tốt hơn", "c": "#0E7C7B", "b": "加工、保存、工程<span class=\"vn\" lang=\"vi\">Chế biến, bảo quản, kỹ thuật</span>"}, {"t": "開發新食品", "en": "Phát triển sản phẩm mới", "c": "#5B4FB8", "b": "研發、品質、消費者需求<span class=\"vn\" lang=\"vi\">Nghiên cứu và phát triển, chất lượng, nhu cầu người tiêu dùng</span>"}, {"t": "解決問題＋一起工作", "en": "Giải quyết vấn đề + làm việc nhóm", "c": "#2D2A6E", "b": "思考、溝通、合作<span class=\"vn\" lang=\"vi\">Tư duy, giao tiếp, hợp tác</span>"}];
+const soymilkCase=[{"h": "了解食品成分<span class=\"vn\" lang=\"vi\">Hiểu thành phần thực phẩm</span>", "p": "豆漿裡有多少蛋白質和糖？<span class=\"vn\" lang=\"vi\">Sữa đậu nành có bao nhiêu protein và đường?</span>", "c": "#2D2A6E"}, {"h": "讓食品安全<span class=\"vn\" lang=\"vi\">Giữ thực phẩm an toàn</span>", "p": "製作豆漿時，怎麼保持衛生？<span class=\"vn\" lang=\"vi\">Giữ vệ sinh khi làm sữa đậu nành như thế nào?</span>", "c": "#2FA36B"}, {"h": "把食品做得更好<span class=\"vn\" lang=\"vi\">Chế biến thực phẩm tốt hơn</span>", "p": "豆漿怎麼加熱、裝瓶和保存？<span class=\"vn\" lang=\"vi\">Gia nhiệt, đóng chai và bảo quản sữa đậu nành như thế nào?</span>", "c": "#0E7C7B"}, {"h": "開發新食品<span class=\"vn\" lang=\"vi\">Phát triển sản phẩm mới</span>", "p": "少放糖，怎麼讓豆漿仍然好喝？<span class=\"vn\" lang=\"vi\">Làm sao giảm đường mà sữa đậu nành vẫn ngon?</span>", "c": "#5B4FB8"}, {"h": "解決問題＋一起工作<span class=\"vn\" lang=\"vi\">Giải quyết vấn đề + làm việc nhóm</span>", "p": "檢驗結果有問題，怎麼告訴同事、一起處理？<span class=\"vn\" lang=\"vi\">Khi kết quả kiểm nghiệm có vấn đề, báo cho đồng nghiệp và cùng xử lý thế nào?</span>", "c": "#2D2A6E"}];
 const quality=[
-  {label:"安全",desc:"無病原菌與毒素、無有害化學物質與異物（最優先）"},
+  {label:"安全",desc:"控制致病微生物、毒素、有害化學物質與異物等風險（最優先）"},
   {label:"營養",desc:"提供熱量與營養素，加工中盡量保留，可營養強化"},
   {label:"感官",desc:"色、香、味、質地，影響消費接受度，以品評評估"},
   {label:"便利",desc:"易保存、易調理，合適包裝與份量，符合生活型態"},
@@ -236,7 +284,7 @@ const timeline=[
   {h:"奠基期",p:"日治～1950s：製糖、味精、醬油奠定食品工業基礎。",c:"#5B4FB8"},
   {h:"罐頭外銷期",p:"1950s–70s：鳳梨、洋菇、蘆筍「三罐王」外銷賺外匯。",c:"#2D2A6E"},
   {h:"加工升級期",p:"1980s–90s：冷凍食品、乳品、飲料與國產品牌興起。",c:"#2FA36B"},
-  {h:"多元機能期",p:"2000s至今：機能保健食品、智慧製造，產值破兆元。",c:"#F5A623"},
+  {h:"多元機能期",p:"2000s至今：產品多元、智慧製造與永續發展；2024 年食品及飲料工業產值突破兆元。",c:"#F5A623"},
 ];
 const careers=[
   {h:"研發與開發",en:"R&D",c:"#2D2A6E",li:["新產品與配方","機能性食品","感官品評"]},
@@ -263,20 +311,8 @@ const t2026=[
   ["法規壓力重塑創新","④ 法規 · Regulatory","對超加工食品、添加物與新興原料監管趨嚴；各轄區政策分歧使合規更複雜，FDA 提出上市後化學品評估架構。","IFT：Policy Changes Put Food Innovation Pipelines to the Test"],
   ["透明度與消費者信任","⑤ 透明 · Transparency","錯誤資訊時代，有效溝通與透明度是重建信任的必要條件；消費者將在政策制定中扮演更大角色。","IFT：How Science Can Reclaim Public Trust"],
 ];
-/* 正解分布 位置1=3 位置2=3 位置3=2 位置4=2；相鄰題不同位置。
-   第 5、10 題選項有自然順序（金額、年份），維持遞增不打散，正解位置照其原本落點。 */
-const QUIZ=[
-  {q:"食品科學主要整合哪四個學科領域？",o:["經濟、法律、行銷、管理","化學、生物、物理、工程","地質、天文、氣象、海洋","文學、歷史、哲學、藝術"],a:1,e:"食品科學是化學×生物×物理×工程的跨領域整合應用科學。"},
-  {q:"食品品質四大要素中，哪一項為『最優先』？",o:["感官","便利","營養","安全"],a:3,e:"安全（無病原菌、毒素、異物）是最優先的品質要素。"},
-  {q:"IFT 五大核心能力中，雇主調查最看重哪一類？",o:["食品化學與分析","成功技能（溝通、批判思考、團隊）","食品加工與工程","食品安全與微生物"],a:1,e:"成功技能重要性評分最高(4.35/5)，也是畢業生最常運用的能力。"},
-  {q:"台灣早期外銷的『三罐王』是指哪三種罐頭？",o:["鳳梨、洋菇、蘆筍","番茄、玉米、四季豆","竹筍、木耳、香菇","鮪魚、鯖魚、蛤蜊"],a:0,e:"1950–70年代台灣以鳳梨、洋菇、蘆筍罐頭外銷賺取大量外匯。"},
-  {q:"2024 年台灣食品及飲料工業總產值首度突破多少？",o:["一千億元","五千億元","一兆元","十兆元"],a:2,e:"2024 年首度突破兆元，達新台幣約 1兆44億元，創歷史新高。"},
-  {q:"IFT 2025 趨勢中，哪一類減重藥被指出將加速產品創新？",o:["抗生素","GLP-1","維生素D","益生菌"],a:1,e:"GLP-1 減重藥普及，帶動聚焦蛋白質與腸道健康的產品創新。"},
-  {q:"FDA 為降低食品中重金屬（砷、鉛、鎘、汞）暴露的計畫名稱是？",o:["Zero Hunger","Clean Label","Closer to Zero","Net Zero"],a:2,e:"『Closer to Zero』旨在減少污染物暴露，保護孩童與孕婦等脆弱族群。"},
-  {q:"IFT 2026 列為第一大的趨勢是？",o:["AI 從試點走向落地","植物肉大爆發","罐頭復興","減少包裝"],a:0,e:"2026 首要趨勢是『AI Moves From Pilot to Practice』——AI 全面落地。"},
-  {q:"『食物即良藥（Food is Medicine）』的核心概念是？",o:["以藥物取代食物","只吃保健食品","以飲食預防與改善疾病","完全生食"],a:2,e:"強調透過營養飲食來預防及改善健康問題。"},
-  {q:"美國 FSMA 204 食品可追溯規則的合規期限，在 2026 趨勢中被指出延至哪一年？",o:["2025","2026","2027","2028"],a:3,e:"2026 趨勢指出 FSMA 204 合規延至 2028，但企業仍持續推進準備。"},
-];
+/* Core assessment aligned with the A2 lesson and slides. */
+const QUIZ=[{"q": "「dinh dưỡng」是哪個中文？<span class=\"vn\" lang=\"vi\">\"dinh dưỡng\" là từ tiếng Trung nào?</span>", "o": ["加工　jiāgōng", "安全　ānquán", "工廠　gōngchǎng", "營養　yíngyǎng"], "a": 3, "e": "<div class=\"feedback-reason\"><b>為什麼？ / Vì sao?</b> 「營養」指食物提供的營養素；「加工」是處理食物，「工廠」是生產的地方。<span class=\"vn\" lang=\"vi\">Dinh dưỡng nói đến các chất dinh dưỡng trong thực phẩm; chế biến là xử lý thực phẩm, nhà máy là nơi sản xuất.</span></div><div class=\"feedback-transfer\">練習說：這個食品提供什麼營養？<span class=\"vn\" lang=\"vi\">Tập nói: Thực phẩm này cung cấp chất dinh dưỡng gì?</span></div>"}, {"q": "黃豆做成豆漿，這叫什麼？<span class=\"vn\" lang=\"vi\">Làm sữa đậu nành từ đậu nành gọi là gì?</span>", "o": ["加工　Chế biến", "保存　Bảo quản", "科學　Khoa học", "營養　Dinh dưỡng"], "a": 0, "e": "<div class=\"feedback-reason\"><b>為什麼？ / Vì sao?</b> 把黃豆磨碎、加水、加熱，改變原料的形式，是加工；保存的重點是維持食品的品質與安全。<span class=\"vn\" lang=\"vi\">Xay đậu, thêm nước và gia nhiệt làm thay đổi dạng nguyên liệu: đó là chế biến. Bảo quản chú trọng duy trì chất lượng và an toàn.</span></div><div class=\"feedback-transfer\">練習說：黃豆做成豆漿，是加工。<span class=\"vn\" lang=\"vi\">Tập nói: Làm sữa đậu nành từ đậu nành là chế biến.</span></div>"}, {"q": "「gōngchǎng」是哪個詞？<span class=\"vn\" lang=\"vi\">\"gōngchǎng\" là từ nào?</span>", "o": ["科學　Khoa học", "安全　An toàn", "營養　Dinh dưỡng", "工廠　Nhà máy"], "a": 3, "e": "<div class=\"feedback-reason\"><b>為什麼？ / Vì sao?</b> 「工廠」是製造產品的地方。例如，食品工廠可以生產豆漿；「科學」是研究問題的方法與知識。<span class=\"vn\" lang=\"vi\">Nhà máy là nơi sản xuất sản phẩm, ví dụ sản xuất sữa đậu nành. Khoa học là kiến thức và phương pháp nghiên cứu.</span></div><div class=\"feedback-transfer\">練習說：工廠可以生產＿＿。<span class=\"vn\" lang=\"vi\">Tập nói: Nhà máy có thể sản xuất ___.</span></div>"}, {"q": "研究豆漿有多少蛋白質，是問什麼？<span class=\"vn\" lang=\"vi\">Nghiên cứu sữa đậu nành có bao nhiêu protein là hỏi gì?</span>", "o": ["怎麼加工？　Chế biến thế nào?", "有什麼成分？　Có thành phần gì?", "怎麼放久？　Bảo quản ra sao?", "可以放心吃嗎？　Có an toàn không?"], "a": 1, "e": "<div class=\"feedback-reason\"><b>為什麼？ / Vì sao?</b> 蛋白質是食品成分。測量它的含量屬於食品分析；這個數字本身不能回答食品是否安全。<span class=\"vn\" lang=\"vi\">Protein là thành phần thực phẩm. Đo hàm lượng là phân tích thực phẩm; chỉ con số đó chưa cho biết thực phẩm có an toàn không.</span></div><div class=\"feedback-transfer\">練習說：我想知道豆漿有多少蛋白質。<span class=\"vn\" lang=\"vi\">Tập nói: Tôi muốn biết sữa đậu nành có bao nhiêu protein.</span></div>"}, {"q": "豆漿從原料到喝進肚子，哪一步要注意安全？<span class=\"vn\" lang=\"vi\">Từ nguyên liệu đến khi uống sữa đậu nành, bước nào cần chú ý an toàn?</span>", "o": ["每一步都要　Bước nào cũng cần", "只有農場　Chỉ nông trại", "只有工廠　Chỉ nhà máy", "只有餐桌　Chỉ bàn ăn"], "a": 0, "e": "<div class=\"feedback-reason\"><b>為什麼？ / Vì sao?</b> 原料、加工、運送、販售和飲用，都可能影響安全。工廠做好了，後面的保存和操作仍要注意。<span class=\"vn\" lang=\"vi\">Nguyên liệu, chế biến, vận chuyển, bán và sử dụng đều ảnh hưởng đến an toàn. Sau khi sản xuất vẫn cần bảo quản và thao tác đúng.</span></div><div class=\"feedback-transfer\">練習說：每一步都要注意安全。<span class=\"vn\" lang=\"vi\">Tập nói: Bước nào cũng cần chú ý an toàn.</span></div>"}, {"q": "麵包好吃又便宜，但檢驗發現會讓人生病的細菌，可以吃嗎？<span class=\"vn\" lang=\"vi\">Bánh mì ngon và rẻ, nhưng xét nghiệm phát hiện vi khuẩn gây bệnh. Có thể ăn không?</span>", "o": ["可以，因為好吃　Có, vì ngon", "可以，因為便宜　Có, vì rẻ", "不可以，因為不安全　Không, vì không an toàn", "不可以，因為不方便　Không, vì không tiện"], "a": 2, "e": "<div class=\"feedback-reason\"><b>為什麼？ / Vì sao?</b> 關鍵是「會讓人生病的細菌」，不是所有細菌都不好。有些特定細菌可用來製作優格；好吃和便宜也不能取代安全。<span class=\"vn\" lang=\"vi\">Điểm quan trọng là vi khuẩn gây bệnh, không phải mọi vi khuẩn đều có hại. Một số vi khuẩn được dùng làm sữa chua; ngon và rẻ không thay thế được an toàn.</span></div><div class=\"feedback-transfer\">練習說：不可以吃，因為檢驗發現會讓人生病的細菌。<span class=\"vn\" lang=\"vi\">Tập nói: Không thể ăn vì xét nghiệm phát hiện vi khuẩn gây bệnh.</span></div><p class=\"source-note\"><a href=\"https://www.fda.gov/food/generally-recognized-safe-gras/microorganisms-microbial-derived-ingredients-used-food-partial-list\" target=\"_blank\" rel=\"noopener\">延伸閱讀 / Đọc thêm：FDA 食品微生物資料</a></p>"}, {"q": "小安實驗做得好，但不會說明結果。他要加強哪種能力？<span class=\"vn\" lang=\"vi\">An làm thí nghiệm giỏi nhưng chưa biết giải thích kết quả. Cần rèn năng lực nào?</span>", "o": ["做實驗　Làm thí nghiệm", "溝通　Giao tiếp", "用機器　Dùng máy móc", "種水果　Trồng trái cây"], "a": 1, "e": "<div class=\"feedback-reason\"><b>為什麼？ / Vì sao?</b> 溝通包括口頭報告、寫紀錄和說明結果。實驗做得好，也要讓同事看得懂資料，才能一起處理問題。<span class=\"vn\" lang=\"vi\">Giao tiếp gồm thuyết trình, ghi chép và giải thích kết quả. Cần giúp đồng nghiệp hiểu dữ liệu để cùng xử lý vấn đề.</span></div><div class=\"feedback-transfer\">練習說：他需要練習溝通，因為要說明結果。<span class=\"vn\" lang=\"vi\">Tập nói: Bạn ấy cần luyện giao tiếp vì phải giải thích kết quả.</span></div>"}, {"q": "想做新口味的豆漿，是哪個工作？<span class=\"vn\" lang=\"vi\">Muốn tạo vị sữa đậu nành mới là công việc nào?</span>", "o": ["品管　Kiểm soát chất lượng", "業務　Kinh doanh", "公務員　Công chức", "研發　Nghiên cứu và phát triển"], "a": 3, "e": "<div class=\"feedback-reason\"><b>為什麼？ / Vì sao?</b> 研發會比較原料、調整配方並測試產品。品管重點是檢查產品是否符合要求；兩種工作需要合作。<span class=\"vn\" lang=\"vi\">Nghiên cứu và phát triển so sánh nguyên liệu, điều chỉnh công thức và thử sản phẩm. Kiểm soát chất lượng kiểm tra sản phẩm có đạt yêu cầu không; hai bên cần hợp tác.</span></div><div class=\"feedback-transfer\">練習說：我想做研發，因為我想做新食品。<span class=\"vn\" lang=\"vi\">Tập nói: Tôi muốn làm nghiên cứu và phát triển vì muốn tạo thực phẩm mới.</span></div>"}, {"q": "想讓減糖豆漿仍然好喝，你會怎麼做？<span class=\"vn\" lang=\"vi\">Muốn sữa đậu nành giảm đường vẫn ngon, bạn sẽ làm gì?</span>", "o": ["只看包裝顏色　Chỉ xem màu bao bì", "比較配方並請人品評　So sánh công thức và nhờ người đánh giá vị", "先認定少糖一定難喝　Cho rằng giảm đường chắc chắn không ngon", "只增加廣告數量　Chỉ tăng số lượng quảng cáo"], "a": 1, "e": "<div class=\"feedback-reason\"><b>為什麼？ / Vì sao?</b> 開發新食品要用比較與品評了解味道和接受度。先猜不好喝，或只改包裝與廣告，都不能回答配方是否合適。<span class=\"vn\" lang=\"vi\">Phát triển sản phẩm cần so sánh và đánh giá cảm quan để hiểu vị và mức chấp nhận. Phỏng đoán hoặc chỉ đổi quảng cáo không đánh giá được công thức.</span></div><div class=\"feedback-transfer\">練習說：我會比較配方，因為要知道哪一種比較好喝。<span class=\"vn\" lang=\"vi\">Tập nói: Tôi sẽ so sánh công thức vì muốn biết loại nào ngon hơn.</span></div>"}, {"q": "工廠減少食品浪費、減少不必要的包裝，是哪個方向？<span class=\"vn\" lang=\"vi\">Nhà máy giảm lãng phí thực phẩm và bao bì không cần thiết là hướng nào?</span>", "o": ["AI 電腦　AI, máy tính", "健康　Sức khỏe", "環保　Bảo vệ môi trường", "出口　Xuất khẩu"], "a": 2, "e": "<div class=\"feedback-reason\"><b>為什麼？ / Vì sao?</b> 減少浪費和不必要的包裝，是環保的做法。仍要保護食品的安全與品質，不能只追求包裝越少越好。<span class=\"vn\" lang=\"vi\">Giảm lãng phí và bao bì không cần thiết giúp bảo vệ môi trường. Vẫn phải bảo đảm an toàn và chất lượng, không chỉ giảm bao bì bằng mọi cách.</span></div><div class=\"feedback-transfer\">練習說：我會減少浪費，也要注意食品安全。<span class=\"vn\" lang=\"vi\">Tập nói: Tôi sẽ giảm lãng phí và vẫn chú ý an toàn thực phẩm.</span></div>"}];
 
 /* ---------- render ---------- */
 const $=s=>document.querySelector(s);
@@ -297,6 +333,7 @@ function flipCard(d){
 }
 coreFlips.forEach(d=>$("#coreFlips").appendChild(flipCard(d)));
 iftFlips.forEach(d=>$("#iftFlips").appendChild(flipCard(d)));
+soymilkCase.forEach(d=>{const el=document.createElement("div");el.className="card";el.style.borderTop="4px solid "+d.c;el.innerHTML='<div class="h">'+d.h+'</div><p>'+d.p+'</p>';$("#soymilkCase").appendChild(el);});
 
 careers.forEach(c=>{const el=document.createElement("div");el.className="card";
   el.innerHTML=`<div class="h">${c.h}</div><div class="en">${c.en}</div><ul>${c.li.map(x=>`<li>${x}</li>`).join("")}</ul>`;
@@ -385,7 +422,7 @@ function updateProg(){
 }
 function finish(){
   const sb=$("#scorebox");$("#finalScore").textContent=score;
-  let m;if(score===10)m="滿分！你完全掌握本週重點 🎉";
+  let m;if(score===10)m="這 10 題全對！再用中文說明一個豆漿案例。";
   else if(score>=8)m="很棒！觀念相當扎實。";
   else if(score>=6)m="不錯，再複習幾個弱點就更好。";
   else m="建議回到前面單元再看一次翻卡與展開內容。";
