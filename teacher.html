@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>教師學習儀表板</title>
+<style>
+  :root {
+    --bg:#F4F5FA; --card:#fff; --text:#1F1F2E; --mid:#5A5A75; --line:#E2E2EC;
+    --primary:#2D2A6E; --secondary:#5B4FB8; --accent:#00B8B8; --green:#2FA36B; --warm:#F5A623; --red:#D65B5B;
+    --soft:#EEF0F8; --bar:#5B4FB8;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg:#14141F; --card:#1E1E2C; --text:#ECECF4; --mid:#A4A4BC; --line:#33334A;
+      --primary:#B9B4FF; --secondary:#9A90F0; --soft:#26263A; --bar:#8C82EE;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg:#14141F; --card:#1E1E2C; --text:#ECECF4; --mid:#A4A4BC; --line:#33334A;
+    --primary:#B9B4FF; --secondary:#9A90F0; --soft:#26263A; --bar:#8C82EE;
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--text); font:15px/1.55 "Microsoft JhengHei","Noto Sans TC","PingFang TC",sans-serif; }
+  header { background:#2D2A6E; color:#fff; padding:18px 16px; }
+  header .in, main { max-width:1180px; margin:0 auto; }
+  header h1 { margin:0; font-size:22px; }
+  header .sub { opacity:.85; font-size:13.5px; margin-top:2px; }
+  .bar { display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-top:12px; }
+  .bar select, .bar button { font:inherit; font-size:14px; padding:6px 10px; border-radius:8px; border:1px solid rgba(255,255,255,.35); background:rgba(255,255,255,.12); color:#fff; cursor:pointer; }
+  .bar select option { color:#1F1F2E; }
+  .tabs { display:flex; gap:4px; flex-wrap:wrap; }
+  .tabs button.on { background:#fff; color:#2D2A6E; font-weight:700; }
+  .status { font-size:13px; opacity:.85; margin-left:auto; }
+  main { padding:16px 16px 48px; display:grid; gap:16px; }
+  .demo { background:#FFF4DE; color:#6B4A00; border:1px solid #F5D08A; border-radius:10px; padding:10px 14px; font-size:14px; }
+  .warn { background:#FDECEC; color:#7A2323; border:1px solid #F2B8B8; border-radius:10px; padding:10px 14px; font-size:14px; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(270px,1fr)); gap:12px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:14px 16px; min-width:0; }
+  .card h3 { margin:0 0 2px; font-size:16px; color:var(--primary); }
+  .card .meta { font-size:12.5px; color:var(--mid); }
+  .kpis { display:grid; grid-template-columns:repeat(3,1fr); gap:6px; margin:10px 0 6px; }
+  .kpi b { display:block; font-size:21px; line-height:1.2; }
+  .kpi span { font-size:12px; color:var(--mid); }
+  .card.click { cursor:pointer; transition:border-color .15s; }
+  .card.click:hover { border-color:var(--secondary); }
+  .card.ext { border-style:dashed; }
+  h2 { margin:6px 0 0; font-size:18px; color:var(--primary); }
+  .hint { font-size:13px; color:var(--mid); margin:2px 0 0; }
+  .ins { display:grid; gap:8px; margin:10px 0 0; padding:0; }
+  .ins li { list-style:none; background:var(--card); border:1px solid var(--line); border-left:5px solid var(--warm); border-radius:10px; padding:10px 14px; }
+  .ins li.red { border-left-color:var(--red); }
+  .ins li.green { border-left-color:var(--green); }
+  .ins .what { font-weight:700; }
+  .ins .do { font-size:13.5px; color:var(--mid); margin-top:2px; }
+  .tag { display:inline-block; font-size:12px; padding:1px 8px; border-radius:99px; background:var(--soft); color:var(--secondary); margin-right:6px; vertical-align:1px; }
+  .tablewrap { overflow-x:auto; background:var(--card); border:1px solid var(--line); border-radius:12px; }
+  table { border-collapse:collapse; width:100%; font-size:14px; }
+  th, td { padding:8px 12px; text-align:left; border-bottom:1px solid var(--line); white-space:nowrap; }
+  th { font-size:12.5px; color:var(--mid); font-weight:700; background:var(--soft); position:sticky; top:0; cursor:pointer; }
+  td.num, th.num { text-align:right; font-variant-numeric:tabular-nums; }
+  tr:last-child td { border-bottom:0; }
+  .meter { display:inline-block; width:70px; height:8px; border-radius:4px; background:var(--soft); vertical-align:middle; margin-left:8px; overflow:hidden; }
+  .meter i { display:block; height:100%; background:var(--bar); }
+  .meter.lo i { background:var(--red); } .meter.mid i { background:var(--warm); } .meter.hi i { background:var(--green); }
+  .flag { color:var(--red); font-weight:700; }
+  .row2 { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:16px; }
+  @media (max-width:860px) { .row2 { grid-template-columns:minmax(0,1fr); } }
+  .sel { display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+  .sel select { font:inherit; padding:6px 10px; border-radius:8px; border:1px solid var(--line); background:var(--card); color:var(--text); }
+  svg.spark { display:block; width:100%; height:38px; }
+  svg.spark rect { fill:var(--bar); }
+  svg.spark rect.z { fill:var(--line); }
+  #lock { position:fixed; inset:0; background:rgba(20,20,40,.6); display:grid; place-items:center; padding:16px; z-index:10; }
+  #lock .box { background:var(--card); color:var(--text); border-radius:16px; padding:26px 24px; width:100%; max-width:400px; }
+  #lock h2 { margin:0 0 6px; }
+  #lock input { width:100%; font:inherit; font-size:16px; padding:10px 12px; border:1.5px solid var(--line); border-radius:10px; background:var(--bg); color:var(--text); margin-top:10px; }
+  #lock button { width:100%; font:inherit; font-weight:700; padding:11px; border-radius:10px; border:0; margin-top:10px; cursor:pointer; background:#5B4FB8; color:#fff; }
+  #lock button.ghost { background:transparent; color:var(--secondary); border:1px solid var(--secondary); font-weight:400; }
+  #pwerr { color:var(--red); font-size:13px; min-height:18px; margin-top:6px; }
+  .empty { color:var(--mid); font-size:14px; padding:14px; }
+  footer { text-align:center; font-size:12.5px; color:var(--mid); padding:0 16px 28px; }
+</style>
+</head>
+<body>
+<div id="lock"><div class="box">
+  <h2>教師學習儀表板</h2>
+  <div class="hint">輸入通關碼後讀取各課程的學習紀錄。通關碼在資料庫端比對，不寫在本頁原始碼裡。</div>
+  <input id="pw" type="password" autocomplete="current-password" placeholder="通關碼">
+  <div id="pwerr"></div>
+  <button id="unlock">進入</button>
+  <button id="demoBtn" class="ghost">先看示範資料（假資料，看版面用）</button>
+</div></div>
+
+<header><div class="in">
+  <h1>教師學習儀表板</h1>
+  <div class="sub">生物化學 · 食品科學概論（一般班／國合班）· 食品分析實驗 · Google Classroom</div>
+  <div class="bar">
+    <div class="tabs" id="tabs">
+      <button data-v="overview" class="on">總覽與建議</button>
+      <button data-v="course">課程明細</button>
+      <button data-v="classroom">Classroom 作業</button>
+    </div>
+    <select id="range" title="期間">
+      <option value="7">近 7 天</option>
+      <option value="28" selected>近 28 天</option>
+      <option value="150">本學期</option>
+    </select>
+    <button id="reload">重新整理</button>
+    <span class="status" id="status"></span>
+  </div>
+</div></header>
+
+<main id="main"></main>
+<footer>資料來源：Supabase（各課程網頁的學習紀錄）＋ Google Classroom（Apps Script 每 6 小時同步）。網頁紀錄只供分析教學，不當成績或出席證據。</footer>
+
+<script>
+(function () {
+  var SB_URL = "https://qmldcjkllisvfgegkfsz.supabase.co";
+  var SB_KEY = "sb_publishable_xprm7A1B-hQhAMBIMaWOWw_w617svI1";
+  var PASS_KEY = "teacher_dash_pass";
+  var DAY = 864e5;
+
+  // 課程顯示名稱。不在表上的 course_code 直接顯示代碼。
+  var COURSE_NAMES = {
+    "bio:biochem-vi": "生物化學 · 國合班",
+    "ifs:general": "食品科學概論 · 一般班",
+    "ifs:a2": "食品科學概論 · 國合班",
+    "fa:4y_food_analysis/A": "食品分析實驗 · 四技",
+    "fa:5z_food_analysis/B": "食品分析實驗 · 五專"
+  };
+  // 沒有網頁紀錄、只能連過去看的課程
+  var EXTERNAL = [
+    { name: "普通化學", note: "網頁本身不記錄；測驗成績在 Google 表單（教師專用頁的 Apps Script 建立），同步進 Classroom 後會出現在 Classroom 分頁。", href: "https://tai-shengyeh.github.io/general-chemistry/%E6%95%99%E5%B8%AB%E5%B0%88%E7%94%A8.html" }
+  ];
+
+  var state = { raw: null, demo: false, view: "overview", course: null, pass: null };
+  try { state.pass = localStorage.getItem(PASS_KEY); } catch (e) {}
+
+  function $(s) { return document.querySelector(s); }
+  function esc(s) { return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+  function pad(n) { return String(n).padStart(2, "0"); }
+  function pct(x) { return x == null || isNaN(x) ? "—" : Math.round(x) + "%"; }
+  function num(x) { return x == null || isNaN(x) ? "—" : String(Math.round(x)); }
+  function dayKey(d) { return d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate()); }
+  function ago(d) {
+    if (!d) return "—";
+    var h = (Date.now() - d) / 36e5;
+    if (h < 1) return "1 小時內";
+    if (h < 24) return Math.floor(h) + " 小時前";
+    return Math.floor(h / 24) + " 天前";
+  }
+  function meter(p) {
+    if (p == null || isNaN(p)) return "";
+    var cls = p < 60 ? "lo" : p < 80 ? "mid" : "hi";
+    return '<span class="meter ' + cls + '"><i style="width:' + Math.max(2, Math.min(100, p)) + '%"></i></span>';
+  }
+  function avg(a) { return a.length ? a.reduce(function (s, x) { return s + x; }, 0) / a.length : null; }
+  function groupBy(a, f) { var m = new Map(); a.forEach(function (x) { var k = f(x); if (!m.has(k)) m.set(k, []); m.get(k).push(x); }); return m; }
+
+  /* ---------- 把各來源整理成同一種「學習活動」 ----------
+     act = { c 課程鍵, unit 週次／單元標籤, us 排序用數字, stu 學生, ts 時間, kind visit|score|answer, score 0–100, item 題目或活動, ok 對錯 } */
+  function normalize(raw) {
+    var acts = [];
+    (raw.interactions || []).forEach(function (r) {
+      var w = parseInt(r[1], 10), total = Number(r[6]) || 0, sc = Number(r[5]);
+      acts.push({ c: "bio:" + r[0], unit: isNaN(w) ? "?" : "W" + pad(w), us: isNaN(w) ? 999 : w, stu: String(r[2] || "匿名"),
+        ts: new Date(r[7]), kind: "score", score: total > 0 ? sc / total * 100 : sc, item: (isNaN(w) ? "" : "W" + pad(w) + " ") + (r[4] || r[3]) });
+    });
+    (raw.student_events || []).forEach(function (r) {
+      var ch = r[2] || "?", m = String(ch).match(/\d+/);
+      var a = { c: "fa:" + r[0] + "/" + r[1], unit: ch, us: m ? +m[0] : 999, stu: String(r[8] || "匿名"), ts: new Date(r[9]) };
+      if (r[6] != null) { a.kind = "answer"; a.ok = r[6] === true || r[6] === "true"; a.item = ch + " · " + (r[5] || r[3] || "?"); }
+      else if (r[7] != null) { a.kind = "score"; a.score = Number(r[7]); a.item = ch + " · " + (r[3] || ""); }
+      else a.kind = "visit";
+      acts.push(a);
+    });
+    // 食品科學概論：學生後來才填學號代碼時，用 device_id 把先前的匿名事件接回去
+    var ifs = (raw.ifs || []).slice().sort(function (a, b) { return new Date(a[13]) - new Date(b[13]); });
+    var dev = {};
+    ifs.forEach(function (r) { if (r[2] && r[2] !== "anon" && r[3]) dev[r[3]] = r[2]; });
+    ifs.forEach(function (r) {
+      var cls = r[0] || "general", wk = Number(r[1]) || 0;
+      // 國合班第 9 週期中考：教材第 9 週起順延一週（與 intl.html 目錄同一規則）
+      var cal = cls === "a2" && wk >= 9 ? (wk === 18 ? 19 : wk + 1) : wk;
+      var unit = cls === "a2" && wk === 18 ? "期末" : "W" + pad(cal);
+      if (cls === "a2" && wk >= 9 && wk < 18) unit += "（教材第 " + wk + " 週）";
+      var stu = r[2] && r[2] !== "anon" ? r[2] : dev[r[3]] || "匿名·" + String(r[3] || "").slice(1, 6);
+      var a = { c: "ifs:" + cls, unit: unit, us: cal, stu: stu, ts: new Date(r[13]) };
+      if (r[5] === "quiz_answer" && r[9] === "1") { a.kind = "answer"; a.ok = r[8] === "true"; a.item = unit + " · " + (r[6] || "") + " 第 " + (Number(r[7]) + 1) + " 題"; }
+      else if (r[5] === "quiz_done" && Number(r[11]) > 0) { a.kind = "score"; a.score = Number(r[10]) / Number(r[11]) * 100; a.item = unit + " 測驗"; }
+      else a.kind = "visit";
+      acts.push(a);
+    });
+    acts = acts.filter(function (a) { return !isNaN(a.ts); });
+
+    var cr = (raw.classroom || []).map(function (r) {
+      return { cid: r[0], course: r[1], wid: r[2], title: r[3], topic: r[4], max: r[5] == null ? null : Number(r[5]), due: r[6],
+        key: String(r[7] || "").toLowerCase(), name: r[8] || "", state: r[9], late: !!r[10], grade: r[11] == null ? null : Number(r[11]),
+        done: r[9] === "TURNED_IN" || r[9] === "RETURNED", synced: r[12] ? new Date(r[12]) : null };
+    });
+    return { acts: acts, cr: cr };
+  }
+
+  function courseName(c) { return COURSE_NAMES[c] || c.replace(/^\w+:/, ""); }
+
+  // 每個學生每題只算第一次作答
+  function firstAnswers(acts) {
+    var seen = {}, out = [];
+    acts.filter(function (a) { return a.kind === "answer"; }).sort(function (a, b) { return a.ts - b.ts; }).forEach(function (a) {
+      var k = a.stu + "|" + a.item; if (!seen[k]) { seen[k] = 1; out.push(a); }
+    });
+    return out;
+  }
+  function itemStats(acts) {
+    var out = [];
+    groupBy(firstAnswers(acts), function (a) { return a.c + "|" + a.item; }).forEach(function (list, k) {
+      var ok = list.filter(function (a) { return a.ok; }).length;
+      out.push({ c: list[0].c, item: list[0].item, n: list.length, rate: ok / list.length * 100 });
+    });
+    // 生化的小遊戲沒有逐題資料：用「該遊戲平均分」當難度
+    groupBy(acts.filter(function (a) { return a.kind === "score" && a.c.indexOf("bio:") === 0; }), function (a) { return a.c + "|" + a.item; })
+      .forEach(function (list) {
+        out.push({ c: list[0].c, item: list[0].item + "（平均分）", avgScore: true, n: new Set(list.map(function (a) { return a.stu; })).size,
+          rate: avg(list.map(function (a) { return a.score; })) });
+      });
+    return out;
+  }
+
+  function classroomIndex(cr) {
+    var idx = {};
+    cr.forEach(function (s) {
+      [s.key, s.name.toLowerCase()].forEach(function (k) {
+        if (!k) return;
+        var e = idx[k] || (idx[k] = { done: 0, total: 0, late: 0 });
+        e.total++; if (s.done) e.done++; if (s.late) e.late++;
+      });
+    });
+    return idx;
+  }
+
+  /* ---------- 畫面 ---------- */
+  function render() {
+    var main = $("#main");
+    if (!state.raw) { main.innerHTML = ""; return; }
+    var days = Number($("#range").value);
+    var all = normalize(state.raw);
+    var since = Date.now() - days * DAY;
+    var acts = all.acts.filter(function (a) { return a.ts >= since; });
+    var html = "";
+    if (state.demo) html += '<div class="demo">目前顯示的是<b>示範假資料</b>，只是讓你看版面。輸入通關碼後才會讀取真正的學習紀錄。</div>';
+    var errs = ["interactions", "student_events", "ifs", "classroom"].filter(function (k) { return state.raw[k + "_error"]; })
+      .map(function (k) { return k + "：" + esc(state.raw[k + "_error"]); });
+    if (errs.length) html += '<div class="warn">有資料來源讀取失敗（其他課程照常顯示）：<br>' + errs.join("<br>") + "</div>";
+    if (state.view === "overview") html += overview(all, acts, days);
+    else if (state.view === "course") html += courseView(all, acts);
+    else html += classroomView(all.cr);
+    main.innerHTML = html;
+    main.querySelectorAll("[data-course]").forEach(function (el) {
+      el.addEventListener("click", function () { state.course = el.getAttribute("data-course"); setView("course"); });
+    });
+    var cs = $("#courseSel");
+    if (cs) cs.addEventListener("change", function () { state.course = cs.value; render(); });
+    main.querySelectorAll("table[data-sort]").forEach(sortable);
+  }
+
+  function spark(list) {
+    var n = 28, w = 280, bw = w / n, counts = [], max = 1, today = new Date(); today.setHours(0, 0, 0, 0);
+    var m = groupBy(list, function (a) { return dayKey(a.ts); });
+    for (var i = n - 1; i >= 0; i--) { var d = new Date(today - i * DAY), c = (m.get(dayKey(d)) || []).length; counts.push(c); if (c > max) max = c; }
+    return '<svg class="spark" viewBox="0 0 ' + w + ' 38" preserveAspectRatio="none" role="img" aria-label="近 28 天每日活動量">' +
+      counts.map(function (c, i) { var h = c ? Math.max(3, c / max * 34) : 2; return '<rect class="' + (c ? "" : "z") + '" x="' + (i * bw + 1) + '" y="' + (38 - h) + '" width="' + (bw - 2) + '" height="' + h + '"><title>' + c + '</title></rect>'; }).join("") + "</svg>";
+  }
+
+  function overview(all, acts, days) {
+    var byCourse = groupBy(all.acts, function (a) { return a.c; });
+    var keys = Object.keys(COURSE_NAMES).concat(Array.from(byCourse.keys()).filter(function (k) { return !COURSE_NAMES[k]; }));
+    var wk = Date.now() - 7 * DAY;
+    var cards = keys.map(function (k) {
+      var list = byCourse.get(k) || [], inRange = list.filter(function (a) { return a.ts >= Date.now() - days * DAY; });
+      var stus = new Set(list.map(function (a) { return a.stu; })), act7 = new Set(list.filter(function (a) { return a.ts >= wk; }).map(function (a) { return a.stu; }));
+      var sc = avg(inRange.filter(function (a) { return a.kind === "score"; }).map(function (a) { return a.score; }));
+      var last = list.reduce(function (m, a) { return a.ts > m ? a.ts : m; }, null);
+      return '<div class="card click" data-course="' + esc(k) + '"><h3>' + esc(courseName(k)) + '</h3>' +
+        '<div class="meta">最後活動：' + ago(last) + (list.length ? "" : "（尚無紀錄）") + '</div>' +
+        '<div class="kpis"><div class="kpi"><b>' + act7.size + '</b><span>近 7 天活躍</span></div>' +
+        '<div class="kpi"><b>' + stus.size + '</b><span>有紀錄學生</span></div>' +
+        '<div class="kpi"><b>' + pct(sc) + '</b><span>平均分（期間內）</span></div></div>' + spark(list) + "</div>";
+    });
+    EXTERNAL.forEach(function (e) {
+      cards.push('<a class="card ext" href="' + esc(e.href) + '" target="_blank" rel="noopener" style="text-decoration:none;color:inherit"><h3>' + esc(e.name) + '</h3><div class="meta">' + esc(e.note) + "</div></a>");
+    });
+    var crCourses = groupBy(all.cr, function (s) { return s.course; });
+    crCourses.forEach(function (list, name) {
+      var rate = list.filter(function (s) { return s.done; }).length / list.length * 100;
+      var works = new Set(list.map(function (s) { return s.wid; })).size;
+      cards.push('<div class="card"><h3>' + esc(name) + ' <span class="tag">Classroom</span></h3><div class="meta">同步：' + ago(list[0].synced) + '</div>' +
+        '<div class="kpis"><div class="kpi"><b>' + new Set(list.map(function (s) { return s.key; })).size + '</b><span>學生</span></div>' +
+        '<div class="kpi"><b>' + works + '</b><span>作業</span></div><div class="kpi"><b>' + pct(rate) + '</b><span>繳交率</span></div></div></div>');
+    });
+    if (!all.cr.length) cards.push('<div class="card ext"><h3>Google Classroom</h3><div class="meta">尚未同步。照 README 安裝 Apps Script 後，作業繳交與分數會出現在這裡。</div></div>');
+
+    return '<section><h2>這週可以怎麼調整教學</h2><p class="hint">依目前期間（' + (days >= 150 ? "本學期" : "近 " + days + " 天") + '）的紀錄自動整理；作答人數太少的題目不列入。</p>' +
+      insights(all, acts) + '</section><section><h2>各課程概況</h2><p class="hint">點課程卡片看逐週、逐題與學生明細。長條是近 28 天每天的活動量。</p><div class="grid" style="margin-top:10px">' + cards.join("") + "</div></section>";
+  }
+
+  function insights(all, acts) {
+    var out = [];
+    var minN = state.demo ? 4 : 5;
+    // 每門課最多列 2 題，免得一門課洗版
+    var perCourse = {};
+    var hard = itemStats(acts).filter(function (s) { return s.n >= minN && s.rate < 60; }).sort(function (a, b) { return a.rate - b.rate; })
+      .filter(function (s) { perCourse[s.c] = (perCourse[s.c] || 0) + 1; return perCourse[s.c] <= 2; }).slice(0, 8);
+    hard.forEach(function (s) {
+      out.push({ lv: s.rate < 40 ? "red" : "", what: '<span class="tag">' + esc(courseName(s.c)) + "</span>" + esc(s.item.replace("（平均分）", "")) + (s.avgScore ? "：平均分 " : "：答對率 ") + pct(s.rate) + "（" + s.n + " 人）",
+        doit: s.rate < 40 ? "多數人答錯 —— 下次上課先用 3 分鐘重講這個概念，再用同類題當入門題確認。" : "約一半答錯 —— 適合做同儕討論題：先讓學生各自選、兩兩說理由，再公布答案。" });
+    });
+    // 平均分偏低的週次
+    groupBy(acts.filter(function (a) { return a.kind === "score"; }), function (a) { return a.c + "|" + a.unit; }).forEach(function (list) {
+      var s = avg(list.map(function (a) { return a.score; })), n = new Set(list.map(function (a) { return a.stu; })).size;
+      if (n >= minN && s < 65) out.push({ lv: "", what: '<span class="tag">' + esc(courseName(list[0].c)) + "</span>" + esc(list[0].unit) + " 平均分 " + pct(s) + "（" + n + " 人）",
+        doit: "這週整體偏難：檢查是生詞（語言）還是概念卡住 —— 國合班可對照前後測 A 組（術語）與 B 組（概念）分數。" });
+    });
+    // 一段時間沒上線
+    groupBy(all.acts, function (a) { return a.c; }).forEach(function (list, c) {
+      var last = {};
+      list.forEach(function (a) { if (a.stu.indexOf("匿名") === 0) return; if (!last[a.stu] || a.ts > last[a.stu]) last[a.stu] = a.ts; });
+      var gone = Object.keys(last).filter(function (s) { return Date.now() - last[s] > 10 * DAY; });
+      if (gone.length >= 2) out.push({ lv: "", what: '<span class="tag">' + esc(courseName(c)) + "</span>" + gone.length + " 位學生超過 10 天沒有使用互動練習",
+        doit: "名單：" + esc(gone.slice(0, 12).join("、")) + (gone.length > 12 ? "…" : "") + "。可在 Classroom 發提醒，或課堂上留 5 分鐘現場做。" });
+    });
+    // Classroom 繳交
+    groupBy(all.cr, function (s) { return s.cid + "|" + s.wid; }).forEach(function (list) {
+      var due = list[0].due ? new Date(list[0].due + "T23:59:59") : null;
+      if (!due || due > Date.now()) return;
+      var rate = list.filter(function (s) { return s.done; }).length / list.length * 100;
+      if (rate < 75) out.push({ lv: rate < 50 ? "red" : "", what: '<span class="tag">' + esc(list[0].course) + "</span>「" + esc(list[0].title) + "」已過截止日，繳交率 " + pct(rate),
+        doit: "未交 " + list.filter(function (s) { return !s.done; }).length + " 人。到 Classroom 分頁看名單；若是作業說明不清楚，下次在課堂示範一次。" });
+    });
+    if (!out.length) return '<ul class="ins"><li class="green"><div class="what">目前沒有需要特別處理的地方</div><div class="do">資料還少時這裡也會是空的；累積一兩週後就會出現建議。</div></li></ul>';
+    return '<ul class="ins">' + out.slice(0, 12).map(function (o) { return '<li class="' + o.lv + '"><div class="what">' + o.what + '</div><div class="do">' + o.doit + "</div></li>"; }).join("") + "</ul>";
+  }
+
+  function courseView(all, acts) {
+    var keys = Array.from(new Set(Object.keys(COURSE_NAMES).concat(all.acts.map(function (a) { return a.c; }))));
+    if (!state.course || keys.indexOf(state.course) < 0) state.course = keys.find(function (k) { return all.acts.some(function (a) { return a.c === k; }); }) || keys[0];
+    var c = state.course;
+    var list = acts.filter(function (a) { return a.c === c; });
+    var html = '<div class="sel"><b>課程</b><select id="courseSel">' + keys.map(function (k) { return '<option value="' + esc(k) + '"' + (k === c ? " selected" : "") + ">" + esc(courseName(k)) + "</option>"; }).join("") + "</select>" +
+      (c === "ifs:a2" ? '<span class="hint">國合班第 9 週期中考，教材第 9 週起順延一週顯示</span>' : "") + "</div>";
+    if (!list.length) return html + '<div class="card empty">這段期間沒有這門課的紀錄。</div>';
+
+    var fa = firstAnswers(list);
+    var units = Array.from(groupBy(list, function (a) { return a.unit; }).entries()).sort(function (a, b) { return a[1][0].us - b[1][0].us; });
+    var unitRows = units.map(function (e) {
+      var l = e[1], sc = avg(l.filter(function (a) { return a.kind === "score"; }).map(function (a) { return a.score; }));
+      var ans = fa.filter(function (a) { return a.unit === e[0]; }), rate = ans.length ? ans.filter(function (a) { return a.ok; }).length / ans.length * 100 : null;
+      return "<tr><td>" + esc(e[0]) + '</td><td class="num">' + new Set(l.map(function (a) { return a.stu; })).size + '</td><td class="num">' + l.length +
+        '</td><td class="num">' + pct(sc) + meter(sc) + '</td><td class="num">' + pct(rate) + meter(rate) + "</td></tr>";
+    }).join("");
+    var items = itemStats(list).filter(function (s) { return s.n >= 2; }).sort(function (a, b) { return a.rate - b.rate; }).slice(0, 25);
+    var itemRows = items.map(function (s) { return "<tr><td>" + esc(s.item) + '</td><td class="num">' + s.n + '</td><td class="num">' + pct(s.rate) + meter(s.rate) + "</td></tr>"; }).join("");
+
+    var cidx = classroomIndex(all.cr), hasCr = all.cr.length > 0;
+    var stuRows = Array.from(groupBy(list, function (a) { return a.stu; }).entries()).map(function (e) {
+      var l = e[1], last = l.reduce(function (m, a) { return a.ts > m ? a.ts : m; }, l[0].ts);
+      var sc = avg(l.filter(function (a) { return a.kind === "score"; }).map(function (a) { return a.score; }));
+      var ans = fa.filter(function (a) { return a.stu === e[0]; }), rate = ans.length ? ans.filter(function (a) { return a.ok; }).length / ans.length * 100 : null;
+      var crx = cidx[e[0].toLowerCase()];
+      var stale = Date.now() - last > 10 * DAY;
+      return '<tr><td>' + esc(e[0]) + '</td><td data-v="' + (+last) + '"' + (stale ? ' class="flag"' : "") + ">" + ago(last) + '</td><td class="num">' + new Set(l.map(function (a) { return dayKey(a.ts); })).size +
+        '</td><td class="num">' + l.length + '</td><td class="num" data-v="' + (sc == null ? -1 : sc) + '">' + pct(sc) + '</td><td class="num" data-v="' + (rate == null ? -1 : rate) + '">' + pct(rate) + "</td>" +
+        (hasCr ? '<td class="num">' + (crx ? crx.done + "/" + crx.total + (crx.late ? "（遲 " + crx.late + "）" : "") : "—") + "</td>" : "") + "</tr>";
+    }).join("");
+
+    return html + '<div class="row2"><section><h2>逐週／單元</h2><p class="hint">首答正確率：每位學生每題只算第一次作答。</p><div class="tablewrap" style="margin-top:8px"><table data-sort><thead><tr><th>週次／單元</th><th class="num">學生</th><th class="num">活動數</th><th class="num">平均分</th><th class="num">首答正確率</th></tr></thead><tbody>' + unitRows + "</tbody></table></div></section>" +
+      '<section><h2>最難的題目</h2><p class="hint">由低到高；生化小遊戲沒有逐題紀錄，用遊戲平均分代替。</p><div class="tablewrap" style="margin-top:8px;max-height:420px">' +
+      (itemRows ? '<table data-sort><thead><tr><th>題目</th><th class="num">人數</th><th class="num">答對率</th></tr></thead><tbody>' + itemRows + "</tbody></table>" : '<div class="empty">這門課沒有逐題作答紀錄。</div>') + "</div></section></div>" +
+      '<section><h2>學生</h2><p class="hint">紅字 = 超過 10 天沒有活動。點表頭可排序。' + (hasCr ? "Classroom 欄用 email 前綴（學號）或姓名對應，對不上顯示「—」。" : "") + '</p><div class="tablewrap" style="margin-top:8px;max-height:560px"><table data-sort><thead><tr><th>學生</th><th>最後活動</th><th class="num">活躍天數</th><th class="num">活動數</th><th class="num">平均分</th><th class="num">首答正確率</th>' + (hasCr ? '<th class="num">Classroom 已交</th>' : "") + "</tr></thead><tbody>" + stuRows + "</tbody></table></div></section>";
+  }
+
+  function classroomView(cr) {
+    if (!cr.length) return '<div class="card"><h3>尚未接上 Google Classroom</h3><div class="meta" style="font-size:14px;line-height:1.7">在你的 Classroom 帳號建立 Apps Script（<code>teacher-dashboard\\02_classroom_sync.gs</code>），它每 6 小時把各課程的作業、繳交狀態與分數同步到 Supabase，這裡就會出現：每份作業的繳交率、遲交與平均分，以及缺交最多的學生。</div></div>';
+    var html = "";
+    groupBy(cr, function (s) { return s.course; }).forEach(function (list, name) {
+      var works = Array.from(groupBy(list, function (s) { return s.wid; }).values()).sort(function (a, b) { return String(b[0].due || "").localeCompare(String(a[0].due || "")); });
+      var rows = works.map(function (w) {
+        var done = w.filter(function (s) { return s.done; }).length, rate = done / w.length * 100;
+        var g = w.filter(function (s) { return s.grade != null; }).map(function (s) { return w[0].max ? s.grade / w[0].max * 100 : s.grade; });
+        return "<tr><td>" + esc(w[0].title) + "</td><td>" + esc(w[0].topic || "") + "</td><td>" + esc(w[0].due || "—") + '</td><td class="num">' + done + "/" + w.length + '</td><td class="num">' + pct(rate) + meter(rate) +
+          '</td><td class="num">' + w.filter(function (s) { return s.late; }).length + '</td><td class="num">' + (g.length ? pct(avg(g)) : "—") + "</td></tr>";
+      }).join("");
+      var miss = Array.from(groupBy(list.filter(function (s) { return !s.done && s.due && new Date(s.due + "T23:59:59") < Date.now(); }), function (s) { return s.name || s.key; }).entries())
+        .sort(function (a, b) { return b[1].length - a[1].length; }).slice(0, 15);
+      html += '<section><h2>' + esc(name) + '</h2><div class="row2" style="margin-top:8px"><div class="tablewrap"><table data-sort><thead><tr><th>作業</th><th>主題</th><th>截止</th><th class="num">已交</th><th class="num">繳交率</th><th class="num">遲交</th><th class="num">平均分</th></tr></thead><tbody>' + rows + '</tbody></table></div>' +
+        '<div class="tablewrap"><table><thead><tr><th>已過截止、還沒交最多的學生</th><th class="num">缺交數</th></tr></thead><tbody>' +
+        (miss.length ? miss.map(function (e) { return "<tr><td>" + esc(e[0]) + '</td><td class="num">' + e[1].length + "</td></tr>"; }).join("") : '<tr><td colspan="2" class="empty">沒有缺交</td></tr>') + "</tbody></table></div></div></section>";
+    });
+    return html;
+  }
+
+  function sortable(t) {
+    t.querySelectorAll("th").forEach(function (th, i) {
+      th.addEventListener("click", function () {
+        var tb = t.tBodies[0], rows = Array.from(tb.rows), dir = th.dataset.dir === "asc" ? -1 : 1;
+        rows.sort(function (a, b) {
+          var x = a.cells[i], y = b.cells[i];
+          var xv = x.dataset.v != null ? +x.dataset.v : parseFloat(x.textContent), yv = y.dataset.v != null ? +y.dataset.v : parseFloat(y.textContent);
+          if (!isNaN(xv) && !isNaN(yv)) return (xv - yv) * dir;
+          return x.textContent.localeCompare(y.textContent, "zh-Hant") * dir;
+        });
+        th.dataset.dir = dir === 1 ? "asc" : "desc";
+        rows.forEach(function (r) { tb.appendChild(r); });
+      });
+    });
+  }
+
+  function setView(v) {
+    state.view = v;
+    document.querySelectorAll("#tabs button").forEach(function (b) { b.classList.toggle("on", b.dataset.v === v); });
+    render();
+  }
+
+  /* ---------- 讀資料 ---------- */
+  function load(fromUnlock) {
+    if (state.demo) { state.raw = demoData(); render(); return; }
+    $("#status").textContent = "讀取中…";
+    fetch(SB_URL + "/rest/v1/rpc/teacher_dashboard", {
+      method: "POST",
+      headers: { apikey: SB_KEY, "Content-Type": "application/json" },
+      body: JSON.stringify({ p_pass: state.pass || "", p_days: 150 })
+    }).then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); })
+      .then(function (res) {
+        if (!res.ok) throw new Error(res.j && (res.j.message || res.j.hint) || "HTTP 錯誤");
+        if (res.j.error === "bad_pass") {
+          try { localStorage.removeItem(PASS_KEY); } catch (e) {}
+          $("#lock").style.display = ""; $("#pwerr").textContent = fromUnlock ? "通關碼不對，請再試一次。" : ""; $("#status").textContent = "";
+          return;
+        }
+        try { localStorage.setItem(PASS_KEY, state.pass); } catch (e) {}
+        $("#lock").style.display = "none";
+        state.raw = res.j; render();
+        $("#status").textContent = "更新：" + new Date().toLocaleTimeString("zh-TW", { hour12: false });
+      })
+      .catch(function (e) {
+        $("#status").textContent = "";
+        $("#lock").style.display = "";
+        $("#pwerr").textContent = /teacher_dashboard/.test(e.message) || /function/.test(e.message)
+          ? "資料庫還沒設定好：請先在 Supabase SQL Editor 執行 01_supabase_setup.sql。"
+          : "連線失敗：" + e.message;
+      });
+  }
+
+  // 示範資料：格式與 RPC 回傳完全相同，走同一套整理流程
+  function demoData() {
+    var seed = 7; function rnd() { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; }
+    var now = Date.now(), stus = []; for (var i = 1; i <= 22; i++) stus.push("B1130" + pad(i));
+    function t(daysAgo) { return new Date(now - daysAgo * DAY - rnd() * DAY).toISOString(); }
+    var out = { interactions: [], student_events: [], ifs: [], classroom: [] };
+    var games = ["詞義配對", "對或錯", "步驟排序", "情境題", "選詞填空"];
+    for (var w = 1; w <= 8; w++) stus.forEach(function (s, si) {
+      if (rnd() < (si > 18 ? 0.25 : 0.85)) games.forEach(function (g, gi) {
+        var base = 88 - gi * 6 - (w === 6 ? 25 : 0);
+        out.interactions.push(["biochem-vi", w, s, "w" + pad(w) + "_g" + (gi + 1), g, Math.max(0, Math.min(100, Math.round(base + (rnd() - .5) * 30))), 100, t((8 - w) * 7 + 2)]);
+      });
+    });
+    var qdiff = { q1: .9, q2: .8, q3: .35, q4: .7, q5: .55, q6: .85 };
+    ["L01", "L02", "L03", "L04", "L05", "L06", "L07"].forEach(function (ch, ci) {
+      stus.slice(0, 18).forEach(function (s) {
+        Object.keys(qdiff).forEach(function (q) { out.student_events.push(["4y_food_analysis", "A", ch, "assess", "answer", q, rnd() < qdiff[q] - (ch === "L05" ? .3 : 0), null, s, t((7 - ci) * 7 + 1)]); });
+        out.student_events.push(["4y_food_analysis", "A", ch, "assess", "complete", null, null, Math.round(60 + rnd() * 40), s, t((7 - ci) * 7 + 1)]);
+      });
+    });
+    [["general", 2, 7], ["a2", 1, 8]].forEach(function (cfg) {
+      for (var w = cfg[1]; w <= cfg[2]; w++) stus.forEach(function (s, si) {
+        if (rnd() > (si % 7 === 3 ? 0.2 : 0.8)) return;
+        var dev = "d" + cfg[0] + si, ses = "s" + w + si, when = t((cfg[2] - w) * 7 + (si % 3));
+        out.ifs.push([cfg[0], w, s, dev, ses, "session_start", "m0", null, null, null, null, null, null, when]);
+        var score = 0;
+        for (var q = 0; q < 10; q++) {
+          var ok = rnd() < (q === 4 ? .3 : q === 7 ? .5 : .82);
+          if (ok) score++;
+          out.ifs.push([cfg[0], w, s, dev, ses, "quiz_answer", "m6", String(q), String(ok), "1", null, null, null, when]);
+        }
+        out.ifs.push([cfg[0], w, s, dev, ses, "quiz_done", "m6", null, null, "1", String(score), "10", "420000", when]);
+      });
+    });
+    [["c1", "生物化學 A（國合班）"], ["c2", "食品科學概論（國合班）"]].forEach(function (c) {
+      for (var k = 1; k <= 6; k++) {
+        var due = new Date(now - (7 - k) * 7 * DAY + 2 * DAY);
+        stus.forEach(function (s, si) {
+          var done = rnd() < (k === 5 ? .55 : si > 18 ? .4 : .92);
+          out.classroom.push([c[0], c[1], c[0] + "w" + k, "第 " + k + " 週學習單", "第 " + k + " 週", 10, dayKey(due), s.toLowerCase(), "學生" + pad(si + 1),
+            done ? "TURNED_IN" : "CREATED", done && rnd() < .15, done ? Math.round(6 + rnd() * 4) : null, new Date(now - 3 * 36e5).toISOString()]);
+        });
+      }
+    });
+    return out;
+  }
+
+  /* ---------- 事件 ---------- */
+  $("#unlock").addEventListener("click", function () { state.demo = false; state.pass = $("#pw").value; load(true); });
+  $("#pw").addEventListener("keydown", function (e) { if (e.key === "Enter") $("#unlock").click(); });
+  $("#demoBtn").addEventListener("click", function () { state.demo = true; $("#lock").style.display = "none"; $("#status").textContent = "示範資料"; load(); });
+  $("#reload").addEventListener("click", function () { if (state.demo) { $("#lock").style.display = ""; return; } load(); });
+  $("#range").addEventListener("change", render);
+  document.querySelectorAll("#tabs button").forEach(function (b) { b.addEventListener("click", function () { setView(b.dataset.v); }); });
+  if (state.pass) load(false);
+})();
+</script>
+</body>
+</html>
