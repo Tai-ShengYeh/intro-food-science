@@ -91,6 +91,16 @@
   <div id="pwerr"></div>
   <button id="unlock">進入</button>
   <button id="demoBtn" class="ghost">先看示範資料（假資料，看版面用）</button>
+  <details id="setup" style="margin-top:14px;font-size:13.5px">
+    <summary style="cursor:pointer;color:var(--secondary)">第一次設定／更改通關碼</summary>
+    <div class="hint" style="margin-top:6px">在這裡輸入新的通關碼，本頁會在你的瀏覽器裡算出雜湊，產生一段 SQL 讓你貼進 Supabase SQL Editor。SQL 裡只有雜湊，沒有原文（Supabase 會把執行過的 SQL 記進日誌）。</div>
+    <input id="newPass" type="password" autocomplete="new-password" placeholder="新的儀表板通關碼">
+    <input id="newPass2" type="password" autocomplete="new-password" placeholder="再輸入一次">
+    <input id="newSecret" type="password" autocomplete="off" placeholder="Classroom 同步密鑰（不改就留空）">
+    <button id="mkSql" class="ghost">產生 SQL</button>
+    <div id="sqlErr" style="color:var(--red);font-size:13px;min-height:18px;margin-top:6px"></div>
+    <textarea id="sqlOut" readonly style="display:none;width:100%;height:120px;margin-top:6px;font:12px/1.4 Consolas,monospace;border:1px solid var(--line);border-radius:8px;padding:8px;background:var(--bg);color:var(--text)"></textarea>
+  </details>
 </div></div>
 
 <header><div class="in">
@@ -435,7 +445,7 @@
         if (!res.ok) throw new Error(res.j && (res.j.message || res.j.hint) || "HTTP 錯誤");
         if (res.j.error === "bad_pass") {
           try { localStorage.removeItem(PASS_KEY); } catch (e) {}
-          $("#lock").style.display = ""; $("#pwerr").textContent = fromUnlock ? "通關碼不對，請再試一次。" : ""; $("#status").textContent = "";
+          $("#lock").style.display = ""; $("#pwerr").textContent = fromUnlock ? "通關碼不對（有分大小寫；以最後一次在 Supabase 執行的設定為準）。忘記了就用下方「更改通關碼」重設。" : ""; $("#status").textContent = "";
           return;
         }
         try { localStorage.setItem(PASS_KEY, state.pass); } catch (e) {}
@@ -498,6 +508,55 @@
     });
     return out;
   }
+
+  /* ---------- 設定通關碼：在瀏覽器算 SHA-256，SQL 只帶雜湊 ---------- */
+  function sha256hex(s) {
+    var bytes = new TextEncoder().encode(s);
+    if (window.crypto && crypto.subtle && window.isSecureContext) {
+      return crypto.subtle.digest("SHA-256", bytes).then(function (buf) {
+        return Array.from(new Uint8Array(buf)).map(function (b) { return b.toString(16).padStart(2, "0"); }).join("");
+      });
+    }
+    return Promise.resolve(sha256js(bytes)); // 非 https（例如本機開檔）時的後備
+  }
+  function sha256js(msg) {
+    var K = [], H = [], p = 0, n = 2;
+    function fr(x) { return (x - Math.floor(x)) * 4294967296 | 0; }
+    while (p < 64) { var ip = true; for (var d = 2; d * d <= n; d++) if (n % d === 0) { ip = false; break; } if (ip) { if (p < 8) H[p] = fr(Math.pow(n, 1 / 2)); K[p++] = fr(Math.pow(n, 1 / 3)); } n++; }
+    var l = msg.length, words = [], i;
+    for (i = 0; i < l; i++) words[i >> 2] |= msg[i] << (24 - (i % 4) * 8);
+    words[l >> 2] |= 0x80 << (24 - (l % 4) * 8);
+    var nw = ((l + 8) >> 6) * 16 + 16; for (i = words.length; i < nw; i++) words[i] = words[i] | 0;
+    words[nw - 1] = l * 8;
+    function r(x, b) { return (x >>> b) | (x << (32 - b)); }
+    for (var j = 0; j < nw; j += 16) {
+      var w = words.slice(j, j + 16), a = H.slice();
+      for (i = 0; i < 64; i++) {
+        if (i >= 16) { var w15 = w[i - 15], w2 = w[i - 2]; w[i] = (w[i - 16] + (r(w15, 7) ^ r(w15, 18) ^ (w15 >>> 3)) + w[i - 7] + (r(w2, 17) ^ r(w2, 19) ^ (w2 >>> 10))) | 0; }
+        var t1 = (a[7] + (r(a[4], 6) ^ r(a[4], 11) ^ r(a[4], 25)) + ((a[4] & a[5]) ^ (~a[4] & a[6])) + K[i] + w[i]) | 0;
+        var t2 = ((r(a[0], 2) ^ r(a[0], 13) ^ r(a[0], 22)) + ((a[0] & a[1]) ^ (a[0] & a[2]) ^ (a[1] & a[2]))) | 0;
+        a = [(t1 + t2) | 0].concat(a.slice(0, 7)); a[4] = (a[4] + t1) | 0;
+      }
+      for (i = 0; i < 8; i++) H[i] = (H[i] + a[i]) | 0;
+    }
+    return H.map(function (x) { return (x >>> 0).toString(16).padStart(8, "0"); }).join("");
+  }
+  $("#mkSql").addEventListener("click", function () {
+    var p = $("#newPass").value, p2 = $("#newPass2").value, sec = $("#newSecret").value, err = $("#sqlErr"), out = $("#sqlOut");
+    err.textContent = ""; err.style.color = ""; out.style.display = "none";
+    if (p.length < 8) { err.textContent = "通關碼至少 8 個字元。"; return; }
+    if (p !== p2) { err.textContent = "兩次輸入的通關碼不一樣。"; return; }
+    if (p !== p.trim() || /★/.test(p + sec)) { err.textContent = "通關碼前後不要有空白，也不要留 ★。"; return; }
+    if (sec && sec.length < 16) { err.textContent = "Classroom 同步密鑰至少 16 個字元。"; return; }
+    Promise.all([sha256hex(p), sec ? sha256hex(sec) : null]).then(function (h) {
+      var rows = ["('dash_pass', '" + h[0] + "')"];
+      if (h[1]) rows.push("('classroom_secret', '" + h[1] + "')");
+      out.value = "-- 教師儀表板通關碼（只有雜湊，沒有原文）\ninsert into public.teacher_dash_config (k, hash) values\n  " + rows.join(",\n  ") +
+        "\non conflict (k) do update set hash = excluded.hash;\n\nselect k, left(hash, 8) || '…' as hash_prefix from public.teacher_dash_config order by k;";
+      out.style.display = ""; out.select();
+      err.style.color = "var(--green)"; err.textContent = "已產生。複製下面整段，貼到 Supabase SQL Editor 按 Run，再回來用新通關碼登入。";
+    });
+  });
 
   /* ---------- 事件 ---------- */
   $("#unlock").addEventListener("click", function () { state.demo = false; state.pass = $("#pw").value; load(true); });
