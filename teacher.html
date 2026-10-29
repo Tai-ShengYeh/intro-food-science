@@ -105,7 +105,7 @@
 
 <header><div class="in">
   <h1>教師學習儀表板</h1>
-  <div class="sub">生物化學 · 食品科學概論（一般班／國合班）· 食品營養華語 · 食品分析實驗 · Google Classroom</div>
+  <div class="sub">115-1 學期五門課：生物化學 · 食品科學概論（國合班）· 食品營養華語 · 食品分析實驗（五專五年級）· 普通化學 ＋ Google Classroom</div>
   <div class="bar">
     <div class="tabs" id="tabs">
       <button data-v="overview" class="on">總覽與建議</button>
@@ -115,7 +115,7 @@
     <select id="range" title="期間">
       <option value="7">近 7 天</option>
       <option value="28" selected>近 28 天</option>
-      <option value="150">本學期</option>
+      <option value="999">本學期（9/14 起）</option>
     </select>
     <button id="reload">重新整理</button>
     <span class="status" id="status"></span>
@@ -132,15 +132,16 @@
   var PASS_KEY = "teacher_dash_pass";
   var DAY = 864e5;
 
-  // 課程顯示名稱。不在表上的 course_code 直接顯示代碼。
+  // 本學期（115-1）的課程。只顯示這幾門；其他課程代碼或學期開始前的紀錄不列入。
+  var SEMESTER_START = new Date("2026-09-14T00:00:00+08:00"); // 第 1 週週一
   var COURSE_NAMES = {
     "int:biochem-vi": "生物化學 · 國合班",
-    "int:vn-chinese-s1": "食品營養華語 · 寫作 I",
-    "ifs:general": "食品科學概論 · 一般班",
     "ifs:a2": "食品科學概論 · 國合班",
-    "fa:4y_food_analysis/A": "食品分析實驗 · 四技",
-    "fa:5z_food_analysis/B": "食品分析實驗 · 五專"
+    "int:vn-chinese-s1": "食品營養華語 · 寫作 I",
+    "fa:5z_food_analysis/B": "食品分析實驗 · 五專五年級"
   };
+  // 本學期食品分析實驗只有五專五年級；2026-10-28 前頁面沒帶 ?class=B，預設記成四技 A，這裡併回五專。
+  var COURSE_ALIASES = { "fa:4y_food_analysis/A": "fa:5z_food_analysis/B" };
   // 沒有網頁紀錄、只能連過去看的課程
   var EXTERNAL = [
     { name: "普通化學", note: "網頁本身不記錄；測驗成績在 Google 表單（教師專用頁的 Apps Script 建立），同步進 Classroom 後會出現在 Classroom 分頁。", href: "https://tai-shengyeh.github.io/general-chemistry/%E6%95%99%E5%B8%AB%E5%B0%88%E7%94%A8.html" }
@@ -204,14 +205,20 @@
       else a.kind = "visit";
       acts.push(a);
     });
-    acts = acts.filter(function (a) { return !isNaN(a.ts); });
+    var hidden = 0;
+    acts = acts.filter(function (a) {
+      if (isNaN(a.ts)) return false;
+      a.c = COURSE_ALIASES[a.c] || a.c;
+      if (a.ts < SEMESTER_START || !COURSE_NAMES[a.c]) { hidden++; return false; }
+      return true;
+    });
 
     var cr = (raw.classroom || []).map(function (r) {
       return { cid: r[0], course: r[1], wid: r[2], title: r[3], topic: r[4], max: r[5] == null ? null : Number(r[5]), due: r[6],
         key: String(r[7] || "").toLowerCase(), name: r[8] || "", state: r[9], late: !!r[10], grade: r[11] == null ? null : Number(r[11]),
         done: r[9] === "TURNED_IN" || r[9] === "RETURNED", synced: r[12] ? new Date(r[12]) : null };
     });
-    return { acts: acts, cr: cr };
+    return { acts: acts, cr: cr, hidden: hidden };
   }
 
   function courseName(c) { return COURSE_NAMES[c] || c.replace(/^\w+:/, ""); }
@@ -286,7 +293,7 @@
 
   function overview(all, acts, days) {
     var byCourse = groupBy(all.acts, function (a) { return a.c; });
-    var keys = Object.keys(COURSE_NAMES).concat(Array.from(byCourse.keys()).filter(function (k) { return !COURSE_NAMES[k]; }));
+    var keys = Object.keys(COURSE_NAMES);
     var wk = Date.now() - 7 * DAY;
     var cards = keys.map(function (k) {
       var list = byCourse.get(k) || [], inRange = list.filter(function (a) { return a.ts >= Date.now() - days * DAY; });
@@ -312,7 +319,7 @@
     });
     if (!all.cr.length) cards.push('<div class="card ext"><h3>Google Classroom</h3><div class="meta">尚未同步。照 README 安裝 Apps Script 後，作業繳交與分數會出現在這裡。</div></div>');
 
-    return '<section><h2>這週可以怎麼調整教學</h2><p class="hint">依目前期間（' + (days >= 150 ? "本學期" : "近 " + days + " 天") + '）的紀錄自動整理；作答人數太少的題目不列入。</p>' +
+    return '<section><h2>這週可以怎麼調整教學</h2><p class="hint">依目前期間（' + (days >= 999 ? "本學期" : "近 " + days + " 天") + '）的紀錄自動整理；作答人數太少的題目不列入。</p>' +
       insights(all, acts) + '</section><section><h2>各課程概況</h2><p class="hint">點課程卡片看逐週、逐題與學生明細。長條是近 28 天每天的活動量。</p><div class="grid" style="margin-top:10px">' + cards.join("") + "</div></section>";
   }
 
@@ -354,7 +361,7 @@
   }
 
   function courseView(all, acts) {
-    var keys = Array.from(new Set(Object.keys(COURSE_NAMES).concat(all.acts.map(function (a) { return a.c; }))));
+    var keys = Object.keys(COURSE_NAMES);
     if (!state.course || keys.indexOf(state.course) < 0) state.course = keys.find(function (k) { return all.acts.some(function (a) { return a.c === k; }); }) || keys[0];
     var c = state.course;
     var list = acts.filter(function (a) { return a.c === c; });
@@ -440,7 +447,7 @@
     fetch(SB_URL + "/rest/v1/rpc/teacher_dashboard", {
       method: "POST",
       headers: { apikey: SB_KEY, "Content-Type": "application/json" },
-      body: JSON.stringify({ p_pass: state.pass || "", p_days: 150 })
+      body: JSON.stringify({ p_pass: state.pass || "", p_days: Math.ceil((Date.now() - SEMESTER_START) / DAY) + 1 })
     }).then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); })
       .then(function (res) {
         if (!res.ok) throw new Error(res.j && (res.j.message || res.j.hint) || "HTTP 錯誤");
