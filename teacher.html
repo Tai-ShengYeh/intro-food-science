@@ -105,7 +105,7 @@
 
 <header><div class="in">
   <h1>教師學習儀表板</h1>
-  <div class="sub">生物化學 · 食品科學概論（一般班／國合班）· 食品分析實驗 · Google Classroom</div>
+  <div class="sub">生物化學 · 食品科學概論（一般班／國合班）· 食品營養華語 · 食品分析實驗 · Google Classroom</div>
   <div class="bar">
     <div class="tabs" id="tabs">
       <button data-v="overview" class="on">總覽與建議</button>
@@ -123,7 +123,7 @@
 </div></header>
 
 <main id="main"></main>
-<footer>資料來源：Supabase（各課程網頁的學習紀錄）＋ Google Classroom（Apps Script 每 6 小時同步）。網頁紀錄只供分析教學，不當成績或出席證據。</footer>
+<footer>資料來源：Supabase（各課程網頁的學習紀錄；生化與食品營養華語來自 interactions 表）＋ Google Classroom（Apps Script 每 6 小時同步）。網頁紀錄只供分析教學，不當成績或出席證據。</footer>
 
 <script>
 (function () {
@@ -134,7 +134,8 @@
 
   // 課程顯示名稱。不在表上的 course_code 直接顯示代碼。
   var COURSE_NAMES = {
-    "bio:biochem-vi": "生物化學 · 國合班",
+    "int:biochem-vi": "生物化學 · 國合班",
+    "int:vn-chinese-s1": "食品營養華語 · 寫作 I",
     "ifs:general": "食品科學概論 · 一般班",
     "ifs:a2": "食品科學概論 · 國合班",
     "fa:4y_food_analysis/A": "食品分析實驗 · 四技",
@@ -175,7 +176,7 @@
     var acts = [];
     (raw.interactions || []).forEach(function (r) {
       var w = parseInt(r[1], 10), total = Number(r[6]) || 0, sc = Number(r[5]);
-      acts.push({ c: "bio:" + r[0], unit: isNaN(w) ? "?" : "W" + pad(w), us: isNaN(w) ? 999 : w, stu: String(r[2] || "匿名"),
+      acts.push({ c: "int:" + r[0], unit: isNaN(w) ? "?" : "W" + pad(w), us: isNaN(w) ? 999 : w, stu: String(r[2] || "匿名"),
         ts: new Date(r[7]), kind: "score", score: total > 0 ? sc / total * 100 : sc, item: (isNaN(w) ? "" : "W" + pad(w) + " ") + (r[4] || r[3]) });
     });
     (raw.student_events || []).forEach(function (r) {
@@ -229,8 +230,8 @@
       var ok = list.filter(function (a) { return a.ok; }).length;
       out.push({ c: list[0].c, item: list[0].item, n: list.length, rate: ok / list.length * 100 });
     });
-    // 生化的小遊戲沒有逐題資料：用「該遊戲平均分」當難度
-    groupBy(acts.filter(function (a) { return a.kind === "score" && a.c.indexOf("bio:") === 0; }), function (a) { return a.c + "|" + a.item; })
+    // interactions 表（生化、食品營養華語）的小遊戲沒有逐題資料：用「該遊戲平均分」當難度
+    groupBy(acts.filter(function (a) { return a.kind === "score" && a.c.indexOf("int:") === 0; }), function (a) { return a.c + "|" + a.item; })
       .forEach(function (list) {
         out.push({ c: list[0].c, item: list[0].item + "（平均分）", avgScore: true, n: new Set(list.map(function (a) { return a.stu; })).size,
           rate: avg(list.map(function (a) { return a.score; })) });
@@ -385,7 +386,7 @@
     }).join("");
 
     return html + '<div class="row2"><section><h2>逐週／單元</h2><p class="hint">首答正確率：每位學生每題只算第一次作答。</p><div class="tablewrap" style="margin-top:8px"><table data-sort><thead><tr><th>週次／單元</th><th class="num">學生</th><th class="num">活動數</th><th class="num">平均分</th><th class="num">首答正確率</th></tr></thead><tbody>' + unitRows + "</tbody></table></div></section>" +
-      '<section><h2>最難的題目</h2><p class="hint">由低到高；生化小遊戲沒有逐題紀錄，用遊戲平均分代替。</p><div class="tablewrap" style="margin-top:8px;max-height:420px">' +
+      '<section><h2>最難的題目</h2><p class="hint">由低到高；生化與食品營養華語的小遊戲沒有逐題紀錄，用遊戲平均分代替。</p><div class="tablewrap" style="margin-top:8px;max-height:420px">' +
       (itemRows ? '<table data-sort><thead><tr><th>題目</th><th class="num">人數</th><th class="num">答對率</th></tr></thead><tbody>' + itemRows + "</tbody></table>" : '<div class="empty">這門課沒有逐題作答紀錄。</div>') + "</div></section></div>" +
       '<section><h2>學生</h2><p class="hint">紅字 = 超過 10 天沒有活動。點表頭可排序。' + (hasCr ? "Classroom 欄用 email 前綴（學號）或姓名對應，對不上顯示「—」。" : "") + '</p><div class="tablewrap" style="margin-top:8px;max-height:560px"><table data-sort><thead><tr><th>學生</th><th>最後活動</th><th class="num">活躍天數</th><th class="num">活動數</th><th class="num">平均分</th><th class="num">首答正確率</th>' + (hasCr ? '<th class="num">Classroom 已交</th>' : "") + "</tr></thead><tbody>" + stuRows + "</tbody></table></div></section>";
   }
@@ -473,6 +474,11 @@
       if (rnd() < (si > 18 ? 0.25 : 0.85)) games.forEach(function (g, gi) {
         var base = 88 - gi * 6 - (w === 6 ? 25 : 0);
         out.interactions.push(["biochem-vi", w, s, "w" + pad(w) + "_g" + (gi + 1), g, Math.max(0, Math.min(100, Math.round(base + (rnd() - .5) * 30))), 100, t((8 - w) * 7 + 2)]);
+      });
+    });
+    for (var w2 = 1; w2 <= 8; w2++) stus.slice(0, 16).forEach(function (s, si) {
+      if (rnd() < 0.75) ["詞義配對", "對或錯", "選詞填空"].forEach(function (g, gi) {
+        out.interactions.push(["vn-chinese-s1", w2, s, "w" + pad(w2) + "_g" + (gi + 1), g, Math.round(70 + rnd() * 30 - (w2 === 7 && gi === 2 ? 30 : 0)), 100, t((8 - w2) * 7 + 3)]);
       });
     });
     var qdiff = { q1: .9, q2: .8, q3: .35, q4: .7, q5: .55, q6: .85 };
