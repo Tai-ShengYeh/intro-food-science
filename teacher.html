@@ -178,14 +178,15 @@
     (raw.interactions || []).forEach(function (r) {
       var w = parseInt(r[1], 10), total = Number(r[6]) || 0, sc = Number(r[5]);
       acts.push({ c: "int:" + r[0], unit: isNaN(w) ? "?" : "W" + pad(w), us: isNaN(w) ? 999 : w, stu: String(r[2] || "匿名"),
-        ts: new Date(r[7]), kind: "score", score: total > 0 ? sc / total * 100 : sc, item: (isNaN(w) ? "" : "W" + pad(w) + " ") + (r[4] || r[3]) });
+        ts: new Date(r[7]), kind: "score", complete: true, score: total > 0 ? sc / total * 100 : sc, item: (isNaN(w) ? "" : "W" + pad(w) + " ") + (r[4] || r[3]) });
     });
     (raw.student_events || []).forEach(function (r) {
       var ch = r[2] || "?", m = String(ch).match(/\d+/);
       var a = { c: "fa:" + r[0] + "/" + r[1], unit: ch, us: m ? +m[0] : 999, stu: String(r[8] || "匿名"), ts: new Date(r[9]) };
+      // final_score 是遊戲積分（偵探積分、等溫線 /120…），各遊戲滿分不同，不能當百分比平均；
+      // 食品分析改看首答正確率與完成數（attempt_complete）。
       if (r[6] != null) { a.kind = "answer"; a.ok = r[6] === true || r[6] === "true"; a.item = ch + " · " + (r[5] || r[3] || "?"); }
-      else if (r[7] != null) { a.kind = "score"; a.score = Number(r[7]); a.item = ch + " · " + (r[3] || ""); }
-      else a.kind = "visit";
+      else { a.kind = "visit"; if (r[4] === "attempt_complete") a.complete = true; }
       acts.push(a);
     });
     // 食品科學概論：學生後來才填學號代碼時，用 device_id 把先前的匿名事件接回去
@@ -201,7 +202,7 @@
       var stu = r[2] && r[2] !== "anon" ? r[2] : dev[r[3]] || "匿名·" + String(r[3] || "").slice(1, 6);
       var a = { c: "ifs:" + cls, unit: unit, us: cal, stu: stu, ts: new Date(r[13]) };
       if (r[5] === "quiz_answer" && r[9] === "1") { a.kind = "answer"; a.ok = r[8] === "true"; a.item = unit + " · " + (r[6] || "") + " 第 " + (Number(r[7]) + 1) + " 題"; }
-      else if (r[5] === "quiz_done" && Number(r[11]) > 0) { a.kind = "score"; a.score = Number(r[10]) / Number(r[11]) * 100; a.item = unit + " 測驗"; }
+      else if (r[5] === "quiz_done" && Number(r[11]) > 0) { a.kind = "score"; a.complete = true; a.score = Number(r[10]) / Number(r[11]) * 100; a.item = unit + " 測驗"; }
       else a.kind = "visit";
       acts.push(a);
     });
@@ -374,7 +375,7 @@
     var unitRows = units.map(function (e) {
       var l = e[1], sc = avg(l.filter(function (a) { return a.kind === "score"; }).map(function (a) { return a.score; }));
       var ans = fa.filter(function (a) { return a.unit === e[0]; }), rate = ans.length ? ans.filter(function (a) { return a.ok; }).length / ans.length * 100 : null;
-      return "<tr><td>" + esc(e[0]) + '</td><td class="num">' + new Set(l.map(function (a) { return a.stu; })).size + '</td><td class="num">' + l.length +
+      return "<tr><td>" + esc(e[0]) + '</td><td class="num">' + new Set(l.map(function (a) { return a.stu; })).size + '</td><td class="num">' + l.filter(function (a) { return a.complete; }).length + '</td><td class="num">' + l.length +
         '</td><td class="num">' + pct(sc) + meter(sc) + '</td><td class="num">' + pct(rate) + meter(rate) + "</td></tr>";
     }).join("");
     var items = itemStats(list).filter(function (s) { return s.n >= 2; }).sort(function (a, b) { return a.rate - b.rate; }).slice(0, 25);
@@ -388,14 +389,14 @@
       var crx = cidx[e[0].toLowerCase()];
       var stale = Date.now() - last > 10 * DAY;
       return '<tr><td>' + esc(e[0]) + '</td><td data-v="' + (+last) + '"' + (stale ? ' class="flag"' : "") + ">" + ago(last) + '</td><td class="num">' + new Set(l.map(function (a) { return dayKey(a.ts); })).size +
-        '</td><td class="num">' + l.length + '</td><td class="num" data-v="' + (sc == null ? -1 : sc) + '">' + pct(sc) + '</td><td class="num" data-v="' + (rate == null ? -1 : rate) + '">' + pct(rate) + "</td>" +
+        '</td><td class="num">' + l.filter(function (a) { return a.complete; }).length + '</td><td class="num">' + l.length + '</td><td class="num" data-v="' + (sc == null ? -1 : sc) + '">' + pct(sc) + '</td><td class="num" data-v="' + (rate == null ? -1 : rate) + '">' + pct(rate) + "</td>" +
         (hasCr ? '<td class="num">' + (crx ? crx.done + "/" + crx.total + (crx.late ? "（遲 " + crx.late + "）" : "") : "—") + "</td>" : "") + "</tr>";
     }).join("");
 
-    return html + '<div class="row2"><section><h2>逐週／單元</h2><p class="hint">首答正確率：每位學生每題只算第一次作答。</p><div class="tablewrap" style="margin-top:8px"><table data-sort><thead><tr><th>週次／單元</th><th class="num">學生</th><th class="num">活動數</th><th class="num">平均分</th><th class="num">首答正確率</th></tr></thead><tbody>' + unitRows + "</tbody></table></div></section>" +
+    return html + '<div class="row2"><section><h2>逐週／單元</h2><p class="hint">完成數：做完的小遊戲／測驗次數。首答正確率：每位學生每題只算第一次作答。食品分析的遊戲積分各遊戲滿分不同，不換算成平均分。</p><div class="tablewrap" style="margin-top:8px"><table data-sort><thead><tr><th>週次／單元</th><th class="num">學生</th><th class="num">完成數</th><th class="num">活動數</th><th class="num">平均分</th><th class="num">首答正確率</th></tr></thead><tbody>' + unitRows + "</tbody></table></div></section>" +
       '<section><h2>最難的題目</h2><p class="hint">由低到高；生化與食品營養華語的小遊戲沒有逐題紀錄，用遊戲平均分代替。</p><div class="tablewrap" style="margin-top:8px;max-height:420px">' +
       (itemRows ? '<table data-sort><thead><tr><th>題目</th><th class="num">人數</th><th class="num">答對率</th></tr></thead><tbody>' + itemRows + "</tbody></table>" : '<div class="empty">這門課沒有逐題作答紀錄。</div>') + "</div></section></div>" +
-      '<section><h2>學生</h2><p class="hint">紅字 = 超過 10 天沒有活動。點表頭可排序。' + (hasCr ? "Classroom 欄用 email 前綴（學號）或姓名對應，對不上顯示「—」。" : "") + '</p><div class="tablewrap" style="margin-top:8px;max-height:560px"><table data-sort><thead><tr><th>學生</th><th>最後活動</th><th class="num">活躍天數</th><th class="num">活動數</th><th class="num">平均分</th><th class="num">首答正確率</th>' + (hasCr ? '<th class="num">Classroom 已交</th>' : "") + "</tr></thead><tbody>" + stuRows + "</tbody></table></div></section>";
+      '<section><h2>學生</h2><p class="hint">紅字 = 超過 10 天沒有活動。點表頭可排序。' + (hasCr ? "Classroom 欄用 email 前綴（學號）或姓名對應，對不上顯示「—」。" : "") + '</p><div class="tablewrap" style="margin-top:8px;max-height:560px"><table data-sort><thead><tr><th>學生</th><th>最後活動</th><th class="num">活躍天數</th><th class="num">完成數</th><th class="num">活動數</th><th class="num">平均分</th><th class="num">首答正確率</th>' + (hasCr ? '<th class="num">Classroom 已交</th>' : "") + "</tr></thead><tbody>" + stuRows + "</tbody></table></div></section>";
   }
 
   function classroomView(cr) {
@@ -492,7 +493,7 @@
     ["L01", "L02", "L03", "L04", "L05", "L06", "L07"].forEach(function (ch, ci) {
       stus.slice(0, 18).forEach(function (s) {
         Object.keys(qdiff).forEach(function (q) { out.student_events.push(["4y_food_analysis", "A", ch, "assess", "answer", q, rnd() < qdiff[q] - (ch === "L05" ? .3 : 0), null, s, t((7 - ci) * 7 + 1)]); });
-        out.student_events.push(["4y_food_analysis", "A", ch, "assess", "complete", null, null, Math.round(60 + rnd() * 40), s, t((7 - ci) * 7 + 1)]);
+        out.student_events.push(["4y_food_analysis", "A", ch, "assess", "attempt_complete", null, null, Math.round(60 + rnd() * 40), s, t((7 - ci) * 7 + 1)]);
       });
     });
     [["general", 2, 7], ["a2", 1, 8]].forEach(function (cfg) {
