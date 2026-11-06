@@ -9,3 +9,17 @@
 !AGENTS.md
 !食品科學概論_第*週_A2互動練習.html
 !teacher.html
+
+# HANDWRITE:BEGIN
+# Student runtime only; authoring and assessment remain private.
+!handwrite/
+!handwrite/**/
+!handwrite/**/*.html
+!handwrite/**/*.mp3
+!handwrite/**/*.woff2
+!handwrite/**/assets/fonts/*.ttf
+!handwrite/**/gsap.min.js
+!handwrite/**/THIRD-PARTY.txt
+!handwrite/licenses/OFL*.txt
+!handwrite/course-manifest.json
+# HANDWRITE:END

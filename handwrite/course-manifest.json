@@ -1,0 +1,326 @@
+[
+  {
+    "id": "w01-01-science",
+    "unit": "w01",
+    "title": "用科學問一杯豆漿",
+    "scenes": 7,
+    "minutes": 1.443,
+    "pauses": 2,
+    "audio": true
+  },
+  {
+    "id": "w01-02-evidence",
+    "unit": "w01",
+    "title": "工作、合作與證據",
+    "scenes": 7,
+    "minutes": 1.604,
+    "pauses": 2,
+    "audio": true
+  },
+  {
+    "id": "w02-01-water",
+    "unit": "w02",
+    "title": "水分與水活性分開看",
+    "scenes": 7,
+    "minutes": 1.495,
+    "pauses": 2,
+    "audio": true
+  },
+  {
+    "id": "w02-02-storage",
+    "unit": "w02",
+    "title": "果乾吸濕，先查哪裡",
+    "scenes": 7,
+    "minutes": 1.552,
+    "pauses": 2,
+    "audio": true
+  },
+  {
+    "id": "w03-01-starch",
+    "unit": "w03",
+    "title": "醣類與澱粉的變化",
+    "scenes": 7,
+    "minutes": 1.528,
+    "pauses": 2,
+    "audio": true
+  },
+  {
+    "id": "w03-02-browning",
+    "unit": "w03",
+    "title": "吐司變褐，原因要有證據",
+    "scenes": 7,
+    "minutes": 1.57,
+    "pauses": 2,
+    "audio": true
+  },
+  {
+    "id": "w04-01-protein",
+    "unit": "w04",
+    "title": "形狀改變，主鏈還在嗎",
+    "scenes": 7,
+    "minutes": 1.532,
+    "pauses": 2,
+    "audio": true
+  },
+  {
+    "id": "w04-02-functions",
+    "unit": "w04",
+    "title": "蛋白質怎麼幫忙起泡和乳化",
+    "scenes": 7,
+    "minutes": 1.55,
+    "pauses": 2,
+    "audio": true
+  },
+  {
+    "id": "w05-01-fat",
+    "unit": "w05",
+    "title": "油脂結構與軟硬",
+    "scenes": 7,
+    "minutes": 1.56,
+    "pauses": 2,
+    "audio": true
+  },
+  {
+    "id": "w05-02-rancidity",
+    "unit": "w05",
+    "title": "水解、氧化與餅乾保存",
+    "scenes": 7,
+    "minutes": 1.578,
+    "pauses": 2,
+    "audio": true
+  },
+  {
+    "id": "w06-01-nutrients",
+    "unit": "w06",
+    "title": "營養在哪裡：含量與利用",
+    "scenes": 7,
+    "minutes": 1.565,
+    "pauses": 2,
+    "audio": true
+  },
+  {
+    "id": "w06-02-retention",
+    "unit": "w06",
+    "title": "菜加湯：用總量算保留",
+    "scenes": 7,
+    "minutes": 1.613,
+    "pauses": 2,
+    "audio": true
+  },
+  {
+    "id": "w07-01-flavor",
+    "unit": "w07",
+    "title": "顏色、味道和香氣",
+    "scenes": 7,
+    "minutes": 1.583,
+    "pauses": 2,
+    "audio": true
+  },
+  {
+    "id": "w07-02-enzymes",
+    "unit": "w07",
+    "title": "酵素褐變與殺菁",
+    "scenes": 7,
+    "minutes": 1.58,
+    "pauses": 2,
+    "audio": true
+  },
+  {
+    "id": "w08-01-compare",
+    "unit": "w08",
+    "title": "複習：相似外觀，不同機制",
+    "scenes": 7,
+    "minutes": 1.505,
+    "pauses": 2,
+    "audio": true
+  },
+  {
+    "id": "w08-02-biscuit",
+    "unit": "w08",
+    "title": "夾心餅乾：水往哪裡走",
+    "scenes": 7,
+    "minutes": 1.555,
+    "pauses": 2,
+    "audio": true
+  },
+  {
+    "id": "w10-01-microbes",
+    "unit": "w10",
+    "title": "微生物：生長、存活與危害",
+    "scenes": 7,
+    "minutes": 1.573,
+    "pauses": 2,
+    "audio": true
+  },
+  {
+    "id": "w10-02-growth",
+    "unit": "w10",
+    "title": "倍增模型：先說假設",
+    "scenes": 7,
+    "minutes": 1.583,
+    "pauses": 2,
+    "audio": true
+  },
+  {
+    "id": "w11-01-hurdles",
+    "unit": "w11",
+    "title": "先看怎麼壞，再選保存",
+    "scenes": 7,
+    "minutes": 1.616,
+    "pauses": 2,
+    "audio": true
+  },
+  {
+    "id": "w11-02-shelf",
+    "unit": "w11",
+    "title": "品質期限：模型與驗證",
+    "scenes": 7,
+    "minutes": 1.632,
+    "pauses": 2,
+    "audio": true
+  },
+  {
+    "id": "w12-01-dvalue",
+    "unit": "w12",
+    "title": "D值：每次減少九成",
+    "scenes": 7,
+    "minutes": 1.578,
+    "pauses": 2,
+    "audio": true
+  },
+  {
+    "id": "w12-02-zf",
+    "unit": "w12",
+    "title": "z與F：溫差、等效時間",
+    "scenes": 7,
+    "minutes": 1.638,
+    "pauses": 2,
+    "audio": true
+  },
+  {
+    "id": "w13-01-freezing",
+    "unit": "w13",
+    "title": "冷藏冷凍：先看品溫",
+    "scenes": 7,
+    "minutes": 1.584,
+    "pauses": 2,
+    "audio": true
+  },
+  {
+    "id": "w13-02-coldchain",
+    "unit": "w13",
+    "title": "冷鏈、解凍與再凍",
+    "scenes": 7,
+    "minutes": 1.583,
+    "pauses": 2,
+    "audio": true
+  },
+  {
+    "id": "w14-01-dry",
+    "unit": "w14",
+    "title": "乾燥、濃縮與固形物守恆",
+    "scenes": 7,
+    "minutes": 1.64,
+    "pauses": 2,
+    "audio": true
+  },
+  {
+    "id": "w14-02-methods",
+    "unit": "w14",
+    "title": "保存技術：名稱不是結果",
+    "scenes": 7,
+    "minutes": 1.499,
+    "pauses": 2,
+    "audio": true
+  },
+  {
+    "id": "w15-01-ferment",
+    "unit": "w15",
+    "title": "發酵：菌、原料與條件",
+    "scenes": 7,
+    "minutes": 1.492,
+    "pauses": 2,
+    "audio": true
+  },
+  {
+    "id": "w15-02-yogurt",
+    "unit": "w15",
+    "title": "優格、乳酪與益生菌",
+    "scenes": 7,
+    "minutes": 1.686,
+    "pauses": 2,
+    "audio": true
+  },
+  {
+    "id": "w16-01-additives",
+    "unit": "w16",
+    "title": "添加物：先問功能，再讀標示",
+    "scenes": 7,
+    "minutes": 1.601,
+    "pauses": 2,
+    "audio": true
+  },
+  {
+    "id": "w16-02-exposure",
+    "unit": "w16",
+    "title": "ADI：食品量與體重要分開",
+    "scenes": 7,
+    "minutes": 1.629,
+    "pauses": 2,
+    "audio": true
+  },
+  {
+    "id": "w17-01-barrier",
+    "unit": "w17",
+    "title": "包裝阻隔：先看食品怕什麼",
+    "scenes": 7,
+    "minutes": 1.643,
+    "pauses": 2,
+    "audio": true
+  },
+  {
+    "id": "w17-02-map",
+    "unit": "w17",
+    "title": "氣調、資訊與回收",
+    "scenes": 7,
+    "minutes": 1.636,
+    "pauses": 2,
+    "audio": true
+  },
+  {
+    "id": "w18-01-haccp",
+    "unit": "w18",
+    "title": "危害、重要管制點與偏差",
+    "scenes": 7,
+    "minutes": 1.674,
+    "pauses": 2,
+    "audio": true
+  },
+  {
+    "id": "w18-02-sensory",
+    "unit": "w18",
+    "title": "感官評定：差異與喜好",
+    "scenes": 7,
+    "minutes": 1.566,
+    "pauses": 2,
+    "audio": true
+  },
+  {
+    "id": "final-01-case",
+    "unit": "final",
+    "title": "期末：一瓶優格的證據鏈",
+    "scenes": 7,
+    "minutes": 1.508,
+    "pauses": 2,
+    "audio": true
+  },
+  {
+    "id": "final-02-project",
+    "unit": "final",
+    "title": "期末報告：把推測變成可查問題",
+    "scenes": 7,
+    "minutes": 1.675,
+    "pauses": 2,
+    "audio": true
+  }
+]

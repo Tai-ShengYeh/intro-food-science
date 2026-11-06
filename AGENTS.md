@@ -10,9 +10,10 @@
 
 ## 一定要遵守
 
-- **`.gitignore` 是白名單**：只公開 `index.html`、`intl.html`、`general.html`、`teacher.html`（教師儀表板，資料要通關碼才讀得到，頁面本身不含資料）和三種週次頁（`*_投影片.html`、`*_互動教學.html`、`*_A2互動練習.html`）。前後測、題庫、教案、原始碼、成績解碼器**絕對不可加進來**，前後測公開會污染後測。
+- **`.gitignore` 是白名單**：只公開 `index.html`、`intl.html`、`general.html`、`teacher.html`（教師儀表板，資料要通關碼才讀得到，頁面本身不含資料）、三種週次頁（`*_投影片.html`、`*_互動教學.html`、`*_A2互動練習.html`），以及老師要求新增的 `handwrite/` 學生手寫動畫執行檔。前後測、題庫、教案、製作原始碼、成績解碼器**絕對不可加進來**，前後測公開會污染後測。
+- **手寫動畫**：`handwrite/` 僅允許學生HTML、MP3、子集TTF／WOFF2字型、必要GSAP執行檔、授權和不含題目答案的章節清單。TTF僅放在各章assets/fonts中。lesson.json、來源快照、教師備註與製作／驗收腳本在私人來源庫 `codex_patches/handwrite_course/`；不要放公開站。現有週次頁只加標記區塊；移除標記後應與製作時來源雜湊相同。
 - **不要從產生器重 build 第 2–18 週的頁面**。線上頁面除了產生器的內容，還有 Codex 事後直接改 HTML 加上的課堂活動、雙語案例、出處與中文主講動畫頁。重 build 會把這些洗掉。要改已發布頁面就直接改 HTML，並在 `進度.md` 記一筆。
-- **國合班第 9 週是期中考**：`intl.html` 把教材第 9–17 週顯示成 W10–W18、第 18 週顯示「期末」。檔名與頁內週次不改。改目錄請改 `build_site_index.py` 再執行。
+- **國合班第 9 週是期中考**：`intl.html` 把教材第 9–17 週顯示成 W10–W18、第 18 週顯示「期末」。檔名與追蹤週次不改。改目錄請改 `build_site_index.py` 再執行。手寫動畫版維護於私人來源庫 `codex_patches/handwrite_course/build_site_index.py`，支援 `--intl-only`，以免改到一般班。
 - **A2 互動練習頁 18 週都會送學習紀錄**（2026-10-28 起，事件帶 `cls:"a2"`）。直接改 HTML 時不要拿掉 `window.__LESSON__` 尾端的 `"track"` 設定。
 - 頁面裡的 YouTube 影片：
   - 投影片封面後「先看動畫」：A2 教學動畫。
