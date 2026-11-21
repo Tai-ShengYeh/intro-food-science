@@ -195,10 +195,10 @@
     ifs.forEach(function (r) { if (r[2] && r[2] !== "anon" && r[3]) dev[r[3]] = r[2]; });
     ifs.forEach(function (r) {
       var cls = r[0] || "general", wk = Number(r[1]) || 0;
-      // 國合班第 9 週期中考：教材第 9 週起順延一週（與 intl.html 目錄同一規則）
-      var cal = cls === "a2" && wk >= 9 ? (wk === 18 ? 19 : wk + 1) : wk;
-      var unit = cls === "a2" && wk === 18 ? "期末" : "W" + pad(cal);
-      if (cls === "a2" && wk >= 9 && wk < 18) unit += "（教材第 " + wk + " 週）";
+      // 國合班（2026-11-22 老師定案）：W08 上教材第 9 週（食品微生物）、W09 期中考、W10–W17＝教材第 10–17 週、教材第 18 週＝期末；教材第 8 週（期中複習）不再上（與 intl.html 目錄同一規則）
+      var cal = cls === "a2" && wk === 9 ? 8 : wk;
+      var unit = cls === "a2" && wk === 18 ? "期末" : cls === "a2" && wk === 8 ? "期中複習（舊）" : "W" + pad(cal);
+      if (cls === "a2" && wk === 9) unit += "（教材第 9 週）";
       var stu = r[2] && r[2] !== "anon" ? r[2] : dev[r[3]] || "匿名·" + String(r[3] || "").slice(1, 6);
       var a = { c: "ifs:" + cls, unit: unit, us: cal, stu: stu, ts: new Date(r[13]) };
       if (r[5] === "quiz_answer" && r[9] === "1") { a.kind = "answer"; a.ok = r[8] === "true"; a.item = unit + " · " + (r[6] || "") + " 第 " + (Number(r[7]) + 1) + " 題"; }
@@ -367,7 +367,7 @@
     var c = state.course;
     var list = acts.filter(function (a) { return a.c === c; });
     var html = '<div class="sel"><b>課程</b><select id="courseSel">' + keys.map(function (k) { return '<option value="' + esc(k) + '"' + (k === c ? " selected" : "") + ">" + esc(courseName(k)) + "</option>"; }).join("") + "</select>" +
-      (c === "ifs:a2" ? '<span class="hint">國合班第 9 週期中考，教材第 9 週起順延一週顯示</span>' : "") + "</div>";
+      (c === "ifs:a2" ? '<span class="hint">國合班 W08 上教材第 9 週，W09 期中考，其餘週次與教材相同</span>' : "") + "</div>";
     if (!list.length) return html + '<div class="card empty">這段期間沒有這門課的紀錄。</div>';
 
     var fa = firstAnswers(list);
